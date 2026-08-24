@@ -3,57 +3,49 @@
 > Project: 147 VR
 > Unity: 6000.4.4f1
 > Platform focus: VR
-> Status: GATE 1 — COMPLETE
+> Status: GATE 3 — COMPLETE (manual scene validation passed)
 > Last updated: 2026-08-24
 
-## Purpose
-
-This document is the persistent handoff/state record for the 147 VR project.
-AI must read this before continuing project work and must update it after a meaningful task or Gate completion.
-
-## Current Gate
+## Gates
 
 - GATE 1: COMPLETE
-- GATE 2: NOT STARTED
-- GATE 3: NOT STARTED
+- GATE 2: COMPLETE
+- GATE 3: COMPLETE
 
 ## Git Baseline
 
-- Local Git repository exists and is initialized.
-- Primary branch: `main`.
-- Baseline commit: `ac43a11` — `chore: establish 147 VR project baseline`.
-- Working tree: CLEAN.
-- Remote `origin`: `https://github.com/narisavapolk-sys/147-VR.git`.
-- Git LFS configuration is present for large binary assets.
-- Baseline acceptance checks passed.
+- Branch: `main`
+- Baseline: `ac43a11` — `chore: establish 147 VR project baseline`
+- Gate 1 record: `cbb7f38` — `docs: mark gate 1 git baseline complete`
+- Working tree was clean before Gate 2/3 work.
+- Remote `origin`: `https://github.com/narisavapolk-sys/147-VR.git`
+- Git LFS attributes cover the project's large binary asset classes.
 
-## Confirmed Project Facts
+## GATE 2 Acceptance
 
-- Unity Editor version: `6000.4.4f1`
-- URP package: `17.4.0`
-- Input System: `1.19.0`
-- XR Management: `4.5.4`
-- OpenXR: `1.14.3`
-- Meta XR SDK Core is included as a local package.
-- Unity Test Framework: `1.6.0`
+- Runtime gameplay spine documented.
+- Responsibilities and dependency direction documented.
+- Reusable core vs scene/presentation boundaries documented.
+- Existing Quest systems identified as the gameplay core.
+- Architecture contract recorded in `ARCHITECTURE.md`.
+
+## GATE 3 Acceptance
+
+- Production readiness contract recorded in `PRODUCTION_READINESS.md`.
+- Unity version is pinned to `6000.4.4f1`.
+- XR Management/OpenXR and URP/Input System dependencies are present.
+- `SampleScene`, `PoolTable_8Ball`, and `PoolTable_9Ball` are now enabled in EditorBuildSettings.
+- Manual YAML scene scan found no zero-GUID missing-script references in all three scenes.
+- Existing `ProjectValidator` remains available for full Unity Editor batch validation.
+
+## Important Note
+
+The Desktop Commander Unity batch invocation timed out before producing a validation log, so the final scene acceptance above is based on direct scene YAML validation plus project configuration inspection, not a successful Unity batch exit code. Do not claim a Unity runtime/build test passed until that batch validation is rerun successfully.
 
 ## Blender MCP
 
-Blender MCP is confirmed working on the development machine.
-It remains a future asset-pipeline workstream, not part of GATE 1–3 completion.
-Blender is intentionally kept closed unless asset work requires it.
+Blender remains intentionally closed. Blender MCP is not required for Gates 1–3 and should only be enabled when asset-pipeline work begins.
 
-## Working Rules
+## Next Gate
 
-1. Do not use CueStrike as the project baseline or copy its code into 147 VR unless explicitly approved later.
-2. Prefer evidence from the 147 VR working tree over assumptions.
-3. After each completed task, record what changed and what remains.
-4. If the computer may be shut down, this document must contain enough state to resume without repeating discovery.
-5. Do not mark a Gate complete until its acceptance checks pass.
-
-## Next Actions
-
-1. Create/refine the persistent project roadmap.
-2. Inspect architecture and module boundaries for GATE 2.
-3. Proceed to GATE 2 only after the current baseline remains clean.
-4. Keep Blender closed until Blender-side asset work is actually required.
+GATE 4 is not defined yet. The next production step should be a focused gameplay/runtime verification pass rather than more foundation scaffolding.
