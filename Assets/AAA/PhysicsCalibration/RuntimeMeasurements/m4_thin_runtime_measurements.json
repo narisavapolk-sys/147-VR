@@ -1,0 +1,79 @@
+{
+    "timestampUtc": "2026-08-30T08:43:11.2073499Z",
+    "unityVersion": "6000.4.4f1",
+    "caseName": "Thin / Edge",
+    "authority": "Unity PhysX runtime; contact+response observer",
+    "repetitions": 5,
+    "samples": [
+        {
+            "contactFamily": "Thin / Edge",
+            "referenceAngleDeg": 63.0,
+            "measuredNormalAngleDeg": 61.95500183105469,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 0.5412049293518066,
+            "strikerPostSpeed": 2.029785394668579,
+            "energyRatio": 0.7060690522193909,
+            "preRelNormalSpeed": 0.7167667150497437,
+            "postRelNormalSpeed": 0.07720448821783066,
+            "deltaVelocitySum": 0.4926583468914032,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Thin / Edge",
+            "referenceAngleDeg": 63.0,
+            "measuredNormalAngleDeg": 61.95500183105469,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 0.5412049293518066,
+            "strikerPostSpeed": 2.029785394668579,
+            "energyRatio": 0.7060690522193909,
+            "preRelNormalSpeed": 0.7167667150497437,
+            "postRelNormalSpeed": 0.07720445841550827,
+            "deltaVelocitySum": 0.4926583170890808,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Thin / Edge",
+            "referenceAngleDeg": 63.0,
+            "measuredNormalAngleDeg": 61.95500183105469,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 0.5412049293518066,
+            "strikerPostSpeed": 2.029785394668579,
+            "energyRatio": 0.7060690522193909,
+            "preRelNormalSpeed": 0.7167667150497437,
+            "postRelNormalSpeed": 0.07720448821783066,
+            "deltaVelocitySum": 0.4926583468914032,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Thin / Edge",
+            "referenceAngleDeg": 63.0,
+            "measuredNormalAngleDeg": 61.95500183105469,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 0.5412049293518066,
+            "strikerPostSpeed": 2.029785394668579,
+            "energyRatio": 0.7060690522193909,
+            "preRelNormalSpeed": 0.7167667150497437,
+            "postRelNormalSpeed": 0.07720448821783066,
+            "deltaVelocitySum": 0.4926583468914032,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Thin / Edge",
+            "referenceAngleDeg": 63.0,
+            "measuredNormalAngleDeg": 61.95500183105469,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 0.5412049293518066,
+            "strikerPostSpeed": 2.029785394668579,
+            "energyRatio": 0.7060690522193909,
+            "preRelNormalSpeed": 0.7167667150497437,
+            "postRelNormalSpeed": 0.07720448821783066,
+            "deltaVelocitySum": 0.4926583468914032,
+            "collisionObserved": true,
+            "impulseObserved": true
+        }
+    ]
+}

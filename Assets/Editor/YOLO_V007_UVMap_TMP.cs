@@ -1,0 +1,5 @@
+using UnityEditor;using UnityEngine;using System.Collections.Generic;
+public static class YOLO_V007_UVMap_TMP{
+ [MenuItem("147VR/YOLO/V007 UVMap TMP")]
+ public static void Run(){var g=AssetDatabase.LoadAssetAtPath<GameObject>("Assets/AAA/ImportedSnooker/147VR_Table_WPBSA_Visual_Clean_v007.fbx");var s=Find(g.transform,"TABLE SURFACE");var m=s.GetComponent<MeshFilter>().sharedMesh;var u=m.uv;var v=m.vertices;float minx=float.MaxValue,maxx=float.MinValue,miny=float.MaxValue,maxy=float.MinValue;for(int i=0;i<v.Length;i++){minx=Mathf.Min(minx,v[i].x);maxx=Mathf.Max(maxx,v[i].x);miny=Mathf.Min(miny,v[i].y);maxy=Mathf.Max(maxy,v[i].y);}Debug.Log($"UVMAP bounds x={minx}..{maxx} y={miny}..{maxy}");for(int i=0;i<v.Length;i++)if(Mathf.Abs(v[i].x-minx)<.001f||Mathf.Abs(v[i].x-maxx)<.001f||Mathf.Abs(v[i].y-miny)<.001f||Mathf.Abs(v[i].y-maxy)<.001f)Debug.Log($"UVMAP p={v[i]} uv={u[i]}");}
+ static Transform Find(Transform r,string n){foreach(var t in r.GetComponentsInChildren<Transform>(true))if(t.name==n)return t;return null;}}

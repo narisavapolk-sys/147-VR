@@ -1,0 +1,78 @@
+{
+    "timestampUtc": "2026-08-30T07:48:56.2813246Z",
+    "unityVersion": "6000.4.4f1",
+    "authority": "Unity PhysX runtime; capture trigger + wall-response observer",
+    "repetitions": 5,
+    "samples": [
+        {
+            "caseName": "Left_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": -3.4970598220825197,
+            "minMouthDistance": 0.09300924092531204,
+            "finalX": 0.022401148453354837,
+            "finalZ": 0.01190006360411644,
+            "wallContacts": 2,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Left_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": -3.4970598220825197,
+            "minMouthDistance": 0.09300924092531204,
+            "finalX": 0.022401148453354837,
+            "finalZ": 0.01190006360411644,
+            "wallContacts": 2,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Left_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": -3.4970598220825197,
+            "minMouthDistance": 0.09300924092531204,
+            "finalX": 0.022401148453354837,
+            "finalZ": 0.01190006360411644,
+            "wallContacts": 2,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Left_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": -3.4970598220825197,
+            "minMouthDistance": 0.09300924092531204,
+            "finalX": 0.022401148453354837,
+            "finalZ": 0.01190006360411644,
+            "wallContacts": 2,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Left_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": -3.4970598220825197,
+            "minMouthDistance": 0.09300924092531204,
+            "finalX": 0.022401148453354837,
+            "finalZ": 0.01190006360411644,
+            "wallContacts": 2,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        }
+    ]
+}

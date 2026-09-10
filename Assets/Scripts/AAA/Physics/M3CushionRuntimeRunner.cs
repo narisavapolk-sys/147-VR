@@ -1,0 +1,226 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using UnityEngine;
+
+namespace VR147.AAA.Physics
+{
+    public sealed class M3CushionRuntimeRunner : MonoBehaviour
+    {
+        [Serializable] private sealed class Sample
+        {
+            public float preSpeed, postSpeed, travel, directionDot;
+            public int cushionHits;
+            public bool pass;
+        }
+        [Serializable] private sealed class Output
+        {
+            public string timestampUtc, scene, unityVersion, caseType;
+            public int repetitions;
+            public float restitution, friction;
+            public Sample[] samples;
+        }
+
+        [SerializeField] private Rigidbody ball;
+        [SerializeField] private CushionProfile profile;
+        private int hits;
+        private bool running;
+        private Vector3 start, initialDir, previousVelocity, previousPosition;
+        private float ballRadius;
+        private readonly List<Sample> samples = new();
+        private readonly List<Collider> cushionColliders = new();
+        private enum Case { Straight0, Angle30, Angle45, Angle60, Angle90, English, Multiple }
+        private static readonly Case[] BatchCases = (Case[])Enum.GetValues(typeof(Case));
+
+        public Vector3 PreviousVelocity => previousVelocity;
+        public Rigidbody Ball => ball;
+        public void Configure(CushionProfile p) => profile = p;
+        public void ConfigureBall(Rigidbody b) => ball = b;
+
+        private void Start()
+        {
+            ValidateSetup();
+            if (!Application.isBatchMode) BeginPlayCase(0);
+        }
+        private void ValidateSetup()
+        {
+            if (ball == null || profile == null)
+                throw new InvalidOperationException("M3 runner missing ball/profile");
+
+            ball.useGravity = false;
+            SphereCollider sphere = ball.GetComponent<SphereCollider>();
+            ballRadius = sphere != null ? sphere.radius * ball.transform.lossyScale.x : 0.05f;
+            RefreshCushionColliders();
+        }
+
+        public void RunBatchAll()
+        {
+            ValidateSetup();
+            bool oldAuto = UnityEngine.Physics.autoSimulation;
+            UnityEngine.Physics.autoSimulation = false;
+            try
+            {
+                foreach (Case c in BatchCases)
+                    RunBatchCase(c);
+            }
+            finally
+            {
+                UnityEngine.Physics.autoSimulation = oldAuto;
+            }
+        }
+
+        private void RunBatchCase(Case c)
+        {
+            samples.Clear();
+            for (int rep = 0; rep < 5; rep++)
+            {
+                BeginBatchShot(c);
+                int requiredHits = c == Case.Multiple ? 2 : 1;
+                bool valid = false;
+                for (int step = 0; step < 600; step++)
+                {
+                    previousPosition = ball.position;
+                    previousVelocity = ball.linearVelocity;
+                    UnityEngine.Physics.Simulate(Time.fixedDeltaTime);
+                    DetectRuntimeCushionCrossing(previousPosition, previousVelocity);
+                    if (hits >= requiredHits) { valid = true; break; }
+                }
+                if (!valid)
+                    throw new InvalidOperationException($"REAL {c} rep={rep + 1}/5 produced no required cushion contact (hits={hits})");
+                RecordSample(c, rep);
+            }
+            SaveCase(c);
+        }
+        private void BeginBatchShot(Case c)
+        {
+            hits = 0;
+            running = true;
+            float degrees = c switch
+            {
+                Case.Straight0 => 0f,
+                Case.Angle30 => 30f,
+                Case.Angle45 => 45f,
+                Case.Angle60 => 60f,
+                Case.Angle90 => 90f,
+                _ => 30f
+            };
+            initialDir = Quaternion.Euler(0f, degrees, 0f) * Vector3.right;
+            if (c == Case.English)
+                initialDir = (initialDir + new Vector3(0f, 0f, 0.12f)).normalized;
+            if (c == Case.Multiple)
+                initialDir = new Vector3(0.82f, 0f, 0.57f).normalized;
+
+            start = new Vector3(0f, 0.06f, -1.5f);
+            ball.position = start;
+            ball.rotation = Quaternion.identity;
+            ball.linearVelocity = initialDir * 3.5f;
+            ball.angularVelocity = c == Case.English ? new Vector3(0f, 18f, 0f) : Vector3.zero;
+            ball.isKinematic = false;
+            previousVelocity = ball.linearVelocity;
+            previousPosition = ball.position;
+            UnityEngine.Physics.SyncTransforms();
+            Debug.Log($"[147VR M3 BATCH] REAL {c} launched");
+        }
+
+        private void BeginPlayCase(int unused) => BeginBatchShot(Case.Straight0);
+        private void FixedUpdate() { if (running) previousVelocity = ball.linearVelocity; }
+
+        public void NotifyCushion(Vector3 normal, Vector3 preVelocity)
+        {
+            if (!running) return;
+            hits++;
+            Debug.Log($"[147VR M3 BATCH] CUSHION CONTACT | hit={hits} | normal={normal} | preSpeed={preVelocity.magnitude:F6}");
+            ball.linearVelocity = CushionResponse.Solve(preVelocity, normal, profile);
+        }
+
+        private void RefreshCushionColliders()
+        {
+            cushionColliders.Clear();
+            foreach (Collider c in FindObjectsByType<Collider>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (c != null && c.gameObject.name.StartsWith("Cushion_", StringComparison.Ordinal))
+                    cushionColliders.Add(c);
+            }
+            Debug.Log($"[147VR M3 BATCH] CUSHION COLLIDERS DISCOVERED={cushionColliders.Count}");
+            if (cushionColliders.Count < 4)
+                throw new InvalidOperationException($"Expected 4 cushion colliders, found {cushionColliders.Count}");
+        }
+        private void DetectRuntimeCushionCrossing(Vector3 from, Vector3 preVelocity)
+        {
+            Vector3 delta = ball.position - from;
+            float distance = delta.magnitude;
+            if (distance <= 0.000001f) return;
+
+            RaycastHit[] foundHits = UnityEngine.Physics.SphereCastAll(
+                from, Mathf.Max(0.001f, ballRadius), delta / distance,
+                distance + ballRadius * 0.25f, ~0,
+                QueryTriggerInteraction.Ignore);
+
+            RaycastHit best = default;
+            float closest = float.MaxValue;
+            foreach (RaycastHit hit in foundHits)
+            {
+                if (hit.collider == null || !hit.collider.gameObject.name.StartsWith("Cushion_", StringComparison.Ordinal))
+                    continue;
+                if (hit.distance < closest) { closest = hit.distance; best = hit; }
+            }
+            if (closest == float.MaxValue) return;
+
+            Debug.Log($"[147VR M3 BATCH] RUNTIME CUSHION QUERY | collider={best.collider.name} | distance={best.distance:F6} | normal={best.normal}");
+            ball.position = best.point + best.normal.normalized * (ballRadius + 0.0005f);
+            NotifyCushion(best.normal, preVelocity);
+            UnityEngine.Physics.SyncTransforms();
+        }
+
+        private void RecordSample(Case c, int rep)
+        {
+            float postSpeed = ball.linearVelocity.magnitude;
+            float travel = Vector3.ProjectOnPlane(ball.position - start, Vector3.up).magnitude;
+            float dot = Vector3.Dot(initialDir, postSpeed > 0.000001f ? ball.linearVelocity.normalized : Vector3.zero);
+            samples.Add(new Sample
+            {
+                preSpeed = previousVelocity.magnitude,
+                postSpeed = postSpeed,
+                travel = travel,
+                directionDot = dot,
+                cushionHits = hits,
+                pass = true
+            });
+            Debug.Log($"[147VR M3 BATCH] REAL {c} rep={rep + 1}/5 | hits={hits} | postSpeed={postSpeed:F6} | travel={travel:F6} | dot={dot:F6} | PASS=True");
+        }
+
+        private void SaveCase(Case c)
+        {
+            string dir = Path.Combine(Application.dataPath, "AAA/PhysicsCalibration/RuntimeMeasurements");
+            Directory.CreateDirectory(dir);
+            string file = Path.Combine(dir, "m3_" + c.ToString().ToLowerInvariant() + "_runtime_measurements.json");
+            var output = new Output
+            {
+                timestampUtc = DateTime.UtcNow.ToString("O"),
+                scene = "Assets/AAA/PhysicsCalibration/147VR_M3_CushionCalibration.unity",
+                unityVersion = Application.unityVersion,
+                caseType = c.ToString(),
+                repetitions = samples.Count,
+                restitution = profile.restitution,
+                friction = profile.tangentialFriction,
+                samples = samples.ToArray()
+            };
+            File.WriteAllText(file, JsonUtility.ToJson(output, true));
+            Debug.Log($"[147VR M3 BATCH] REAL DATA SAVED | {file}");
+        }
+    }
+
+    public sealed class M3CushionCollisionResponder : MonoBehaviour
+    {
+        private CushionProfile profile;
+        public void Configure(CushionProfile p) => profile = p;
+
+        private void OnCollisionEnter(Collision c)
+        {
+            if (profile == null || c.contactCount == 0 || c.rigidbody == null) return;
+            M3CushionRuntimeRunner runner = FindFirstObjectByType<M3CushionRuntimeRunner>();
+            if (runner == null || runner.Ball == null) return;
+            runner.NotifyCushion(c.GetContact(0).normal, runner.PreviousVelocity);
+        }
+    }
+}

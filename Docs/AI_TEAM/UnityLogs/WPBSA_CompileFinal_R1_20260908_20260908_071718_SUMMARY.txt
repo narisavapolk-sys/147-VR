@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20260908_071718
+LogName: WPBSA_CompileFinal_R1_20260908
+ExecuteMethod: 
+Process result: EXITED code=-1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\WPBSA_CompileFinal_R1_20260908_20260908_071718.log

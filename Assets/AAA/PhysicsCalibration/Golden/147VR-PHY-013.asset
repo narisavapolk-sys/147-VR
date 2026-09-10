@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1f261447437ca409b7c956c2519fe0, type: 3}
+  m_Name: 147VR-PHY-013
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.PhysicsGoldenCase
+  caseId: 147VR-PHY-013
+  revision: 1
+  category: 5
+  intent: M3.7 Double Cushion. REAL runtime PhysX evidence; Golden stores measured
+    distance/post-speed oracle.
+  calibrationCase: {fileID: 11400000, guid: b57734da599627343bc797db2383bc24, type: 2}
+  requirePass: 1
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/m3_multiple_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-30T01:07:49.1093967Z
+  sourceScene: Assets/AAA/PhysicsCalibration/147VR_M3_CushionCalibration.unity
+  sourceUnityVersion: 6000.4.4f1
+  sourceShotType: Multiple
+  sourceRepetitionCount: 5
+  measuredDistanceMean: 4.3503036
+  measuredDistanceStdDev: 0
+  measuredPeakSpeedMean: 2.7087455
+  measuredPeakSpeedStdDev: 0
+  regressionTolerancePercent: 1
+  measuredDistanceSamples:
+  - 4.3503036
+  - 4.3503036
+  - 4.3503036
+  - 4.3503036
+  - 4.3503036
+  measuredPeakSpeedSamples:
+  - 2.7087455
+  - 2.7087455
+  - 2.7087455
+  - 2.7087455
+  - 2.7087455

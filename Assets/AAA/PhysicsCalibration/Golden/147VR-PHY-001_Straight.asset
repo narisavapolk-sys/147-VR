@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1f261447437ca409b7c956c2519fe0, type: 3}
+  m_Name: 147VR-PHY-001_Straight
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.PhysicsGoldenCase
+  caseId: 147VR-PHY-001
+  revision: 2
+  category: 0
+  intent: Measured REAL Straight Shot baseline from runtime PhysX calibration. Golden
+    values are derived only from straight_runtime_measurements.json.
+  calibrationCase: {fileID: 11400000, guid: 8f1b4c0e7a4d2c3b9e6f1029384756aa, type: 2}
+  requirePass: 1
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/straight_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-31T05:11:13.2907696Z
+  sourceScene: Assets/AAA/PhysicsCalibration/147VR_PhysicsCalibration.unity
+  sourceUnityVersion: 6000.4.4f1
+  sourceShotType: Straight
+  sourceRepetitionCount: 5
+  measuredDistanceMean: 0.72824776
+  measuredDistanceStdDev: 0
+  measuredPeakSpeedMean: 4.0551915
+  measuredPeakSpeedStdDev: 0
+  regressionTolerancePercent: 0.5
+  measuredDistanceSamples:
+  - 0.72824776
+  - 0.72824776
+  - 0.72824776
+  - 0.72824776
+  - 0.72824776
+  measuredPeakSpeedSamples:
+  - 4.0551915
+  - 4.0551915
+  - 4.0551915
+  - 4.0551915
+  - 4.0551915

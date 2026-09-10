@@ -1,0 +1,76 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f98d18e762728a4a84415ddf9f3de85, type: 3}
+  m_Name: 147VR-PHY-019_Thin___Edge
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.M4BallCollisionGolden
+  caseId: 147VR-PHY-019
+  family: Thin / Edge
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/m4_thin_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-30T06:52:19.6069826Z
+  sourceUnityVersion: 6000.4.4f1
+  referenceAngleDeg: 63
+  measuredNormalMean: 61.955
+  measuredNormalStd: 0
+  targetSpeedMean: 0.5412049
+  targetSpeedStd: 0
+  strikerSpeedMean: 2.0297854
+  strikerSpeedStd: 0
+  energyRatioMean: 0.70606905
+  energyRatioStd: 0
+  deltaVelocityMean: 0.49265835
+  deltaVelocityStd: 0.000000013328004
+  preRelNormalMean: 0.7167667
+  postRelNormalMean: 0.07720448
+  tolerancePercent: 0.5
+  repetitions: 5
+  measuredNormalSamples:
+  - 61.955
+  - 61.955
+  - 61.955
+  - 61.955
+  - 61.955
+  targetSpeedSamples:
+  - 0.5412049
+  - 0.5412049
+  - 0.5412049
+  - 0.5412049
+  - 0.5412049
+  strikerSpeedSamples:
+  - 2.0297854
+  - 2.0297854
+  - 2.0297854
+  - 2.0297854
+  - 2.0297854
+  energyRatioSamples:
+  - 0.70606905
+  - 0.70606905
+  - 0.70606905
+  - 0.70606905
+  - 0.70606905
+  deltaVelocitySamples:
+  - 0.49265835
+  - 0.49265832
+  - 0.49265835
+  - 0.49265835
+  - 0.49265835
+  preRelNormalSamples:
+  - 0.7167667
+  - 0.7167667
+  - 0.7167667
+  - 0.7167667
+  - 0.7167667
+  postRelNormalSamples:
+  - 0.07720449
+  - 0.07720446
+  - 0.07720449
+  - 0.07720449
+  - 0.07720449

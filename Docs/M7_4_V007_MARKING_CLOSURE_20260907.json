@@ -1,0 +1,46 @@
+﻿{
+  "date": "2026-09-07",
+  "artifact": "V007 table markings UV/world closure",
+  "scene": "Assets/Scenes/147VR_MainScene.unity",
+  "visual_root": "V007_VISUAL_MAIN",
+  "surface": "TABLE SURFACE",
+  "root_cause": "Generator used a PIL pixel-Y convention that mirrored Unity UV V for the marking texture. The Unity scene itself is not rotated/mirrored incorrectly. The previous topology audit also used the wrong physics target frame; this closure audit uses the actual Unity X/Z ball-center positions.",
+  "fix_scope": [
+    "Docs/M7_4_generate_markings.py",
+    "Assets/AAA/ImportedSnooker/Textures/Snooker_Markings_V007.png",
+    "Assets/Editor/LunaV007SpotTextureAudit.cs"
+  ],
+  "physics_authority_touched": false,
+  "bed_collider_touched": false,
+  "golden_data_touched": false,
+  "transform_hierarchy_touched": false,
+  "generator_backup": "Docs/AI_TEAM/BACKUPS/M7_4_generate_markings_PRE_V007_V_MIRROR_FIX_20260907.py.bak",
+  "spots_uv_world_gap_mm": {
+    "Yellow": 0.8,
+    "Green": 1.1,
+    "Brown": 0.8,
+    "Blue": 0.5,
+    "Pink": 0.5,
+    "Black": 0.5
+  },
+  "spot_max_gap_mm": 1.1,
+  "spot_alignment_pass": true,
+  "pixel_audit": {
+    "resolution": "8192x4096",
+    "baulk_line_hit_rate": 0.9850746269,
+    "d_arc_hit_rate": 1.0,
+    "pass": true,
+    "evidence": "Docs/M7_4_V007_MARKING_PIXEL_AUDIT_20260907.json"
+  },
+  "playmode": {
+    "test": "V007PlayModeValidationTests.V007_MainScene_Visual_Is_RuntimeValid",
+    "result": "Passed",
+    "pass_count": 1,
+    "fail_count": 0,
+    "bounds": [3.57, 0.0127, 1.78],
+    "material": "M_V007_TableSurface_Marking",
+    "results_file": "Docs/V007_PlayMode_Results_20260907.xml"
+  },
+  "closure_status": "EVIDENCE-COMPLETE",
+  "certification_boundary": "Visual marking UV/world alignment is evidence-complete for the current V007 MainScene contract. This does not modify or recertify Physics Authority."
+}

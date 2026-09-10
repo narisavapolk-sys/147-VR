@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20260907_222517
+LogName: WPBSA_RuntimeGate_20260907
+ExecuteMethod: LunaWPBSARuntimeGate.Run
+Process result: EXITED code=1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\WPBSA_RuntimeGate_20260907_20260907_222517.log

@@ -1,0 +1,136 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+/// <summary>
+/// Plays the 6 dance clips on a humanoid Cute Girl.
+/// - Auto-cycles through all dances (loop).
+/// - Press Tab (or click the on-screen button) to switch to the next dance.
+/// - Press 1..6 to jump to a specific dance.
+/// </summary>
+public class CuteDancer : MonoBehaviour
+{
+    [Tooltip("Names of the animation clips (as imported from the FBX).")]
+    public string[] danceClips = new string[]
+    {
+        "Cute_Arms_Hip_Hop_Dance",
+        "Cute_Booty_Hip_Hop_Dance",
+        "Cute_Dancing_Twerk",
+        "Cute_Hip_Hop_Dancing",
+        "Cute_Hip_Hop_Dancing_1",
+        "Cute_Rumba_Dancing",
+    };
+
+    [Tooltip("Auto-cycle through all dances.")]
+    public bool autoCycle = true;
+    [Tooltip("Seconds to play each dance before switching (0 = play full clip).")]
+    public float switchAfter = 0f;
+    public KeyCode cycleKey = KeyCode.Tab;
+    public bool createUiButton = true;
+
+    Animator animator;
+    int index = 0;
+    Coroutine cycleRoutine;
+    GUIStyle buttonStyle;
+    float nextSwitchTime;
+
+    void Start()
+    {
+        animator = GetComponent<Animator>();
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+        {
+            Debug.LogError("CuteDancer: no Animator found on " + gameObject.name);
+            enabled = false;
+            return;
+        }
+        Play(index);
+    }
+
+    void Update()
+    {
+        if (IsKeyDown(cycleKey))
+            Cycle();
+
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) JumpTo(0);
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) JumpTo(1);
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) JumpTo(2);
+            if (Keyboard.current.digit4Key.wasPressedThisFrame) JumpTo(3);
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) JumpTo(4);
+            if (Keyboard.current.digit6Key.wasPressedThisFrame) JumpTo(5);
+        }
+
+        if (autoCycle && switchAfter > 0f && Time.time >= nextSwitchTime)
+        {
+            Cycle();
+        }
+    }
+
+    private bool IsKeyDown(KeyCode key)
+    {
+        if (Keyboard.current == null) return false;
+        switch (key)
+        {
+            case KeyCode.Tab: return Keyboard.current.tabKey.wasPressedThisFrame;
+            case KeyCode.Space: return Keyboard.current.spaceKey.wasPressedThisFrame;
+            case KeyCode.M: return Keyboard.current.mKey.wasPressedThisFrame;
+            default: return false;
+        }
+    }
+
+    public void Cycle()
+    {
+        index = (index + 1) % danceClips.Length;
+        Play(index);
+    }
+
+    public void JumpTo(int i)
+    {
+        if (i < 0 || i >= danceClips.Length) return;
+        index = i;
+        Play(index);
+    }
+
+    void Play(int i)
+    {
+        string clip = danceClips[i];
+        if (animator.HasState(0, Animator.StringToHash(clip)))
+        {
+            animator.CrossFadeInFixedTime(clip, 0.15f, 0, 0f);
+        }
+        else
+        {
+            animator.Play(clip, 0, 0f);
+        }
+        nextSwitchTime = Time.time + (switchAfter > 0f ? switchAfter : 9999f);
+        Debug.Log($"DANCE_NOW {clip}");
+    }
+
+    void OnGUI()
+    {
+        if (!createUiButton) return;
+        if (buttonStyle == null)
+        {
+            buttonStyle = new GUIStyle(GUI.skin.button);
+            buttonStyle.fontSize = 16;
+            buttonStyle.padding = new RectOffset(16, 16, 10, 10);
+        }
+        float y = 10;
+        for (int i = 0; i < danceClips.Length; i++)
+        {
+            string label = (i == index ? "▶ " : "") + ShortName(danceClips[i]);
+            if (GUI.Button(new Rect(Screen.width - 190, y, 180, 30), label, buttonStyle))
+                JumpTo(i);
+            y += 36;
+        }
+    }
+
+    string ShortName(string full)
+    {
+        return full.Replace("Cute_", "").Replace("_", " ");
+    }
+}

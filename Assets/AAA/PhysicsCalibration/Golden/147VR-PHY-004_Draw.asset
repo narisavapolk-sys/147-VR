@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1f261447437ca409b7c956c2519fe0, type: 3}
+  m_Name: 147VR-PHY-004_Draw
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.PhysicsGoldenCase
+  caseId: 147VR-PHY-004
+  revision: 1
+  category: 3
+  intent: Measured REAL Draw runtime truth. Golden distance is object-ball displacement
+    measured after a deterministic 10-step post-contact observation window; peak
+    speed is measured object-ball peak speed. Draw-specific evidence requires negative
+    post-contact cue velocity aligned opposite to the shot direction.
+  calibrationCase: {fileID: 11400000, guid: 1cde5b1e558e60543a61b3d5c15236ea, type: 2}
+  requirePass: 1
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/draw_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-29T09:54:24.3017553Z
+  sourceScene: Assets/AAA/PhysicsCalibration/147VR_M23_DrawCalibration.unity
+  sourceUnityVersion: 6000.4.4f1
+  sourceShotType: Draw
+  sourceRepetitionCount: 5
+  measuredDistanceMean: 0.49386126
+  measuredDistanceStdDev: 0.000000037697287
+  measuredPeakSpeedMean: 2.5470815
+  measuredPeakSpeedStdDev: 0.00000048861267
+  regressionTolerancePercent: 0.5
+  measuredDistanceSamples:
+  - 0.4938612
+  - 0.49386126
+  - 0.4938612
+  - 0.49386126
+  - 0.49386126
+  measuredPeakSpeedSamples:
+  - 2.5470808
+  - 2.5470817
+  - 2.5470808
+  - 2.5470817
+  - 2.5470817

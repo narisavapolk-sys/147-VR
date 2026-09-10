@@ -1,0 +1,1 @@
+Run 081544 in progress, UPM connected, still compiling — no result to certify yet. Licensing 30s handshake delay noted, non-blocking, agreed not a hard-stop. Sequence confirmed. Nothing further needed from Coach right now.

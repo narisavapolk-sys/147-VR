@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20260907_084930
+LogName: VerifyFix
+ExecuteMethod: 
+Process result: EXITED code=1
+UPM IPC connected: False
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\VerifyFix_20260907_084930.log

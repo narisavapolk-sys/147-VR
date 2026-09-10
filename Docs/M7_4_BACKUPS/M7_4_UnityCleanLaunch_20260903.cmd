@@ -1,0 +1,10 @@
+@echo off
+set "PROGRAMDATA=C:\ProgramData"
+set "APPDATA=C:\Users\mongo\AppData\Roaming"
+set "LOCALAPPDATA=C:\Users\mongo\AppData\Local"
+set "USERPROFILE=C:\Users\mongo"
+set "TEMP=C:\Users\mongo\AppData\Local\Temp"
+set "TMP=C:\Users\mongo\AppData\Local\Temp"
+set "NO_PROXY=localhost,127.0.0.1"
+set "UNITY_UPM_TIMEOUT=120"
+start "Unity147VR" /wait "C:\Program Files\Unity\Hub\Editor\6000.4.4f1\Editor\Unity.exe" -projectPath "C:\Users\mongo\UnityProjects\147 VR"

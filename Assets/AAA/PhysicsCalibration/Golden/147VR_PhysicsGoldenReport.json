@@ -1,0 +1,21 @@
+{
+    "generatedUtc": "2026-08-28T17:52:57.0876589Z",
+    "cases": [
+        {
+            "caseId": "147VR-PHY-001",
+            "revision": 2,
+            "category": "Straight",
+            "sourceJsonPath": "Assets/AAA/PhysicsCalibration/RuntimeMeasurements/straight_runtime_measurements.json",
+            "sourceTimestampUtc": "2026-08-28T17:14:10.6675134Z",
+            "sourceScene": "Assets/AAA/PhysicsCalibration/147VR_PhysicsCalibration.unity",
+            "sourceUnityVersion": "6000.4.4f1",
+            "sourceShotType": "Straight",
+            "repetitions": 5,
+            "distanceMean": 0.7282500267028809,
+            "distanceStdDev": 0.0,
+            "peakSpeedMean": 4.0529303550720219,
+            "peakSpeedStdDev": 0.00012741102545987815,
+            "tolerancePercent": 0.5
+        }
+    ]
+}

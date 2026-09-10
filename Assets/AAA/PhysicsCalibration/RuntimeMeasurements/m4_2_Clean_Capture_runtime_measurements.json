@@ -1,0 +1,78 @@
+{
+    "timestampUtc": "2026-08-30T07:48:56.2476270Z",
+    "unityVersion": "6000.4.4f1",
+    "authority": "Unity PhysX runtime; capture trigger + wall-response observer",
+    "repetitions": 5,
+    "samples": [
+        {
+            "caseName": "Clean_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.06299996376037598,
+            "finalX": 0.056000031530857089,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.06299996376037598,
+            "finalX": 0.056000031530857089,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.06299996376037598,
+            "finalX": 0.056000031530857089,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.06299996376037598,
+            "finalX": 0.056000031530857089,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.06299996376037598,
+            "finalX": 0.056000031530857089,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        }
+    ]
+}

@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1f261447437ca409b7c956c2519fe0, type: 3}
+  m_Name: 147VR-PHY-006_Right
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.PhysicsGoldenCase
+  caseId: 147VR-PHY-006
+  revision: 1
+  category: 4
+  intent: 'Measured REAL Right English runtime truth: vertical angular velocity,
+    signed spin direction, cue lateral displacement observation and forward object
+    travel.'
+  calibrationCase: {fileID: 11400000, guid: fa1f7792791abb546abea560a4d5a607, type: 2}
+  requirePass: 1
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/english_right_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-29T19:51:01.0288516Z
+  sourceScene: Assets/AAA/PhysicsCalibration/147VR_M24_EnglishCalibrationV2.unity
+  sourceUnityVersion: 6000.4.4f1
+  sourceShotType: English
+  sourceRepetitionCount: 5
+  measuredDistanceMean: 0.80090356
+  measuredDistanceStdDev: 0.00000027829688
+  measuredPeakSpeedMean: 3.6744702
+  measuredPeakSpeedStdDev: 0.0000013654538
+  regressionTolerancePercent: 0.5
+  measuredDistanceSamples:
+  - 0.8009035
+  - 0.8009035
+  - 0.80090326
+  - 0.8009041
+  - 0.8009035
+  measuredPeakSpeedSamples:
+  - 3.6744695
+  - 3.6744695
+  - 3.6744692
+  - 3.6744728
+  - 3.6744695

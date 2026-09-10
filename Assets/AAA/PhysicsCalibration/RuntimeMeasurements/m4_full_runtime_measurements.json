@@ -1,0 +1,79 @@
+{
+    "timestampUtc": "2026-08-30T08:43:11.1260069Z",
+    "unityVersion": "6000.4.4f1",
+    "caseName": "Full Ball",
+    "authority": "Unity PhysX runtime; contact+response observer",
+    "repetitions": 5,
+    "samples": [
+        {
+            "contactFamily": "Full Ball",
+            "referenceAngleDeg": 0.0,
+            "measuredNormalAngleDeg": 0.0,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 1.1643892526626588,
+            "strikerPostSpeed": 1.3356107473373414,
+            "energyRatio": 0.5023453235626221,
+            "preRelNormalSpeed": 0.8561074733734131,
+            "postRelNormalSpeed": 0.17122149467468263,
+            "deltaVelocitySum": 0.6848859786987305,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Full Ball",
+            "referenceAngleDeg": 0.0,
+            "measuredNormalAngleDeg": 0.0,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 1.1643892526626588,
+            "strikerPostSpeed": 1.3356107473373414,
+            "energyRatio": 0.5023453235626221,
+            "preRelNormalSpeed": 0.8561074733734131,
+            "postRelNormalSpeed": 0.17122149467468263,
+            "deltaVelocitySum": 0.6848859786987305,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Full Ball",
+            "referenceAngleDeg": 0.0,
+            "measuredNormalAngleDeg": 0.0,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 1.1643892526626588,
+            "strikerPostSpeed": 1.3356107473373414,
+            "energyRatio": 0.5023453235626221,
+            "preRelNormalSpeed": 0.8561074733734131,
+            "postRelNormalSpeed": 0.17122149467468263,
+            "deltaVelocitySum": 0.6848859786987305,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Full Ball",
+            "referenceAngleDeg": 0.0,
+            "measuredNormalAngleDeg": 0.0,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 1.1643892526626588,
+            "strikerPostSpeed": 1.3356107473373414,
+            "energyRatio": 0.5023453235626221,
+            "preRelNormalSpeed": 0.8561074733734131,
+            "postRelNormalSpeed": 0.17122149467468263,
+            "deltaVelocitySum": 0.6848859786987305,
+            "collisionObserved": true,
+            "impulseObserved": true
+        },
+        {
+            "contactFamily": "Full Ball",
+            "referenceAngleDeg": 0.0,
+            "measuredNormalAngleDeg": 0.0,
+            "preSpeed": 2.5,
+            "targetPostSpeed": 1.1643892526626588,
+            "strikerPostSpeed": 1.3356107473373414,
+            "energyRatio": 0.5023453235626221,
+            "preRelNormalSpeed": 0.8561074733734131,
+            "postRelNormalSpeed": 0.17122149467468263,
+            "deltaVelocitySum": 0.6848859786987305,
+            "collisionObserved": true,
+            "impulseObserved": true
+        }
+    ]
+}

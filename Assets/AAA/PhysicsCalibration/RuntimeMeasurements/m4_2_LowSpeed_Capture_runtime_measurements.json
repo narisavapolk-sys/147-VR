@@ -1,0 +1,78 @@
+{
+    "timestampUtc": "2026-08-30T07:48:56.2586826Z",
+    "unityVersion": "6000.4.4f1",
+    "authority": "Unity PhysX runtime; capture trigger + wall-response observer",
+    "repetitions": 5,
+    "samples": [
+        {
+            "caseName": "LowSpeed_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 0.800000011920929,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.05799997225403786,
+            "finalX": 0.05600002780556679,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "LowSpeed_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 0.800000011920929,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.05799997225403786,
+            "finalX": 0.05600002780556679,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "LowSpeed_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 0.800000011920929,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.05799997225403786,
+            "finalX": 0.05600002780556679,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "LowSpeed_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 0.800000011920929,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.05799997225403786,
+            "finalX": 0.05600002780556679,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "LowSpeed_Capture",
+            "outcome": "Capture",
+            "entrySpeed": 0.800000011920929,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.05799997225403786,
+            "finalX": 0.05600002780556679,
+            "finalZ": 0.0,
+            "wallContacts": 0,
+            "captured": true,
+            "rejected": false,
+            "jawContact": false,
+            "rattle": false
+        }
+    ]
+}

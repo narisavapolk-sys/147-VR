@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-09-07 06:28:11Z" end-time="2026-09-07 06:28:11Z" duration="0.7540637">
+  <test-suite type="TestSuite" id="1007" name="147 VR" fullname="147 VR" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-07 06:28:11Z" end-time="2026-09-07 06:28:11Z" duration="0.754064" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1003" name="147VR.PlayModeTests.dll" fullname="C:/Users/mongo/UnityProjects/147 VR/Library/ScriptAssemblies/147VR.PlayModeTests.dll" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-07 06:28:11Z" end-time="2026-09-07 06:28:11Z" duration="0.739106" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="10396" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="V007PlayModeValidationTests" fullname="V007PlayModeValidationTests" classname="V007PlayModeValidationTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-09-07 06:28:11Z" end-time="2026-09-07 06:28:11Z" duration="0.736761" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1002" name="V007_MainScene_Visual_Is_RuntimeValid" fullname="V007PlayModeValidationTests.V007_MainScene_Visual_Is_RuntimeValid" methodname="V007_MainScene_Visual_Is_RuntimeValid" classname="V007PlayModeValidationTests" runstate="Runnable" seed="581025601" result="Passed" start-time="2026-09-07 06:28:11Z" end-time="2026-09-07 06:28:11Z" duration="0.713967" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: V007PlayModeValidationTests.V007_MainScene_Visual_Is_RuntimeValid
+The GameObject 'Light_Fill_Side' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Key_Overhead_1' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Key_Overhead_2' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Key_Overhead_3' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Rim_Back' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+[V007 PLAYMODE TEST] PASS visual=V007_VISUAL_MAIN surface=TABLE SURFACE bounds=(3.57, 0.01, 1.78) material=M_V007_TableSurface_Marking
+[TestRunnerTools] Test Finished: V007PlayModeValidationTests.V007_MainScene_Visual_Is_RuntimeValid, ResultState: Passed, Duration: 0.714s
+Saving results to: C:/Users/mongo/AppData/LocalLow/DefaultCompany/147 VR\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

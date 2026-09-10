@@ -1,0 +1,10 @@
+Unity setup steps (straightforward):
+
+1. Drag ConcertRoom_WithTable.fbx into the scene
+2. Set the Skybox to Dreamy_OLED_HDRI.exr (same as before)
+3. Create an Empty GameObject named "ConcertSmoke" and place it near floor level in the center of the room
+4. Attach DriftingConcertSmoke.cs to that Empty GameObject (Unity will auto-add the Particle System component)
+5. Drag SmokeParticle_Texture.png into the Smoke Texture slot in the Inspector
+6. Press Play — smoke will drift upward slowly with gentle swaying, like real air currents, looping continuously
+
+Tune from the Inspector without modifying code: smoke density, drift speed, size, color, opacity — if you want denser/thinner smoke or a different color after testing, just let me know.

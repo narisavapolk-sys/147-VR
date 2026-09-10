@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d636d9a2f7ba74eb9fc9552feed7b8, type: 3}
+  m_Name: LeftEnglish_Runtime_Case
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.ShotCalibrationCase
+  type: 4
+  power: 1
+  side: -0.75
+  vertical: 0
+  expectedDistance: 0.80090356
+  tolerance: 0.0040045176
+  expectedPeakSpeed: 3.6744702
+  peakSpeedTolerance: 0.018372351
+  validatePeakSpeed: 1

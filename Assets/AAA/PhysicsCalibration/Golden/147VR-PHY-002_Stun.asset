@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1f261447437ca409b7c956c2519fe0, type: 3}
+  m_Name: 147VR-PHY-002_Stun
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.PhysicsGoldenCase
+  caseId: 147VR-PHY-002
+  revision: 1
+  category: 1
+  intent: Measured REAL Stun runtime truth. Values are derived only from stun_runtime_measurements.json;
+    measuredDistance is final object-ball displacement and peakSpeed is measured
+    object-ball peak speed.
+  calibrationCase: {fileID: 11400000, guid: ea26917f62ea8e1419099574433c6276, type: 2}
+  requirePass: 1
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/stun_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-29T08:29:30.4785736Z
+  sourceScene: Assets/AAA/PhysicsCalibration/147VR_M21_StunCalibration.unity
+  sourceUnityVersion: 6000.4.4f1
+  sourceShotType: Stun
+  sourceRepetitionCount: 5
+  measuredDistanceMean: 0.023078144
+  measuredDistanceStdDev: 0
+  measuredPeakSpeedMean: 3.6744695
+  measuredPeakSpeedStdDev: 0
+  regressionTolerancePercent: 0.5
+  measuredDistanceSamples:
+  - 0.023078144
+  - 0.023078144
+  - 0.023078144
+  - 0.023078144
+  - 0.023078144
+  measuredPeakSpeedSamples:
+  - 3.6744695
+  - 3.6744695
+  - 3.6744695
+  - 3.6744695
+  - 3.6744695
