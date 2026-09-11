@@ -139,3 +139,7 @@ Assets/**/*_PRE_*
 
 # --- Unity sidecar meta of backup files ---
 *.bak*
+
+# --- Editor cleanup backups (not matched by *.bak*) ---
+*.cleanupbak
+*.cleanupbak.meta
