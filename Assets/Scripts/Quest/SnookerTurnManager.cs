@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Tracks whose turn it is in a snooker match and notifies listeners (PlayerViewManager)
@@ -43,9 +44,18 @@ public sealed class SnookerTurnManager : MonoBehaviour
     private float _restTimer;
     private float _turnTimer;
     private bool _strikerContinues;
+    private M5ShotLifecycle _m5Lifecycle;
 
     private void Start()
     {
+        _m5Lifecycle = GetComponent<M5ShotLifecycle>();
+        if (_m5Lifecycle == null)
+            _m5Lifecycle = FindObjectOfType<M5ShotLifecycle>();
+        if (_m5Lifecycle != null && advanceMode == AdvanceMode.Timer)
+        {
+            advanceMode = AdvanceMode.Manual;
+            Debug.Log("[M5] Turn timer disabled: M5 ShotLifecycle owns shot completion.");
+        }
         FindBalls();
         if (advanceMode == AdvanceMode.AfterShot && _balls.Count == 0)
         {
@@ -57,7 +67,7 @@ public sealed class SnookerTurnManager : MonoBehaviour
 
     private void Update()
     {
-        if (nextTurnKey != KeyCode.None && Input.GetKeyDown(nextTurnKey))
+        if (nextTurnKey != KeyCode.None && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
         {
             NextTurn();
             return;

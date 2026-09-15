@@ -6,11 +6,11 @@ using UnityEngine;
 ///
 /// Rules implemented:
 ///   - Ball values: red = 1, yellow = 2, green = 3, brown = 4, blue = 5, pink = 6, black = 7.
-///   - Ball-on sequence: red → colour → red → colour … while reds remain.
+///   - Ball-on sequence: red Ã¢â€ â€™ colour Ã¢â€ â€™ red Ã¢â€ â€™ colour Ã¢â‚¬Â¦ while reds remain.
 ///   - A colour potted during the red/colour phase is RE-SPOTTED (placed back on its spot),
 ///     including the colour potted right after the last red.
-///   - When no reds remain, colours are potted in order (yellow → green → brown → blue →
-///     pink → black) and stay off the table. Potting the black ends the frame.
+///   - When no reds remain, colours are potted in order (yellow Ã¢â€ â€™ green Ã¢â€ â€™ brown Ã¢â€ â€™ blue Ã¢â€ â€™
+///     pink Ã¢â€ â€™ black) and stay off the table. Potting the black ends the frame.
 ///   - Cue ball potted = foul: opponent gets max(4, value of ball on), turn passes, cue
 ///     ball is re-spotted (in-hand, back at its home position).
 ///   - Wrong ball potted = foul: opponent gets max(4, value of ball on, value of ball
@@ -18,12 +18,13 @@ using UnityEngine;
 ///   - Legal pot: the striker keeps the table (turn manager is told via StrikerContinues).
 ///
 /// Fouls that depend on shot execution (hitting the wrong ball first, missing everything)
-/// are outside the scope of this scoreboard — the turn manager's shot-end detection
+/// are outside the scope of this scoreboard Ã¢â‚¬â€ the turn manager's shot-end detection
 /// handles the "no pot, turn passes" case.
 /// </summary>
 public sealed class SnookerScoreManager : MonoBehaviour
 {
     public enum BallOn { Red, Colour, ColoursInOrder }
+    public enum PotResolution { None, Legal, Foul, FrameOver }
 
     /// <summary>Fired whenever either score changes (also on frame reset).</summary>
     public event System.Action ScoresChanged;
@@ -58,8 +59,8 @@ public sealed class SnookerScoreManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        if (ballTracker != null)
-            ballTracker.BallPotted -= OnBallPotted;
+        // M5 owns the shot boundary. BallPotted observations are collected by
+        // SnookerShotTracker and resolved here only after PhysicsSettled.
     }
 
     /// <summary>Resolves dependencies and subscribes to the ball tracker. Idempotent.</summary>
@@ -70,40 +71,36 @@ public sealed class SnookerScoreManager : MonoBehaviour
         if (turnManager == null)
             turnManager = GetComponent<SnookerTurnManager>();
 
-        if (ballTracker != null)
-        {
-            ballTracker.BallPotted -= OnBallPotted; // avoid double-subscribe
-            ballTracker.BallPotted += OnBallPotted;
-        }
-        else
-        {
-            Debug.LogWarning("[SnookerScoreManager] No SnookerBallTracker assigned — scores won't update.");
-        }
+        if (ballTracker == null)
+            Debug.LogWarning("[SnookerScoreManager] No SnookerBallTracker assigned Ã¢â‚¬â€ score resolution requires the tracker.");
     }
 
-    private void OnBallPotted(SnookerBallTracker.BallInfo ball, SnookerBallTracker.PocketInfo pocket)
+    /// <summary>
+    /// M5 scoring entry point. Called by SnookerShotTracker only after PhysicsSettled.
+    /// This manager never subscribes directly to the runtime BallPotted event.
+    /// </summary>
+    public PotResolution ResolvePottedBall(SnookerBallTracker.BallInfo ball, SnookerBallTracker.PocketInfo pocket, int striker)
     {
         if (frameOver)
         {
-            Debug.Log($"[Score] Frame over ({Player1Score}:{Player2Score}) — press Reset Frame to play again");
-            return;
+            Debug.Log($"[Score] Frame over ({Player1Score}:{Player2Score}) Ã¢â‚¬â€ press Reset Frame to play again");
+            return PotResolution.None;
         }
         if (ball == null || ball.transform == null)
-            return;
+            return PotResolution.None;
 
-        int striker = turnManager != null ? turnManager.currentPlayer : 1;
+        striker = striker == 1 || striker == 2 ? striker : 1;
         int opponent = striker == 1 ? 2 : 1;
 
-        // Cue ball potted → foul.
+        // Cue ball potted Ã¢â€ â€™ foul.
         if (ball.points == 0)
         {
             int penalty = Mathf.Max(foulPenalty, BallOnValue());
             AddScore(opponent, penalty);
             Respot(ball);
-            Debug.Log($"[Score] Foul! Cue ball potted in {pocket.name} — Player {opponent} awarded {penalty} points (turn passes)");
+            Debug.Log($"[Score] Foul! Cue ball potted in {pocket.name} Ã¢â‚¬â€ Player {opponent} awarded {penalty} points (turn passes)");
             PotRecorded?.Invoke(ball.name, pocket.name, penalty, opponent);
-            turnManager?.NextTurn();
-            return;
+            return PotResolution.Foul;
         }
 
         bool legal = IsLegalPot(ball);
@@ -133,18 +130,18 @@ public sealed class SnookerScoreManager : MonoBehaviour
             }
 
             AddScore(striker, ball.points);
-            Debug.Log($"[Score] {ball.name} potted in {pocket.name} — Player {striker} awarded {ball.points} points (continues)");
+            Debug.Log($"[Score] {ball.name} potted in {pocket.name} Ã¢â‚¬â€ Player {striker} awarded {ball.points} points (continues)");
             PotRecorded?.Invoke(ball.name, pocket.name, ball.points, striker);
-            turnManager?.StrikerContinues();
+            return frameOver ? PotResolution.FrameOver : PotResolution.Legal;
         }
         else
         {
             int penalty = Mathf.Max(foulPenalty, BallOnValue(), ball.points);
             AddScore(opponent, penalty);
             Respot(ball); // wrongly potted ball is re-spotted
-            Debug.Log($"[Score] Foul! {ball.name} potted in {pocket.name} but ball on was {BallOnName()} — Player {opponent} awarded {penalty} points (turn passes)");
+            Debug.Log($"[Score] Foul! {ball.name} potted in {pocket.name} but ball on was {BallOnName()} Ã¢â‚¬â€ Player {opponent} awarded {penalty} points (turn passes)");
             PotRecorded?.Invoke(ball.name, pocket.name, penalty, opponent);
-            turnManager?.NextTurn();
+            return PotResolution.Foul;
         }
     }
 
@@ -242,7 +239,7 @@ public sealed class SnookerScoreManager : MonoBehaviour
         Vector3 target = FindFreeSpot(ball);
         ball.transform.position = target;
         ballTracker?.Unpot(ball); // the ball is back on the table and can be potted again
-        Debug.Log($"[Score] Re-spot {ball.name} → ({target.x:F2}, {target.z:F2})");
+        Debug.Log($"[Score] Re-spot {ball.name} Ã¢â€ â€™ ({target.x:F2}, {target.z:F2})");
     }
 
     private Vector3 FindFreeSpot(SnookerBallTracker.BallInfo ball)
@@ -252,7 +249,7 @@ public sealed class SnookerScoreManager : MonoBehaviour
         if (!Occupied(home))
             return home;
 
-        // Home spot is blocked — nearest free known home spot.
+        // Home spot is blocked Ã¢â‚¬â€ nearest free known home spot.
         Vector3 best = home;
         float bestDist = float.MaxValue;
         foreach (SnookerBallTracker.BallInfo other in ballTracker.Balls)
@@ -289,7 +286,7 @@ public sealed class SnookerScoreManager : MonoBehaviour
     {
         for (int i = 0; i < ColourOrder.Length; i++)
             if (name == ColourOrder[i])
-                return i + 2; // yellow=2 … black=7
+                return i + 2; // yellow=2 Ã¢â‚¬Â¦ black=7
         return 1;
     }
 
