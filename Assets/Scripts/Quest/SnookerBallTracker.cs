@@ -118,6 +118,11 @@ public sealed class SnookerBallTracker : MonoBehaviour
         _previousY.Clear();
         foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
         {
+            // Only active hierarchy is authoritative for gameplay balls. Inactive legacy
+            // visual ball sets remain available for presentation but must not enter M5 state.
+            if (!child.gameObject.activeInHierarchy)
+                continue;
+
             string name = child.name;
             int points = PointsForName(name);
             if (points >= 0)

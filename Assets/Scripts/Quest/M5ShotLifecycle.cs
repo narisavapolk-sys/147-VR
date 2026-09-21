@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 
 /// <summary>
@@ -23,7 +23,7 @@ public sealed class M5ShotLifecycle : MonoBehaviour
     public int ShotSequence { get; private set; }
 
     private float _settledTimer;
-    private int _debugFrames;
+    private int _physicsSteps;
 
     private void Awake()
     {
@@ -38,42 +38,42 @@ public sealed class M5ShotLifecycle : MonoBehaviour
 
         ShotSequence++;
         _settledTimer = 0f;
-        _debugFrames = 0;
+        _physicsSteps = 0;
         CurrentState = State.Active;
         Debug.Log($"[M5 LIFECYCLE] BeginShot seq={ShotSequence} trackerCount={(ballTracker != null ? ballTracker.BallsCount() : -1)}");
         ShotStarted?.Invoke();
         return true;
     }
 
-    private void Update()
+    // The settled boundary is measured on the physics clock, not the render clock.
+    // Running this in FixedUpdate with Time.fixedDeltaTime is what makes the same
+    // shot resolve identically at 72 Hz (Quest 2) and 90/120 Hz (Quest 3).
+    private void FixedUpdate()
     {
         if (CurrentState != State.Active && CurrentState != State.Settling)
             return;
 
         float maxSpeed = GetMaxBallSpeed();
-        _debugFrames++;
-        if ((_debugFrames % 60) == 0)
-            Debug.Log($"[M5 LIFECYCLE] tick seq={ShotSequence} state={CurrentState} maxSpeed={maxSpeed:F6} settledFor={_settledTimer:F3} trackerCount={(ballTracker != null ? ballTracker.BallsCount() : -1)}");
+        _physicsSteps++;
+
+        if ((_physicsSteps % 60) == 0)
+            Debug.Log($"[M5 LIFECYCLE] tick seq={ShotSequence} state={CurrentState} step={_physicsSteps} maxSpeed={maxSpeed:F6} settledFor={_settledTimer:F3} trackerCount={(ballTracker != null ? ballTracker.BallsCount() : -1)}");
+
+        // Settled is a measured-speed boundary; PhysX sleep state is not authoritative.
+        // Contact/solver jitter can keep a resting ball awake above the sleep heuristic.
         if (maxSpeed > settledSpeedThreshold)
         {
             CurrentState = State.Settling;
             _settledTimer = 0f;
+            return;
         }
 
-        // Settled is a measured-speed boundary; PhysX sleep state is not authoritative.
-        // Contact/solver jitter can keep a resting ball awake above the sleep heuristic.
-        // bool allDynamicsSleeping = AreAllDynamicsSleeping();
-        _debugFrames++;
-        if ((_debugFrames % 60) == 0)
-            Debug.Log($"[M5 LIFECYCLE] tick seq={ShotSequence} state={CurrentState} maxSpeed={maxSpeed:F6} settledFor={_settledTimer:F3} trackerCount={(ballTracker != null ? ballTracker.BallsCount() : -1)}");
-        if (maxSpeed > settledSpeedThreshold)
-            return;
-
-        _settledTimer += Physics.simulationMode == SimulationMode.Script ? Time.fixedDeltaTime : Time.deltaTime;
+        _settledTimer += Time.fixedDeltaTime;
         if (_settledTimer < settledDuration)
             return;
 
         CurrentState = State.Settled;
+        Debug.Log($"[M5 LIFECYCLE] Settled seq={ShotSequence} steps={_physicsSteps} settledFor={_settledTimer:F3}");
         ShotSettled?.Invoke();
     }
 
@@ -113,7 +113,7 @@ public sealed class M5ShotLifecycle : MonoBehaviour
                 continue;
 
             Rigidbody rb = ball.transform.GetComponent<Rigidbody>();
-            if (rb == null)
+            if (rb == null || rb.isKinematic)
                 continue;
 
             max = Mathf.Max(max, rb.linearVelocity.magnitude);
@@ -122,5 +122,3 @@ public sealed class M5ShotLifecycle : MonoBehaviour
         return max;
     }
 }
-
-

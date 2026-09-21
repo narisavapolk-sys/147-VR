@@ -20,6 +20,9 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
     [Tooltip("Exact renderer name of the playing surface.")]
     public string tableSurfaceName = "TABLE SURFACE";
 
+    [Header("Table Surface Profile")]
+    public VR147.AAA.Physics.TableSurfaceProfile tableSurfaceProfile;
+
     [Header("Balls")]
     [Tooltip("Snooker ball radius (m).")]
     public float ballRadius = 0.026f;
@@ -68,7 +71,7 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
         // Find the playing surface and derive the table plane.
         Collider authoritativeBed = FindSurfaceCollider(root);
         // Physics authority is the explicit Bed_Collider when present; visual renderers are presentation only.
-        Renderer surfaceRenderer = authoritativeBed == null ? FindSurface(root) : null;
+        Renderer surfaceRenderer = (authoritativeBed == null || !HasUsableTableBounds(authoritativeBed.bounds)) ? FindSurface(root) : null;
         if (surfaceRenderer != null)
         {
             _surface = surfaceRenderer.transform;
@@ -121,10 +124,17 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
         Debug.Log($"[Physics] Ready: surface top y={_surfaceTopY:F3}, bounds=({_tableBounds.size.x:F2} x {_tableBounds.size.z:F2})");
     }
 
+    private static bool HasUsableTableBounds(Bounds bounds)
+    {
+        return bounds.size.x > 0.1f && bounds.size.z > 0.1f && bounds.size.y >= 0f;
+    }
+
     private Renderer FindSurface(Transform root)
     {
         foreach (Renderer r in root.GetComponentsInChildren<Renderer>(true))
         {
+            if (!r.gameObject.activeInHierarchy)
+                continue;
             if (r.name == tableSurfaceName)
                 return r;
         }
@@ -135,6 +145,8 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
     {
         foreach (Collider c in root.GetComponentsInChildren<Collider>(true))
         {
+            if (!c.gameObject.activeInHierarchy)
+                continue;
             if (c.name == "Bed_Collider") return c;
         }
         return null;
@@ -151,6 +163,12 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
         box.center = Vector3.zero;
         box.size = new Vector3(_tableBounds.size.x, 0.04f, _tableBounds.size.z);
         box.sharedMaterial = MakeMaterial();
+
+        if (tableSurfaceProfile != null)
+        {
+            var controller = go.AddComponent<VR147.AAA.Physics.TableSurfaceController>();
+            controller.Configure(tableSurfaceProfile);
+        }
     }
 
     private void BuildRails(Transform parent)
@@ -234,6 +252,10 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
 
         foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
         {
+            // Match SnookerBallTracker: inactive legacy visual ball sets are not gameplay bodies.
+            if (!child.gameObject.activeInHierarchy)
+                continue;
+
             if (SnookerBallTracker.PointsForName(child.name) < 0)
                 continue;
 
@@ -251,7 +273,13 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
             rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
 
             SphereCollider sphere = child.gameObject.AddComponent<SphereCollider>();
-            sphere.radius = ballRadius;
+            // V007 ball meshes are imported with a 100x visual transform scale. SphereCollider
+            // radius is local-space, so compensate for lossy scale to keep the world radius physical.
+            Vector3 lossy = child.lossyScale;
+            float scale = Mathf.Max(
+                0.0001f,
+                (Mathf.Abs(lossy.x) + Mathf.Abs(lossy.y) + Mathf.Abs(lossy.z)) / 3f);
+            sphere.radius = ballRadius / scale;
             sphere.sharedMaterial = ballMat;
 
             // Add collision detection to cue ball

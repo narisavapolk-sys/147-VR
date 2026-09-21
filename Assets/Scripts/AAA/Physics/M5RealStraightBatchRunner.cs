@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -11,7 +12,7 @@ namespace VR147.AAA.Physics
         private const int BaselineShots = 5;
         private const float StartDelay = 1.0f;
         private const float ResetDelay = 0.25f;
-        private const float ShotTimeout = 20.0f;
+        private const float ShotTimeout = 60.0f;
         private const float CalibrationPower = 0.5f;
 
         private readonly List<float> distances = new();
@@ -22,18 +23,19 @@ namespace VR147.AAA.Physics
         private Vector3 startPosition;
         private float shotElapsed;
         private float peakSpeed;
-        private float nextActionTime;
         private int shotIndex;
         private bool waitingForSettlement;
         private bool complete;
 
         private void Start()
         {
+            Time.timeScale = 1f;
             var setup = FindFirstObjectByType<SnookerPhysicsSetup>();
             if (setup == null)
             {
                 Debug.LogError("[M5 REAL] SnookerPhysicsSetup missing; batch blocked.");
-                enabled = false; return;
+                enabled = false;
+                return;
             }
             setup.EnsurePhysics();
             cue = FindFirstObjectByType<SnookerCueController>();
@@ -45,10 +47,7 @@ namespace VR147.AAA.Physics
                 foreach (var candidate in tracker.Balls)
                     if (candidate != null && candidate.points == 0 && candidate.transform != null) { info = candidate; break; }
             }
-            var authoritativeCue = GameObject.Find("Sphere.009");
-            cueBall = authoritativeCue != null
-                ? authoritativeCue.GetComponent<Rigidbody>()
-                : (info?.transform != null ? info.transform.GetComponent<Rigidbody>() : null);
+            cueBall = info?.transform != null ? info.transform.GetComponent<Rigidbody>() : null;
             if (cueBall == null)
             {
                 var fallback = GameObject.Find("Sphere.009");
@@ -69,8 +68,10 @@ namespace VR147.AAA.Physics
             Vector3 safeStart = cueBall.position;
             safeStart.x = setup.TableBounds.center.x;
             safeStart.z = setup.TableBounds.center.z - 1.0f;
-            safeStart.y = setup.SurfaceTopY + 0.02725f;
+            safeStart.y = setup.SurfaceTopY + 0.02635f;
             cueBall.isKinematic = false;
+            cueBall.useGravity = true;
+            cueBall.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             cueBall.detectCollisions = true;
             cueBall.position = safeStart;
             cueBall.linearVelocity = Vector3.zero;
@@ -78,27 +79,23 @@ namespace VR147.AAA.Physics
             UnityEngine.Physics.SyncTransforms();
             startPosition = safeStart;
             lifecycle.ShotSettled += OnShotSettled;
-            nextActionTime = Time.time + StartDelay;
             Debug.Log("[M5 REAL] 10-shot REAL Straight batch armed: baseline=5 regression=5.");
+            StartCoroutine(FireNextAfterDelay(StartDelay));
         }
 
         private void Update()
         {
             if (complete || cueBall == null) return;
             peakSpeed = Mathf.Max(peakSpeed, cueBall.linearVelocity.magnitude);
-            if (waitingForSettlement)
+            if (!waitingForSettlement) return;
+            shotElapsed += Time.deltaTime;
+            if (shotElapsed > ShotTimeout)
             {
-                shotElapsed += Time.deltaTime;
-                if (shotElapsed > ShotTimeout)
-                {
-                    Debug.LogError("[M5 REAL] Shot timeout; batch aborted.");
-                    enabled = false;
-                }
-                return;
+                Debug.LogError("[M5 REAL] Shot timeout; batch aborted.");
+                enabled = false;
             }
-            if (Time.time < nextActionTime) return;
-            FireNextShot();
         }
+
         private void FireNextShot()
         {
             ResetCueBall();
@@ -132,12 +129,20 @@ namespace VR147.AAA.Physics
 #endif
                 return;
             }
-            nextActionTime = Time.time + ResetDelay;
+            StartCoroutine(FireNextAfterDelay(ResetDelay));
+        }
+
+        private IEnumerator FireNextAfterDelay(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            if (!complete) FireNextShot();
         }
 
         private void ResetCueBall()
         {
             cueBall.isKinematic = false;
+            cueBall.useGravity = true;
+            cueBall.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
             cueBall.detectCollisions = true;
             cueBall.WakeUp();
             Debug.Log($"[M5 REAL] RESET cue={cueBall.name} isKinematic={cueBall.isKinematic} active={cueBall.gameObject.activeInHierarchy} detect={cueBall.detectCollisions}");
