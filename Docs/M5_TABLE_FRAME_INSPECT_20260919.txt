@@ -1,0 +1,32 @@
+PHYS=bounds=Center: (0.00, 0.82, 0.00), Extents: (1.78, 0.01, 0.89) topY=0.8272111
+ROOT=pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=True
+MATCH Prefab_WPBSA_12Foot_Snooker/Visual_Meshes_Drop_Here/147VR_Table_WPBSA_12ft_VISUAL_MAIN/TABLE SURFACE
+  pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 90.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=False
+  RENDERER_BOUNDS=Center: (0.82, 0.00, 0.00), Extents: (0.01, 0.89, 1.78)
+MATCH Prefab_WPBSA_12Foot_Snooker/Visual_Meshes_Drop_Here/147VR_Table_WPBSA_12ft_VISUAL_MAIN/White_CueBall
+  pos=(-0.16, 0.85, 1.02) rotEuler=(270.00, 90.00, 0.00) scale=(100.00, 100.00, 100.00) localPos=(-1.02, 0.85, -0.16) localRot=(270.02, 0.00, 0.00) localScale=(100.00, 100.00, 100.00) active=False
+  RENDERER_BOUNDS=Center: (-0.16, 0.85, 1.02), Extents: (0.03, 0.03, 0.03)
+MATCH Prefab_WPBSA_12Foot_Snooker/Bed_Collider
+  pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=False
+  COLLIDER_BOUNDS=Center: (0.00, 0.00, 0.00), Extents: (0.00, 0.00, 0.00) type=BoxCollider
+MATCH Prefab_WPBSA_12Foot_Snooker/V007_VISUAL_MAIN
+  pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=True
+MATCH Prefab_WPBSA_12Foot_Snooker/V007_VISUAL_MAIN/TABLE SURFACE
+  pos=(0.00, 0.00, 0.00) rotEuler=(270.02, 0.00, 0.00) scale=(97.56, 95.32, 100.00) localPos=(0.00, 0.00, 0.00) localRot=(270.02, 0.00, 0.00) localScale=(97.56, 95.32, 100.00) active=True
+  RENDERER_BOUNDS=Center: (0.00, 0.82, 0.00), Extents: (1.78, 0.01, 0.89)
+MATCH Prefab_WPBSA_12Foot_Snooker/V007_VISUAL_MAIN/White_CueBall
+  pos=(-1.02, 0.85, -0.16) rotEuler=(270.02, 0.00, 0.00) scale=(100.00, 100.00, 100.00) localPos=(-1.02, 0.85, -0.16) localRot=(270.02, 0.00, 0.00) localScale=(100.00, 100.00, 100.00) active=True
+  RENDERER_BOUNDS=Center: (-1.02, 0.85, -0.16), Extents: (0.03, 0.03, 0.03)
+  COLLIDER_BOUNDS=Center: (-1.02, 0.85, -0.16), Extents: (0.03, 0.03, 0.03) type=SphereCollider
+GLOBAL Prefab_WPBSA_12Foot_Snooker/V007_VISUAL_MAIN/TABLE SURFACE
+  pos=(0.00, 0.00, 0.00) rotEuler=(270.02, 0.00, 0.00) scale=(97.56, 95.32, 100.00) localPos=(0.00, 0.00, 0.00) localRot=(270.02, 0.00, 0.00) localScale=(97.56, 95.32, 100.00) active=True
+  RENDERER_BOUNDS=Center: (0.00, 0.82, 0.00), Extents: (1.78, 0.01, 0.89)
+GLOBAL Prefab_WPBSA_12Foot_Snooker/Bed_Collider
+  pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=False
+  COLLIDER_BOUNDS=Center: (0.00, 0.00, 0.00), Extents: (0.00, 0.00, 0.00) type=BoxCollider
+GLOBAL Prefab_WPBSA_12Foot_Snooker/Visual_Meshes_Drop_Here/147VR_Table_WPBSA_12ft_VISUAL_MAIN/TABLE SURFACE
+  pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 90.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=False
+  RENDERER_BOUNDS=Center: (0.82, 0.00, 0.00), Extents: (0.01, 0.89, 1.78)
+GLOBAL Bed_Collider
+  pos=(0.00, 0.00, 0.00) rotEuler=(0.00, 0.00, 0.00) scale=(1.00, 1.00, 1.00) localPos=(0.00, 0.00, 0.00) localRot=(0.00, 0.00, 0.00) localScale=(1.00, 1.00, 1.00) active=True
+  COLLIDER_BOUNDS=Center: (0.00, 0.00, 0.00), Extents: (0.00, 0.00, 0.00) type=BoxCollider

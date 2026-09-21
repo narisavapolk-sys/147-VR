@@ -1,0 +1,18 @@
+{
+  "scope": "V007 visual pocket anchor alignment audit",
+  "source": "147VR_Table_WPBSA_Visual_Clean_v007.blend",
+  "playfield_m": { "length_x": 3.569, "width_z": 1.778 },
+  "physics_catcher_model": "SnookerPhysicsSetup BuildPocketCatchers: +/-half bounds +/-0.03m; middle +/-halfZ +/-0.03m",
+  "visual_anchor_offsets_mm": {
+    "SW": 9.91,
+    "NW": 7.19,
+    "SE": 9.14,
+    "NE": 7.37,
+    "W": 11.31,
+    "E": 13.11
+  },
+  "max_gap_mm": 13.11,
+  "inside_catch_radius_150mm": true,
+  "physics_authority_modified": false,
+  "status": "PASS_VISUAL_ALIGNMENT_SANITY"
+}

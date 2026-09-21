@@ -1,0 +1,58 @@
+{
+    "timestampUtc": "2026-08-29T08:29:30.4785736Z",
+    "caseType": "Stun",
+    "scene": "Assets/AAA/PhysicsCalibration/147VR_M21_StunCalibration.unity",
+    "unityVersion": "6000.4.4f1",
+    "repetitions": 5,
+    "shotSpeed": 4.0,
+    "collisionRestitution": 0.800000011920929,
+    "measuredCueSpeedAtContact": [
+        0.15310311317443849,
+        0.15310311317443849,
+        0.15310311317443849,
+        0.15310311317443849,
+        0.15310311317443849
+    ],
+    "measuredCueResidualSpeed": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+    ],
+    "measuredCueResidualDistance": [
+        1.400918960571289,
+        1.400918960571289,
+        1.400918960571289,
+        1.400918960571289,
+        1.400918960571289
+    ],
+    "measuredObjectPeakSpeed": [
+        3.674469470977783,
+        3.674469470977783,
+        3.674469470977783,
+        3.674469470977783,
+        3.674469470977783
+    ],
+    "measuredObjectDistance": [
+        0.02307814359664917,
+        0.02307814359664917,
+        0.02307814359664917,
+        0.02307814359664917,
+        0.02307814359664917
+    ],
+    "measuredObjectDirectionDot": [
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0,
+        -1.0
+    ],
+    "passed": [
+        true,
+        true,
+        true,
+        true,
+        true
+    ]
+}

@@ -1,0 +1,22 @@
+{
+  "date": "2026-09-20",
+  "status": "INCONCLUSIVE_ABORTED_SAFE",
+  "scope": "Controlled Straight calibration, 5 repetitions",
+  "scene": "Assets/AAA/PhysicsCalibration/147VR_PhysicsCalibration.unity",
+  "intendedOutput": "Assets/AAA/PhysicsCalibration/RuntimeMeasurements/straight_runtime_measurements_postreset_20260920.json",
+  "outputCreated": false,
+  "runnerArchived": "C:/Temp/M5RunStraightCalibration_TMP.cs.inconclusive_20260920",
+  "mainSceneChanged": false,
+  "mainSceneSha256": "82F053BEF663921C20EB7A0003AF1528348E2DB80A653DFCA831CD9FADF7B4B7",
+  "blockers": [
+    "Calibration scene reported failed load of Assets/InputSystem_Actions.inputactions (corrupted/newer-serialized-version warning).",
+    "Several calibration scene MonoBehaviour references were reported as missing and Unity emitted 'GameObject 147VR_RuntimeCalibration does not reference component MonoBehaviour. Fixing.'.",
+    "Calibration runtime armed successfully, but no measurement file was produced and no subsequent calibration progress output arrived.",
+    "The Unity process reached approximately 3.2 GB and was terminated to protect PC stability after progress stalled."
+  ],
+  "separatePositiveEvidence": [
+    "The calibration scene successfully instantiated SnookerPhysicsSetup and reported runtime bounds 1.78 x 3.57.",
+    "The existing M2.4 Golden regression ran alongside the scene and produced PASS repetitions for left/right English during this attempt, but this is not counted as the requested calibration gate."
+  ],
+  "result": "NOT_CERTIFIED"
+}

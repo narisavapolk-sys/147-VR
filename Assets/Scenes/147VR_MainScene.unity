@@ -1527,6 +1527,7 @@ GameObject:
   - component: {fileID: 2000000014}
   - component: {fileID: 2000000016}
   - component: {fileID: 2000000015}
+  - component: {fileID: 2000000017}
   m_Layer: 0
   m_Name: Quest Setup
   m_TagString: Untagged
@@ -1549,6 +1550,7 @@ Transform:
   m_Children:
   - {fileID: 2000000012}
   - {fileID: 2000000022}
+  - {fileID: 2051909682}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2000000003
@@ -1683,6 +1685,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tableRoot: {fileID: 209730002}
   tableSurfaceName: TABLE SURFACE
+  tableSurfaceProfile: {fileID: 11400000, guid: 58da6920b5a3899479a6893e85e52972, type: 2}
   ballRadius: 0.026
   ballMass: 0.14
   ballBounciness: 0.8
@@ -1705,6 +1708,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d4e5f60718293a4b5c6d7e8f91102030, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controlMode: 0
+  preferDesktopInEditor: 1
+  allowDesktopTestControls: 1
+  resetFrameKey: 32
+  undoShotKey: 35
   latencySampler: {fileID: 0}
   cueLength: 1.4
   cueRadius: 0.015
@@ -1714,8 +1722,10 @@ MonoBehaviour:
   chargeRate: 1.2
   useXRIfAvailable: 1
   interactionContext: {fileID: 0}
-  dominantHand: {fileID: 0}
+  dominantHand: {fileID: 2051909683}
   cueHandSource: {fileID: 0}
+  twoHandCuePoseSource: {fileID: 2051909681}
+  useTwoHandCuePose: 1
   aimProfile: {fileID: 0}
   physicsAdapter: {fileID: 0}
   english: {x: 0, y: 0}
@@ -1784,8 +1794,6 @@ MonoBehaviour:
   shotLifecycle: {fileID: 2000000016}
   eventContract: {fileID: 2000000015}
   offTableY: 0.3
-  restThreshold: 0.01
-  restTimeSeconds: 1.5
 --- !u!114 &2000000015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1814,6 +1822,23 @@ MonoBehaviour:
   ballTracker: {fileID: 2000000007}
   settledSpeedThreshold: 0.01
   settledDuration: 1.5
+--- !u!114 &2000000017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2000000001}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 176a994a15522614e9e02d6fc59a932c, type: 3}
+  m_Name: CuePhysicsAdapter
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Cue.CuePhysicsAdapter
+  cueBall: {fileID: 0}
+  impactProfile: {fileID: 0}
+  ballRadius: 0.02625
+  maxLinearImpulse: 10
+  maxAngularImpulse: 250
 --- !u!1 &2000000021
 GameObject:
   m_ObjectHideFlags: 0
@@ -1845,6 +1870,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2000000002}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2051909680
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2051909682}
+  - component: {fileID: 2051909683}
+  - component: {fileID: 2051909681}
+  m_Layer: 0
+  m_Name: AAA Two-Hand Cue Rig
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2051909681
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051909680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b73c0a7977dbee458faaa4becdd36c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.Input.VR147TwoHandCuePoseSource
+  dominantHand: {fileID: 2051909683}
+  leftFallbackAnchor: {fileID: 0}
+  rightFallbackAnchor: {fileID: 0}
+  velocitySmoothing: 18
+--- !u!4 &2051909682
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051909680}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2000000002}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2051909683
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2051909680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ccf65b8862902124f8c8c82d13a82a4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.Input.VR147DominantHand
+  dominantHand: 1
 --- !u!1 &2056727663
 GameObject:
   m_ObjectHideFlags: 0

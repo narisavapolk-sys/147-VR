@@ -1,0 +1,79 @@
+{
+    "timestampUtc": "2026-09-20T12:28:46.5643512Z",
+    "unityVersion": "6000.4.4f1",
+    "authority": "Unity PhysX runtime + certified TableSurfaceProfile_RuntimeBaseline",
+    "surfaceProfilePath": "Assets/AAA/PhysicsCalibration/TableSurfaceProfile_RuntimeBaseline.asset",
+    "repetitions": 5,
+    "samples": [
+        {
+            "caseName": "Right_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": 3.4970598220825197,
+            "minMouthDistance": 0.09169819951057434,
+            "finalX": 0.025588607415556909,
+            "finalZ": -0.012377740815281868,
+            "wallContacts": 1,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Right_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": 3.4970598220825197,
+            "minMouthDistance": 0.09169819951057434,
+            "finalX": 0.025588607415556909,
+            "finalZ": -0.012377740815281868,
+            "wallContacts": 1,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Right_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": 3.4970598220825197,
+            "minMouthDistance": 0.09169819951057434,
+            "finalX": 0.025588607415556909,
+            "finalZ": -0.012377740815281868,
+            "wallContacts": 1,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Right_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": 3.4970598220825197,
+            "minMouthDistance": 0.09169819951057434,
+            "finalX": 0.025588607415556909,
+            "finalZ": -0.012377740815281868,
+            "wallContacts": 1,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        },
+        {
+            "caseName": "Right_Jaw",
+            "outcome": "Jaw",
+            "entrySpeed": 1.8033579587936402,
+            "entryAngleDeg": 3.4970598220825197,
+            "minMouthDistance": 0.09169819951057434,
+            "finalX": 0.025588607415556909,
+            "finalZ": -0.012377740815281868,
+            "wallContacts": 1,
+            "captured": false,
+            "rejected": true,
+            "jawContact": true,
+            "rattle": false
+        }
+    ]
+}

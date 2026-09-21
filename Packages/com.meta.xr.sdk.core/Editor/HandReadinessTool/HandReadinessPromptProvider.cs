@@ -83,6 +83,9 @@ namespace Meta.HandReadinessTool.Editor
 
         private static void Initialize()
         {
+            if (Application.isBatchMode)
+                return;
+
 #pragma warning disable CS4014
             FetchAndSwap();
 #pragma warning restore CS4014

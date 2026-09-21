@@ -1,0 +1,79 @@
+{
+    "timestampUtc": "2026-09-20T12:28:46.5301422Z",
+    "unityVersion": "6000.4.4f1",
+    "authority": "Unity PhysX runtime + certified TableSurfaceProfile_RuntimeBaseline",
+    "surfaceProfilePath": "Assets/AAA/PhysicsCalibration/TableSurfaceProfile_RuntimeBaseline.asset",
+    "repetitions": 5,
+    "samples": [
+        {
+            "caseName": "Clean_Reject",
+            "outcome": "Reject",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.12999999523162843,
+            "finalX": 0.15500006079673768,
+            "finalZ": 0.12999999523162843,
+            "wallContacts": 0,
+            "captured": false,
+            "rejected": true,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Reject",
+            "outcome": "Reject",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.12999999523162843,
+            "finalX": 0.15500006079673768,
+            "finalZ": 0.12999999523162843,
+            "wallContacts": 0,
+            "captured": false,
+            "rejected": true,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Reject",
+            "outcome": "Reject",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.12999999523162843,
+            "finalX": 0.15500006079673768,
+            "finalZ": 0.12999999523162843,
+            "wallContacts": 0,
+            "captured": false,
+            "rejected": true,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Reject",
+            "outcome": "Reject",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.12999999523162843,
+            "finalX": 0.15500006079673768,
+            "finalZ": 0.12999999523162843,
+            "wallContacts": 0,
+            "captured": false,
+            "rejected": true,
+            "jawContact": false,
+            "rattle": false
+        },
+        {
+            "caseName": "Clean_Reject",
+            "outcome": "Reject",
+            "entrySpeed": 1.7999999523162842,
+            "entryAngleDeg": 0.0,
+            "minMouthDistance": 0.12999999523162843,
+            "finalX": 0.15500006079673768,
+            "finalZ": 0.12999999523162843,
+            "wallContacts": 0,
+            "captured": false,
+            "rejected": true,
+            "jawContact": false,
+            "rattle": false
+        }
+    ]
+}

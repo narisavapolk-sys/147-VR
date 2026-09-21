@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// Plays the 6 dance clips on a humanoid Cute Girl.
@@ -50,19 +51,34 @@ public class CuteDancer : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(cycleKey))
+        if (IsKeyDown(cycleKey))
             Cycle();
 
-        if (Input.GetKeyDown(KeyCode.Alpha1)) JumpTo(0);
-        if (Input.GetKeyDown(KeyCode.Alpha2)) JumpTo(1);
-        if (Input.GetKeyDown(KeyCode.Alpha3)) JumpTo(2);
-        if (Input.GetKeyDown(KeyCode.Alpha4)) JumpTo(3);
-        if (Input.GetKeyDown(KeyCode.Alpha5)) JumpTo(4);
-        if (Input.GetKeyDown(KeyCode.Alpha6)) JumpTo(5);
+        if (Keyboard.current != null)
+        {
+            if (Keyboard.current.digit1Key.wasPressedThisFrame) JumpTo(0);
+            if (Keyboard.current.digit2Key.wasPressedThisFrame) JumpTo(1);
+            if (Keyboard.current.digit3Key.wasPressedThisFrame) JumpTo(2);
+            if (Keyboard.current.digit4Key.wasPressedThisFrame) JumpTo(3);
+            if (Keyboard.current.digit5Key.wasPressedThisFrame) JumpTo(4);
+            if (Keyboard.current.digit6Key.wasPressedThisFrame) JumpTo(5);
+        }
 
         if (autoCycle && switchAfter > 0f && Time.time >= nextSwitchTime)
         {
             Cycle();
+        }
+    }
+
+    private bool IsKeyDown(KeyCode key)
+    {
+        if (Keyboard.current == null) return false;
+        switch (key)
+        {
+            case KeyCode.Tab: return Keyboard.current.tabKey.wasPressedThisFrame;
+            case KeyCode.Space: return Keyboard.current.spaceKey.wasPressedThisFrame;
+            case KeyCode.M: return Keyboard.current.mKey.wasPressedThisFrame;
+            default: return false;
         }
     }
 

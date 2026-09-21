@@ -1,0 +1,6 @@
+{
+  "name": "147VR.PlayModeTests",
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}

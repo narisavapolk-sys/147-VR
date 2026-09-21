@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfe379e7bc89e7a47b9edba966ab1be3, type: 3}
+  m_Name: 147VR_M4_GoldenCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.M4BallCollisionGoldenCatalog
+  cases:
+  - {fileID: 11400000, guid: 9914e2082119ffa47ab16579ef449ac9, type: 2}
+  - {fileID: 11400000, guid: bb58fc522774bec4fbddfe43fdda2bb4, type: 2}
+  - {fileID: 11400000, guid: 6483a155eec5a1c4fb179d32cbe5e47a, type: 2}
+  - {fileID: 11400000, guid: be70796619f9d8545921cd74bc89b138, type: 2}
+  - {fileID: 11400000, guid: f6c3e42d8370967429a9834c4a2ba351, type: 2}
+  - {fileID: 11400000, guid: 90ad5d7d47af17b43ad08c540740b6d9, type: 2}

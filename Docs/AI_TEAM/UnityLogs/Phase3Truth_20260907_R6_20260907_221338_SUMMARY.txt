@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20260907_221338
+LogName: Phase3Truth_20260907_R6
+ExecuteMethod: LunaPhase3TruthAudit.Run
+Process result: EXITED code=0
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\Phase3Truth_20260907_R6_20260907_221338.log

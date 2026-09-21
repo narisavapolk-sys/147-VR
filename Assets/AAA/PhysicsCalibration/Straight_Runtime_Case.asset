@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8d636d9a2f7ba74eb9fc9552feed7b8, type: 3}
+  m_Name: Straight_Runtime_Case
+  m_EditorClassIdentifier: 
+  type: 0
+  power: 0.5
+  side: 0
+  vertical: 0
+  expectedDistance: 0.72825
+  tolerance: 0.0072825
+  expectedPeakSpeed: 4.0529814
+  peakSpeedTolerance: 0.040529814
+  validatePeakSpeed: 1

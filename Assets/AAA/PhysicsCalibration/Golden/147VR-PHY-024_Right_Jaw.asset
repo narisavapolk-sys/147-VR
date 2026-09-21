@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea009b1eda313914bac4f9eeded0f61e, type: 3}
+  m_Name: 147VR-PHY-024_Right_Jaw
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.M4PocketGolden
+  caseId: 147VR-PHY-024
+  caseName: Right Jaw
+  outcome: Jaw
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/m4_2_Right_Jaw_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-30T07:48:56.2908931Z
+  sourceUnityVersion: 6000.4.4f1
+  repetitions: 5
+  entrySpeedMean: 1.803358
+  entryAngleMean: 3.4970598
+  minMouthDistanceMean: 0.09300924
+  finalXMean: 0.022401148
+  finalZMean: -0.011900064
+  wallContactsMean: 2
+  capturedExpected: 0
+  rejectedExpected: 1
+  jawExpected: 1
+  rattleExpected: 0

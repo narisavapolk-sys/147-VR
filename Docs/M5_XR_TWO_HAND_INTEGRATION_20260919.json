@@ -1,0 +1,21 @@
+{
+  "status": "PERSISTED_INTEGRATION",
+  "scene": "Assets/Scenes/147VR_MainScene.unity",
+  "sceneSha256": "82F053BEF663921C20EB7A0003AF1528348E2DB80A653DFCA831CD9FADF7B4B7",
+  "preIntegrationSha256": "B1A3416B7B47314DBA34A9031A70792FBE12D771163275B3BA34285AA36D4197",
+  "backup": "Assets/Scenes/147VR_MainScene.unity.precert_20260919_twohand_retry3.bak",
+  "twoHandSource": "Assets/Scripts/AAA/Input/VR147TwoHandCuePoseSource.cs",
+  "twoHandSourceSha256": "0BD7606F04193241F275DAD8D6D4D7760F17427DD8368F831E5003B760659C84",
+  "optIn": true,
+  "rig": "AAA Two-Hand Cue Rig",
+  "dominantDefault": "Right",
+  "cuePhysicsAuthority": "CuePhysicsAdapter",
+  "twoHandContract": "PASS",
+  "twoHandContractLog": "Docs/UnityBatchLogs/UnityBatch_20260920_085910.log",
+  "desktopRegression": "PRIOR_PASS",
+  "real10Regression": "PASS_POST_XR",
+  "real10Certificate": "Docs/M5_REAL_10SHOT_CERT_20260919.json",
+  "quest2Quest3Hardware": "NOT_RUN",
+  "postResetEvidence": "Docs/M5_XR_POST_RESET_CERT_20260920.json",
+  "note": "Unity serialized the integrated scene to a recovery temp file; SaveScene final file move failed on Windows. The verified Unity-generated temp scene was promoted after hash/marker checks. Post-reset two-hand contract and REAL10 regression both passed."
+}

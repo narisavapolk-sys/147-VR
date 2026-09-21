@@ -62,6 +62,7 @@ public sealed class SnookerBallTracker : MonoBehaviour
 
     private readonly List<BallInfo> _balls = new List<BallInfo>();
     private readonly List<PocketInfo> _pockets = new List<PocketInfo>();
+    private readonly Dictionary<Transform, float> _previousY = new Dictionary<Transform, float>();
     private bool _ready;
 
     private void Start()
@@ -82,7 +83,9 @@ public sealed class SnookerBallTracker : MonoBehaviour
                 continue;
 
             Vector3 pos = ball.transform.position;
-            if (pos.y >= pocketMouthY)
+            float previousY = _previousY.TryGetValue(ball.transform, out float lastY) ? lastY : pos.y;
+            _previousY[ball.transform] = pos.y;
+            if (pos.y >= pocketMouthY || previousY < pocketMouthY)
                 continue;
 
             PocketInfo pocket = FindNearestPocket(pos);
@@ -101,20 +104,89 @@ public sealed class SnookerBallTracker : MonoBehaviour
     public void Refresh()
     {
         Transform root = tableRoot != null ? tableRoot : transform;
+        var previousHomes = new Dictionary<Transform, Vector3>();
+        foreach (BallInfo existing in _balls)
+        {
+            if (existing != null && existing.transform != null && existing.hasHomePosition)
+                previousHomes[existing.transform] = existing.homePosition;
+        }
+
         _pockets.Clear();
         _pockets.AddRange(DetectPockets(root));
 
         _balls.Clear();
+        _previousY.Clear();
         foreach (Transform child in root.GetComponentsInChildren<Transform>(true))
         {
+            // Only active hierarchy is authoritative for gameplay balls. Inactive legacy
+            // visual ball sets remain available for presentation but must not enter M5 state.
+            if (!child.gameObject.activeInHierarchy)
+                continue;
+
             string name = child.name;
             int points = PointsForName(name);
             if (points >= 0)
             {
                 var ball = new BallInfo { name = name, transform = child, points = points };
-                ball.homePosition = child.position;
+                ball.homePosition = previousHomes.TryGetValue(child, out Vector3 previousHome) ? previousHome : child.position;
                 ball.hasHomePosition = true;
+                _previousY[child] = child.position.y;
                 _balls.Add(ball);
+            }
+        }
+
+        // Calibration scenes may keep the ball rack as a sibling prefab rather than
+        // under the table hierarchy, and imported ball meshes may use generic names.
+        // Fall back to sphere Rigidbody bodies so the tracker remains authoritative
+        // for M5 shot lifecycle even when presentation naming is not production-ready.
+        if (_balls.Count == 0)
+        {
+            foreach (Rigidbody rb in UnityEngine.Object.FindObjectsByType<Rigidbody>(FindObjectsSortMode.None))
+            {
+                if (rb == null)
+                    continue;
+
+                SphereCollider sphere = rb.GetComponent<SphereCollider>();
+                if (sphere == null || sphere.radius < 0.02f || sphere.radius > 0.04f)
+                    continue;
+
+                string name = rb.gameObject.name;
+                int points = PointsForName(name);
+                var ball = new BallInfo
+                {
+                    name = name,
+                    transform = rb.transform,
+                    points = points >= 0 ? points : 0
+                };
+                ball.homePosition = previousHomes.TryGetValue(rb.transform, out Vector3 previousRigidbodyHome) ? previousRigidbodyHome : rb.position;
+                ball.hasHomePosition = true;
+                _previousY[rb.transform] = rb.position.y;
+                _balls.Add(ball);
+            }
+        }
+
+        // Calibration scenes use Sphere.009 as the authoritative cue ball while
+        // production naming uses White_CueBall. Keep the cue in the tracker so
+        // lifecycle/settled logic observes the same Rigidbody that receives shots.
+        GameObject calibrationCue = GameObject.Find("Sphere.009");
+        if (calibrationCue != null)
+        {
+            Transform cueTransform = calibrationCue.transform;
+            bool alreadyTracked = _balls.Exists(ball => ball != null && ball.transform == cueTransform);
+            if (!alreadyTracked)
+            {
+                var cueBall = calibrationCue.GetComponent<Rigidbody>();
+                if (cueBall != null)
+                {
+                    _balls.Add(new BallInfo
+                    {
+                        name = calibrationCue.name,
+                        transform = cueTransform,
+                        points = 0,
+                        homePosition = cueTransform.position,
+                        hasHomePosition = true
+                    });
+                }
             }
         }
 
@@ -194,6 +266,7 @@ public sealed class SnookerBallTracker : MonoBehaviour
             Debug.LogWarning("[BallTracker] No pocket found to simulate into.");
             return null;
         }
+        _previousY[ball.transform] = pocketMouthY + 0.01f;
         ball.transform.position = new Vector3(target.position.x, pocketMouthY - 0.15f, target.position.z);
         Debug.Log($"[BallTracker] Simulated: {ball.name} → {target.name}");
         return ball;

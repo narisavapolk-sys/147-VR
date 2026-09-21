@@ -1,34 +1,35 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using UnityEngine.XR;
-using XRDevice = UnityEngine.XR.InputDevice;
+using XRInputDevice = UnityEngine.XR.InputDevice;
 using System.Collections.Generic;
 
 /// <summary>
-/// VR Tablet Options Menu — opens when the left Meta Quest controller's
+/// VR Tablet Options Menu ÔÇö opens when the left Meta Quest controller's
 /// menu/secondary button is pressed.  The panel floats in front of the
 /// player and contains:
-///   • Movement Speed slider (1–10)
-///   • Player Height slider (160–185 cm)
-///   • Volume slider (0–100) with Mute toggle
-///   • Scene selector (MR MODE / NightSky / Dreamy_OLED / ConcertRoom / promDance)
+///   ÔÇó Movement Speed slider (1ÔÇô10)
+///   ÔÇó Player Height slider (160ÔÇô185 cm)
+///   ÔÇó Volume slider (0ÔÇô100) with Mute toggle
+///   ÔÇó Scene selector (MR MODE / NightSky / Dreamy_OLED / ConcertRoom / promDance)
 ///
 /// All values are persisted via PlayerPrefs.
 /// </summary>
 public sealed class TabletOptionsMenu : MonoBehaviour
 {
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Persistence keys
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private const string PrefsMoveSpeed   = "Tablet.MoveSpeed";
     private const string PrefsHeight      = "Tablet.Height";
     private const string PrefsVolume      = "Tablet.Volume";
     private const string PrefsMuted       = "Tablet.Muted";
     private const string PrefsScene       = "Tablet.Scene";
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Inspector fields
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     [Header("Layout")]
     [Tooltip("Offset from the left controller when the menu opens (local space).")]
     public Vector3 panelOffset = new Vector3(0f, 0.15f, 0.25f);
@@ -59,9 +60,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     [Tooltip("Optional AudioSource whose volume is controlled by the slider.")]
     public AudioSource musicSource;
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Scene names (must match your Unity Build Settings)
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private readonly string[] _sceneNames =
     {
         "MR MODE",
@@ -71,9 +72,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         "promDance"
     };
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Runtime state
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private Canvas _canvas;
     private GameObject _panel;
     private bool _isOpen;
@@ -98,9 +99,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     private float _height    = 170f;
     private float _volume    = 0.8f;
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Lifecycle
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void Start()
     {
         LoadPrefs();
@@ -125,17 +126,17 @@ public sealed class TabletOptionsMenu : MonoBehaviour
             FollowController();
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Menu button detection
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private bool MenuButtonPressed()
     {
         // Meta Quest left controller primary button (menu button)
-        var leftHand = new List<InputDevice>();
+        var leftHand = new List<XRInputDevice>();
         InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, leftHand);
-        foreach (InputDevice device in leftHand)
+        foreach (XRInputDevice device in leftHand)
         {
-            if (device.TryGetFeatureValue(CommonUsages.primaryButton, out bool pressed) && pressed)
+            if (device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool pressed) && pressed)
                 return true;
         }
         return false;
@@ -149,9 +150,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
             FollowController();
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Follow the left controller
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void FollowController()
     {
         Transform cam = xrCameraRig != null ? xrCameraRig : Camera.main?.transform;
@@ -166,9 +167,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         _panel.transform.rotation = Quaternion.LookRotation(forward, Vector3.up);
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Build UI
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void EnsureCanvas()
     {
         GameObject canvasGO = new GameObject("TabletOptionsMenu_Canvas");
@@ -211,37 +212,37 @@ public sealed class TabletOptionsMenu : MonoBehaviour
 
         float y = 640f; // Start from top
 
-        // ── Title ──
-        y = AddLabel(_panel.transform, "⚙  OPTIONS", titleFontSize, TextAnchor.MiddleCenter, ref y, 80f);
+        // ÔöÇÔöÇ Title ÔöÇÔöÇ
+        y = AddLabel(_panel.transform, "ÔÜÖ  OPTIONS", titleFontSize, TextAnchor.MiddleCenter, ref y, 80f);
 
-        // ── Divider ──
+        // ÔöÇÔöÇ Divider ÔöÇÔöÇ
         y = AddDivider(_panel.transform, ref y);
 
-        // ── MOVEMENT SPEED ──
+        // ÔöÇÔöÇ MOVEMENT SPEED ÔöÇÔöÇ
         y = AddLabel(_panel.transform, "MOVEMENT SPEED", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
         float moveVal = PlayerPrefs.GetFloat(PrefsMoveSpeed, 3f);
         y = AddSlider(_panel.transform, "MoveSpeed", 1f, 10f, moveVal, OnMoveSpeedChanged, ref y);
 
-        // ── PLAYER HEIGHT ──
+        // ÔöÇÔöÇ PLAYER HEIGHT ÔöÇÔöÇ
         y = AddLabel(_panel.transform, "PLAYER HEIGHT (CM)", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
         float heightVal = PlayerPrefs.GetFloat(PrefsHeight, 170f);
         y = AddSlider(_panel.transform, "Height", 160f, 185f, heightVal, OnHeightChanged, ref y);
 
-        // ── Divider ──
+        // ÔöÇÔöÇ Divider ÔöÇÔöÇ
         y = AddDivider(_panel.transform, ref y);
 
-        // ── VOLUME ──
+        // ÔöÇÔöÇ VOLUME ÔöÇÔöÇ
         y = AddLabel(_panel.transform, "VOLUME", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
         float volVal = PlayerPrefs.GetFloat(PrefsVolume, 0.8f);
         y = AddSlider(_panel.transform, "Volume", 0f, 1f, volVal, OnVolumeChanged, ref y);
 
-        // ── MUTE BUTTON ──
+        // ÔöÇÔöÇ MUTE BUTTON ÔöÇÔöÇ
         y = AddMuteButton(_panel.transform, ref y);
 
-        // ── Divider ──
+        // ÔöÇÔöÇ Divider ÔöÇÔöÇ
         y = AddDivider(_panel.transform, ref y);
 
-        // ── SCENE SELECTOR ──
+        // ÔöÇÔöÇ SCENE SELECTOR ÔöÇÔöÇ
         y = AddLabel(_panel.transform, "SCENE", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
         _selectedScene = PlayerPrefs.GetInt(PrefsScene, 0);
         for (int i = 0; i < _sceneNames.Length; i++)
@@ -251,9 +252,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         }
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  UI element builders
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private float AddLabel(Transform parent, string text, int size, TextAnchor align, ref float y, float height)
     {
         GameObject go = new GameObject("Label_" + text.Replace(" ", ""));
@@ -422,7 +423,7 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         _muteLabel.fontStyle = FontStyle.Bold;
         _muteLabel.color = textPrimary;
         _muteLabel.alignment = TextAnchor.MiddleCenter;
-        _muteLabel.text = _muted ? "🔇  UNMUTE" : "🔊  MUTE";
+        _muteLabel.text = _muted ? "­ƒöç  UNMUTE" : "­ƒöè  MUTE";
 
         y -= btnHeight + 12f;
         return y;
@@ -469,9 +470,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         return y;
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Callbacks
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void OnMoveSpeedChanged(float val)
     {
         _moveSpeed = val;
@@ -501,7 +502,7 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         PlayerPrefs.SetInt(PrefsMuted, _muted ? 1 : 0);
 
         _muteBtn.GetComponent<Image>().color = _muted ? muteOnColor : muteOffColor;
-        _muteLabel.text = _muted ? "🔇  UNMUTE" : "🔊  MUTE";
+        _muteLabel.text = _muted ? "­ƒöç  UNMUTE" : "­ƒöè  MUTE";
 
         ApplyVolume(_volume);
     }
@@ -514,12 +515,12 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         for (int i = 0; i < _sceneBtns.Length; i++)
             UpdateSceneButtonVisual(i);
 
-        Debug.Log($"[TabletMenu] Scene selected: {_sceneNames[index]} — load this scene to apply.");
+        Debug.Log($"[TabletMenu] Scene selected: {_sceneNames[index]} ÔÇö load this scene to apply.");
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Apply settings
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void ApplyHeight(float cm)
     {
         float meters = cm / 100f;
@@ -541,9 +542,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         AudioListener.volume = effectiveVol;
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Label helpers
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void UpdateMoveSpeedLabel(float val)
     {
         if (_moveSpeedVal != null)
@@ -571,9 +572,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
             _sceneLabels[index].fontStyle = selected ? FontStyle.BoldAndItalic : FontStyle.Bold;
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Prefs
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private void LoadPrefs()
     {
         _moveSpeed = PlayerPrefs.GetFloat(PrefsMoveSpeed, 3f);
@@ -583,9 +584,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         _selectedScene = PlayerPrefs.GetInt(PrefsScene, 0);
     }
 
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Public API
-    // ──────────────────────────────────────────────
+    // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     public float MoveSpeed => _moveSpeed;
     public float PlayerHeight => _height;
     public float Volume => _muted ? 0f : _volume;

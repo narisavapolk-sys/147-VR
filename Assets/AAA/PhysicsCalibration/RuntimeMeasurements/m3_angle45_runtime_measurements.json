@@ -1,0 +1,51 @@
+{
+    "timestampUtc": "2026-09-20T10:40:21.0856174Z",
+    "scene": "Assets/AAA/PhysicsCalibration/147VR_M3_CushionCalibration.unity",
+    "unityVersion": "6000.4.4f1",
+    "caseType": "Angle45",
+    "repetitions": 5,
+    "restitution": 0.8199999928474426,
+    "friction": 0.03500000014901161,
+    "samples": [
+        {
+            "preSpeed": 2.5565273761749269,
+            "postSpeed": 2.4417903423309328,
+            "travel": 1.9760184288024903,
+            "directionDot": 0.52338707447052,
+            "cushionHits": 1,
+            "pass": true
+        },
+        {
+            "preSpeed": 2.5565273761749269,
+            "postSpeed": 2.4417903423309328,
+            "travel": 1.9760184288024903,
+            "directionDot": 0.52338707447052,
+            "cushionHits": 1,
+            "pass": true
+        },
+        {
+            "preSpeed": 2.5565273761749269,
+            "postSpeed": 2.4417903423309328,
+            "travel": 1.9760184288024903,
+            "directionDot": 0.52338707447052,
+            "cushionHits": 1,
+            "pass": true
+        },
+        {
+            "preSpeed": 2.5565273761749269,
+            "postSpeed": 2.4417903423309328,
+            "travel": 1.9760184288024903,
+            "directionDot": 0.52338707447052,
+            "cushionHits": 1,
+            "pass": true
+        },
+        {
+            "preSpeed": 2.5565273761749269,
+            "postSpeed": 2.4417903423309328,
+            "travel": 1.9760184288024903,
+            "directionDot": 0.52338707447052,
+            "cushionHits": 1,
+            "pass": true
+        }
+    ]
+}

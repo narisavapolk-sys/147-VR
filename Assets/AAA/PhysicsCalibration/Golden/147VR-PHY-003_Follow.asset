@@ -1,0 +1,46 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1f261447437ca409b7c956c2519fe0, type: 3}
+  m_Name: 147VR-PHY-003_Follow
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.PhysicsGoldenCase
+  caseId: 147VR-PHY-003
+  revision: 1
+  category: 2
+  intent: Measured REAL Follow runtime truth. Golden distance is first-flight distance
+    captured at cue/object contact; peak speed is object-ball peak speed. Follow-specific
+    evidence additionally requires positive post-contact cue velocity aligned with
+    the shot direction.
+  calibrationCase: {fileID: 11400000, guid: 1b02ba6f070a7f94eb5e154d26b35275, type: 2}
+  requirePass: 1
+  sourceJsonPath: Assets/AAA/PhysicsCalibration/RuntimeMeasurements/follow_runtime_measurements.json
+  sourceTimestampUtc: 2026-08-29T09:20:09.7974035Z
+  sourceScene: Assets/AAA/PhysicsCalibration/147VR_M22_FollowCalibration.unity
+  sourceUnityVersion: 6000.4.4f1
+  sourceShotType: Follow
+  sourceRepetitionCount: 5
+  measuredDistanceMean: 0.90065706
+  measuredDistanceStdDev: 0
+  measuredPeakSpeedMean: 3.6744695
+  measuredPeakSpeedStdDev: 0.00000070726384
+  regressionTolerancePercent: 0.5
+  measuredDistanceSamples:
+  - 0.90065706
+  - 0.90065706
+  - 0.90065706
+  - 0.90065706
+  - 0.90065706
+  measuredPeakSpeedSamples:
+  - 3.6744692
+  - 3.6744685
+  - 3.6744692
+  - 3.6744707
+  - 3.6744692

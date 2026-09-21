@@ -1,0 +1,108 @@
+{
+  "file": "C:\\Users\\mongo\\UnityProjects\\147 VR\\SNOOKER   VR pool table\\Blender\\147VR_Table_WPBSA_Visual_Clean_v004.blend",
+  "objects": 163,
+  "meshes": 148,
+  "anchors": [
+    "ANCHOR_Playfield_Center",
+    "ANCHOR_Pocket_E",
+    "ANCHOR_Pocket_NE",
+    "ANCHOR_Pocket_NW",
+    "ANCHOR_Pocket_SE",
+    "ANCHOR_Pocket_SW",
+    "ANCHOR_Pocket_W"
+  ],
+  "pocket_art": [
+    "Pocket_Brass_Rim_E",
+    "Pocket_Brass_Rim_NE",
+    "Pocket_Brass_Rim_NW",
+    "Pocket_Brass_Rim_SE",
+    "Pocket_Brass_Rim_SW",
+    "Pocket_Brass_Rim_W",
+    "Pocket_Leather_E",
+    "Pocket_Leather_NE",
+    "Pocket_Leather_NW",
+    "Pocket_Leather_SE",
+    "Pocket_Leather_SW",
+    "Pocket_Leather_W",
+    "Pocket_Net_E",
+    "Pocket_Net_NE",
+    "Pocket_Net_NW",
+    "Pocket_Net_SE",
+    "Pocket_Net_SW",
+    "Pocket_Net_W",
+    "Pocket_Stitch_E_0",
+    "Pocket_Stitch_E_1",
+    "Pocket_Stitch_E_2",
+    "Pocket_Stitch_E_3",
+    "Pocket_Stitch_E_4",
+    "Pocket_Stitch_NE_0",
+    "Pocket_Stitch_NE_1",
+    "Pocket_Stitch_NE_2",
+    "Pocket_Stitch_NE_3",
+    "Pocket_Stitch_NE_4",
+    "Pocket_Stitch_NW_0",
+    "Pocket_Stitch_NW_1",
+    "Pocket_Stitch_NW_2",
+    "Pocket_Stitch_NW_3",
+    "Pocket_Stitch_NW_4",
+    "Pocket_Stitch_SE_0",
+    "Pocket_Stitch_SE_1",
+    "Pocket_Stitch_SE_2",
+    "Pocket_Stitch_SE_3",
+    "Pocket_Stitch_SE_4",
+    "Pocket_Stitch_SW_0",
+    "Pocket_Stitch_SW_1",
+    "Pocket_Stitch_SW_2",
+    "Pocket_Stitch_SW_3",
+    "Pocket_Stitch_SW_4",
+    "Pocket_Stitch_W_0",
+    "Pocket_Stitch_W_1",
+    "Pocket_Stitch_W_2",
+    "Pocket_Stitch_W_3",
+    "Pocket_Stitch_W_4",
+    "Pocket_Throat_E",
+    "Pocket_Throat_NE",
+    "Pocket_Throat_NW",
+    "Pocket_Throat_SE",
+    "Pocket_Throat_SW",
+    "Pocket_Throat_W"
+  ],
+  "pocket_pads": [
+    [
+      "Pocket Pad.001",
+      true
+    ],
+    [
+      "Pocket Pad.002",
+      false
+    ],
+    [
+      "Pocket Pad.003",
+      false
+    ],
+    [
+      "Pocket Pad.004",
+      false
+    ],
+    [
+      "Pocket Pad.005",
+      false
+    ],
+    [
+      "Pocket Pad.006",
+      false
+    ]
+  ],
+  "bad_uv_meshes": [],
+  "root_props": {
+    "asset_role": "WPBSA_12FT_VISUAL_BASE",
+    "playing_area_m": "<bpy id property array [2]>",
+    "ball_diameter_m": "0.052578",
+    "art_status": "BASE_ONLY_BALLS_PRESERVED",
+    "physics_authority": "EXTERNAL_LOCKED",
+    "visual_version": "v004",
+    "playfield_length_m": "3.569",
+    "playfield_width_m": "1.778",
+    "pocket_visual_count": "6"
+  }
+}

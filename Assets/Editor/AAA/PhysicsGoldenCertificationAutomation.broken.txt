@@ -1,0 +1,202 @@
+﻿using System;
+using System.IO;
+using System.Linq;
+using UnityEditor;
+using UnityEngine;
+using VR147.AAA.Physics;
+using VR147.AAA.Physics.Golden;
+
+namespace VR147.AAA.Editor
+{
+    public static class PhysicsGoldenCertificationAutomation
+    {
+        private const string RuntimeJson = "Assets/AAA/PhysicsCalibration/RuntimeMeasurements/straight_runtime_measurements.json";
+        private const string RegressionJson = "Assets/AAA/PhysicsCalibration/RuntimeMeasurements/straight_regression_measurements.json";
+        private const string GoldenPath = "Assets/AAA/PhysicsCalibration/Golden/147VR-PHY-001_Straight.asset";
+        private const string CatalogPath = "Assets/AAA/PhysicsCalibration/Golden/147VR_GoldenCatalog.asset";
+        private const string CalibrationCasePath = "Assets/AAA/PhysicsCalibration/Straight_Runtime_Case.asset";
+        private const float RegressionTolerancePercent = 0.5f;
+
+        [Serializable]
+        private sealed class MeasurementFile
+        {
+            public string timestampUtc;
+            public string caseType;
+            public int repetitions;
+            public float[] measuredDistance;
+            public float[] measuredPeakSpeed;
+            public bool[] passed;
+        }
+
+        [MenuItem("147VR/AAA/Physics/Build Measured Golden From Runtime JSON")]
+        public static void BuildMeasuredGoldenFromRuntimeJson()
+        {
+            MeasurementFile data = LoadMeasurement(RuntimeJson);
+            ValidateMeasurement(data, RuntimeJson);
+            AssetDatabase.Refresh();
+
+            var calibrationCase = AssetDatabase.LoadAssetAtPath<ShotCalibrationCase>(CalibrationCasePath);
+            if (calibrationCase == null)
+                throw new InvalidOperationException("Calibration case missing: " + CalibrationCasePath);
+
+            var golden = AssetDatabase.LoadAssetAtPath<PhysicsGoldenCase>(GoldenPath);
+            if (golden == null)
+            {
+                golden = ScriptableObject.CreateInstance<PhysicsGoldenCase>();
+                AssetDatabase.CreateAsset(golden, GoldenPath);
+            }
+
+            float distanceMean = Mean(data.measuredDistance);
+            float distanceStd = StdDev(data.measuredDistance, distanceMean);
+            float speedMean = Mean(data.measuredPeakSpeed);
+            float speedStd = StdDev(data.measuredPeakSpeed, speedMean);
+
+            Set(golden, "caseId", "147VR-PHY-001");
+            Set(golden, "revision", 2);
+            Set(golden, "category", 0);
+            Set(golden, "intent", "Measured REAL Straight Shot baseline from runtime PhysX calibration. Golden values are derived only from straight_runtime_measurements.json.");
+            Set(golden, "calibrationCase", calibrationCase);
+            Set(golden, "requirePass", true);
+            Set(golden, "sourceJsonPath", RuntimeJson);
+            Set(golden, "sourceTimestampUtc", data.timestampUtc ?? string.Empty);
+            Set(golden, "sourceScene", "Assets/AAA/PhysicsCalibration/147VR_PhysicsCalibration.unity");
+            Set(golden, "sourceUnityVersion", Application.unityVersion);
+            Set(golden, "sourceShotType", data.caseType ?? "Straight");
+            Set(golden, "sourceRepetitionCount", data.repetitions);
+            Set(golden, "measuredDistanceMean", distanceMean);
+            Set(golden, "measuredDistanceStdDev", distanceStd);
+            Set(golden, "measuredPeakSpeedMean", speedMean);
+            Set(golden, "measuredPeakSpeedStdDev", speedStd);
+            Set(golden, "regressionTolerancePercent", RegressionTolerancePercent);
+            Set(golden, "measuredDistanceSamples", data.measuredDistance);
+            Set(golden, "measuredPeakSpeedSamples", data.measuredPeakSpeed);
+            EditorUtility.SetDirty(golden);
+            AssetDatabase.SaveAssets();
+
+            VerifyGoldenAgainstJson(golden, data);
+            UpdateCatalog(golden);
+            Debug.Log($"[147VR Golden] E PASS | distance mean={distanceMean:F9} std={distanceStd:F9} | peak mean={speedMean:F9} std={speedStd:F9} | tolerance={RegressionTolerancePercent:F2}% | source={RuntimeJson}");
+        }
+
+        [MenuItem("147VR/AAA/Physics/Verify Measured Golden")]
+        public static void VerifyMeasuredGolden()
+        {
+            var golden = AssetDatabase.LoadAssetAtPath<PhysicsGoldenCase>(GoldenPath);
+            if (golden == null) throw new InvalidOperationException("Golden asset missing: " + GoldenPath);
+            var data = LoadMeasurement(RuntimeJson);
+            ValidateMeasurement(data, RuntimeJson);
+            VerifyGoldenAgainstJson(golden, data);
+            Debug.Log("[147VR Golden] Golden source verification PASS: every stored sample matches runtime JSON.");
+        }
+
+        [MenuItem("147VR/AAA/Physics/Run Golden Regression From Runtime JSON")]
+        public static void RunGoldenRegressionFromRuntimeJson()
+        {
+            var golden = AssetDatabase.LoadAssetAtPath<PhysicsGoldenCase>(GoldenPath);
+            var catalog = AssetDatabase.LoadAssetAtPath<PhysicsGoldenCatalog>(CatalogPath);
+            if (golden == null || catalog == null) throw new InvalidOperationException("Golden or catalog missing.");
+            var data = LoadMeasurement(RegressionJson);
+            ValidateMeasurement(data, RegressionJson);
+
+            var go = new GameObject("147VR_GoldenRegression_Verifier");
+            try
+            {
+                var runner = go.AddComponent<PhysicsGoldenRegressionRunner>();
+                Set(runner, "catalog", catalog);
+                bool allPass = true;
+                int passCount = 0;
+                for (int i = 0; i < data.repetitions; i++)
+                {
+                    runner.RecordMeasurement(golden, data.measuredDistance[i], data.measuredPeakSpeed[i]);
+                    PhysicsGoldenRegressionReport report = runner.Run();
+                    bool samplePass = report.total == 1 && report.passed == 1 && report.failed == 0 && report.invalid == 0 && runner.LastCatalogValid;
+                    allPass &= samplePass;
+                    if (samplePass) passCount++;
+                    Debug.Log($"[147VR Golden Regression] repetition={i + 1}/{data.repetitions} {(samplePass ? "PASS" : "FAIL")} | distance={data.measuredDistance[i]:F9} peakSpeed={data.measuredPeakSpeed[i]:F9}");
+                }
+                Debug.Log($"[147VR Golden Regression] {(allPass && passCount == data.repetitions ? "F PASS" : "F FAIL")} | repeatedRuns={data.repetitions} passed={passCount} tolerance={golden.RegressionTolerancePercent:F2}%");
+                if (!allPass || passCount != data.repetitions) throw new InvalidOperationException("Golden regression failed.");            finally
+            {
+                UnityEngine.Object.DestroyImmediate(go);
+            }
+        }
+
+        private static MeasurementFile LoadMeasurement(string path)
+        {
+            string fullPath = Path.Combine(Directory.GetParent(Application.dataPath).FullName, path.Replace("Assets/", "Assets\\"));
+            if (!File.Exists(fullPath)) throw new FileNotFoundException("Measurement JSON missing", fullPath);
+            return JsonUtility.FromJson<MeasurementFile>(File.ReadAllText(fullPath));
+        }
+
+        private static void ValidateMeasurement(MeasurementFile data, string source)
+        {
+            if (data == null || data.repetitions <= 0 || data.measuredDistance == null || data.measuredPeakSpeed == null ||
+                data.measuredDistance.Length != data.repetitions || data.measuredPeakSpeed.Length != data.repetitions)
+                throw new InvalidOperationException("Invalid measurement JSON: " + source);
+            if (data.measuredDistance.Any(v => float.IsNaN(v) || float.IsInfinity(v)) ||
+                data.measuredPeakSpeed.Any(v => float.IsNaN(v) || float.IsInfinity(v)))
+                throw new InvalidOperationException("Measurement JSON contains non-finite values: " + source);
+        }
+
+        private static void VerifyGoldenAgainstJson(PhysicsGoldenCase golden, MeasurementFile data)
+        {
+            if (golden.SourceJsonPath != RuntimeJson || golden.SourceRepetitionCount != data.repetitions)
+                throw new InvalidOperationException("Golden provenance metadata does not match runtime JSON.");
+            if (golden.MeasuredDistanceSamples.Length != data.repetitions || golden.MeasuredPeakSpeedSamples.Length != data.repetitions)
+                throw new InvalidOperationException("Golden sample count does not match runtime JSON.");
+            for (int i = 0; i < data.repetitions; i++)
+            {
+                if (golden.MeasuredDistanceSamples[i] != data.measuredDistance[i] ||
+                    golden.MeasuredPeakSpeedSamples[i] != data.measuredPeakSpeed[i])
+                    throw new InvalidOperationException("Golden sample mismatch at repetition " + i);
+            }
+            if (!golden.IsValid()) throw new InvalidOperationException("Generated Golden failed IsValid().");
+        }
+
+        private static void UpdateCatalog(PhysicsGoldenCase golden)
+        {
+            var catalog = AssetDatabase.LoadAssetAtPath<PhysicsGoldenCatalog>(CatalogPath);
+            if (catalog == null)
+            {
+                catalog = ScriptableObject.CreateInstance<PhysicsGoldenCatalog>();
+                AssetDatabase.CreateAsset(catalog, CatalogPath);
+            }
+            var so = new SerializedObject(catalog);
+            var list = so.FindProperty("cases");
+            list.arraySize = 1;
+            list.GetArrayElementAtIndex(0).objectReferenceValue = golden;
+            so.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(catalog);
+            AssetDatabase.SaveAssets();
+            if (!catalog.ValidateCatalog(out string error)) throw new InvalidOperationException(error);
+        }
+
+        private static float Mean(float[] values) => values.Sum() / values.Length;
+
+        private static float StdDev(float[] values, float mean)
+        {
+            float sum = 0f;
+            for (int i = 0; i < values.Length; i++)
+            {
+                float d = values[i] - mean;
+                sum += d * d;
+            }
+            return Mathf.Sqrt(sum / values.Length);
+        }
+
+        private static void Set(UnityEngine.Object target, string field, object value)
+        {
+            var so = new SerializedObject(target);
+            var prop = so.FindProperty(field);
+            if (prop == null) throw new InvalidOperationException($"Serialized field not found: {target.GetType().Name}.{field}");
+            if (value is string s) prop.stringValue = s;
+            else if (value is int i) prop.intValue = i;
+            else if (value is float f) prop.floatValue = f;
+            else if (value is bool b) prop.boolValue = b;
+            else if (value is UnityEngine.Object o) prop.objectReferenceValue = o;
+            else if (value is float[] a) { prop.arraySize = a.Length; for (int i = 0; i < a.Length; i++) prop.GetArrayElementAtIndex(i).floatValue = a[i]; }
+            else throw new InvalidOperationException("Unsupported serialized value: " + value.GetType().Name);
+            so.ApplyModifiedPropertiesWithoutUndo();
+        }
+    }
+}

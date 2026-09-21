@@ -1,0 +1,505 @@
+ M Assets/#Meta/session_id.id
+ D "Assets/147 main/ConcertRoom/ConcertRoom_WithTable.fbx"
+ D "Assets/147 main/ConcertRoom/ConcertRoom_WithTable.fbx.meta"
+ M "Assets/147 main/ConcertRoom/DriftingConcertSmoke.cs"
+ D Assets/Editor/PoolTablePrefabBuilder.cs
+ D Assets/Editor/PoolTablePrefabBuilder.cs.meta
+ M Assets/InputSystem_Actions.inputactions
+ M Assets/Oculus/OculusProjectConfig.asset
+ M Assets/Resources/DevAgentSettings.asset
+ M Assets/Resources/OculusRuntimeSettings.asset
+ M Assets/Scenes/147VR_MainScene.unity
+ M Assets/Scenes/PoolTable_8Ball.unity
+ M Assets/Scenes/PoolTable_9Ball.unity
+ M Assets/Scenes/SampleScene.unity
+ M Assets/Scripts/147/CuteDancer.cs
+ M Assets/Scripts/PoolTable/SkinCycler.cs
+ M Assets/Scripts/PoolTable/SkinSelectMenu.cs
+ M Assets/Scripts/Quest/SnookerBallTracker.cs
+ M Assets/Scripts/Quest/SnookerCueController.cs
+ M Assets/Scripts/Quest/SnookerPhysicsSetup.cs
+ M Assets/Scripts/Quest/SnookerScoreManager.cs
+ M Assets/Scripts/Quest/SnookerShotTracker.cs
+ M Assets/Scripts/Quest/SnookerTurnManager.cs
+ M Assets/Scripts/Quest/TabletOptionsMenu.cs
+ M Assets/Settings/Mobile_RPAsset.asset
+ M "Assets/XR/Settings/OpenXR Package Settings.asset"
+ M Assets/XR/XRGeneralSettingsPerBuildTarget.asset
+ M Packages/com.meta.xr.sdk.core/Editor/HandReadinessTool/HandReadinessPromptProvider.cs
+ M Packages/com.meta.xr.sdk.core/Editor/HandReadinessTool/HandReadinessRulesProvider.cs
+ M Packages/com.meta.xr.sdk.core/Editor/MCPBridge/HttpMcpServer.cs
+ M Packages/manifest.json
+ M Packages/packages-lock.json
+ M ProjectSettings/EditorBuildSettings.asset
+ M ProjectSettings/PackageManagerSettings.asset
+ M ProjectSettings/Packages/com.unity.probuilder/Settings.json
+ M ProjectSettings/ProjectSettings.asset
+ M ProjectSettings/QualitySettings.asset
+ M ProjectSettings/URPProjectSettings.asset
+ D "SNOOKER   VR pool table/Blender/Chubby magic girl.blend"
+ D "SNOOKER   VR pool table/Blender/Cute Girl 5.2.blend"
+ D "SNOOKER   VR pool table/Blender/REVISED_Snooker_Table_FINAL.blend"
+ M TODO.md
+?? %TMP%/
+?? 147VR_WORKING_DIRECTIVE.md
+?? "Assets/147 main/ConcertRoom/Backups.meta"
+?? "Assets/147 main/ConcertRoom/Backups/"
+?? "Assets/147 main/design.meta"
+?? "Assets/147 main/design/CONTROLLER_MAPPING.md.meta"
+?? Assets/AAA.meta
+?? Assets/AAA/
+?? Assets/BlenderTest.meta
+?? Assets/BlenderTest/
+?? Assets/Editor/147VR_M5YoloHarness.cs
+?? Assets/Editor/147VR_M5YoloHarness.cs.M5Patch.bak
+?? Assets/Editor/147VR_M5YoloHarness.cs.M5Patch.bak.meta
+?? Assets/Editor/147VR_M5YoloHarness.cs.meta
+?? Assets/Editor/AAA.meta
+?? Assets/Editor/AAA/
+?? Assets/Editor/Build147VR.cs
+?? Assets/Editor/Build147VR.cs.meta
+?? Assets/Editor/Lighting.meta
+?? Assets/Editor/Lighting/
+?? Assets/Editor/LunaPhase3BallAlignmentFix.cs.bak_20260907_rejected
+?? Assets/Editor/LunaPhase3BallAlignmentFix.cs.bak_20260907_rejected.meta
+?? Assets/Editor/LunaPhase3BallAudit.cs
+?? Assets/Editor/LunaPhase3BallAudit.cs.meta
+?? Assets/Editor/LunaPhase3MainSceneBallAudit.cs
+?? Assets/Editor/LunaPhase3MainSceneBallAudit.cs.meta
+?? Assets/Editor/LunaPhase4StaticAudit.cs
+?? Assets/Editor/LunaPhase4StaticAudit.cs.meta
+?? Assets/Editor/LunaV007ChainAudit.cs
+?? Assets/Editor/LunaV007ChainAudit.cs.meta
+?? Assets/Editor/LunaV007CleanupOrphan.cs
+?? Assets/Editor/LunaV007CleanupOrphan.cs.meta
+?? Assets/Editor/LunaV007FrameAudit.cs
+?? Assets/Editor/LunaV007FrameAudit.cs.meta
+?? Assets/Editor/LunaV007MarkingUvAudit.cs
+?? Assets/Editor/LunaV007MarkingUvAudit.cs.meta
+?? Assets/Editor/LunaV007PlayModeValidation.cs
+?? Assets/Editor/LunaV007PlayModeValidation.cs.meta
+?? Assets/Editor/LunaV007Promotion.cs
+?? Assets/Editor/LunaV007Promotion.cs.meta
+?? Assets/Editor/LunaV007Replace.cs
+?? Assets/Editor/LunaV007Replace.cs.meta
+?? Assets/Editor/LunaV007ReplaceTemp.cs
+?? Assets/Editor/LunaV007ReplaceTemp.cs.meta
+?? Assets/Editor/LunaV007SpotAlignmentAudit.cs
+?? Assets/Editor/LunaV007SpotAlignmentAudit.cs.meta
+?? Assets/Editor/LunaV007SpotTextureAudit.cs
+?? Assets/Editor/LunaV007SpotTextureAudit.cs.meta
+?? Assets/Editor/LunaV007TransformAudit.cs
+?? Assets/Editor/LunaV007TransformAudit.cs.meta
+?? Assets/Editor/LunaV007Validation.cs
+?? Assets/Editor/LunaV007Validation.cs.meta
+?? Assets/Editor/M5AutoCertBridge.cs
+?? Assets/Editor/M5AutoCertBridge.cs.meta
+?? Assets/Editor/M5BatchCI.cs
+?? Assets/Editor/M5BatchCI.cs.meta
+?? Assets/Editor/M5BatchTrigger.cs
+?? Assets/Editor/M5BatchTrigger.cs.meta
+?? Assets/Editor/M5DeterministicLaunch.cs
+?? Assets/Editor/M5DeterministicLaunch.cs.meta
+?? Assets/Editor/M5DirectPhysXCertification.cs
+?? Assets/Editor/M5DirectPhysXCertification.cs.meta
+?? Assets/Editor/M5FinalCertification.cs
+?? Assets/Editor/M5FinalCertification.cs.M5SettleWindow.bak
+?? Assets/Editor/M5FinalCertification.cs.M5SettleWindow.bak.meta
+?? Assets/Editor/M5FinalCertification.cs.meta
+?? Assets/Editor/M5InspectTableFrame_TMP.cs
+?? Assets/Editor/M5InspectTableFrame_TMP.cs.meta
+?? Assets/Editor/M5PostCueReliabilityTests.cs
+?? Assets/Editor/M5PostCueReliabilityTests.cs.meta
+?? Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs
+?? Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs.meta
+?? Assets/Editor/M5RuntimeTransactionTests.cs
+?? Assets/Editor/M5RuntimeTransactionTests.cs.meta
+?? Assets/Editor/M5_1_Install_TMP.cs
+?? Assets/Editor/M5_1_Install_TMP.cs.meta
+?? Assets/Editor/M5_1_LifecycleVerify_TMP.cs
+?? Assets/Editor/M5_1_LifecycleVerify_TMP.cs.meta
+?? Assets/Editor/M5_3_RulesUnitTests.cs
+?? Assets/Editor/M5_3_RulesUnitTests.cs.meta
+?? Assets/Editor/M5_patch_resolver.ps1
+?? Assets/Editor/M5_patch_resolver.ps1.meta
+?? Assets/Editor/M6GameplayIntegrationTests.cs
+?? Assets/Editor/M6GameplayIntegrationTests.cs.meta
+?? Assets/Editor/M7_4CreateV007MarkingAsset.cs
+?? Assets/Editor/M7_4CreateV007MarkingAsset.cs.meta
+?? Assets/Editor/M7_4SampleSceneTableAudit.cs
+?? Assets/Editor/M7_4SampleSceneTableAudit.cs.meta
+?? Assets/Editor/M7_4SceneAudit.cs
+?? Assets/Editor/M7_4SceneAudit.cs.meta
+?? Assets/Editor/M7_4SnookerBallMaterialImporter.cs
+?? Assets/Editor/M7_4SnookerBallMaterialImporter.cs.meta
+?? Assets/Editor/M7_4SwapSampleSceneTable.cs
+?? Assets/Editor/M7_4SwapSampleSceneTable.cs.meta
+?? Assets/Editor/M7_4_CreateV007ScaleWrapper.cs
+?? Assets/Editor/M7_4_CreateV007ScaleWrapper.cs.meta
+?? Assets/Editor/M7_4_CreateVisualV006Prefab.cs
+?? Assets/Editor/M7_4_CreateVisualV006Prefab.cs.meta
+?? Assets/Editor/M7_4_MakeV007Main.cs
+?? Assets/Editor/M7_4_MakeV007Main.cs.meta
+?? Assets/Editor/M7_4_NormalizeV007VisualRoot.cs
+?? Assets/Editor/M7_4_NormalizeV007VisualRoot.cs.meta
+?? Assets/Editor/M7_4_OneShotFixAndAudit.cs
+?? Assets/Editor/M7_4_OneShotFixAndAudit.cs.meta
+?? Assets/Editor/M7_4_PostNormVerify.cs
+?? Assets/Editor/M7_4_PostNormVerify.cs.meta
+?? Assets/Editor/M7_4_ProductionV004Replacement.cs
+?? Assets/Editor/M7_4_ProductionV004Replacement.cs.meta
+?? Assets/Editor/M7_4_ReplaceTable.cs
+?? Assets/Editor/M7_4_ReplaceTable.cs.meta
+?? Assets/Editor/M7_4_TruthAudit.cs
+?? Assets/Editor/M7_4_TruthAudit.cs.meta
+?? Assets/Editor/M7_4_V006AlignmentAudit_TMP.cs
+?? Assets/Editor/M7_4_V006AlignmentAudit_TMP.cs.meta
+?? Assets/Editor/M7_4_V006BoundsAudit.cs
+?? Assets/Editor/M7_4_V006BoundsAudit.cs.meta
+?? Assets/Editor/OriginalTableAudit_TMP.cs
+?? Assets/Editor/OriginalTableAudit_TMP.cs.meta
+?? Assets/Editor/Phase4A_AutoBootstrap.cs.DONE.bak
+?? Assets/Editor/Phase4A_AutoBootstrap.cs.DONE.bak.meta
+?? Assets/Editor/Phase4A_CorrectVisualPhysicsIntegration.cs
+?? Assets/Editor/Phase4A_CorrectVisualPhysicsIntegration.cs.meta
+?? Assets/Editor/Phase4A_FixTableSurface.cs
+?? Assets/Editor/Phase4A_FixTableSurface.cs.meta
+?? Assets/Editor/Phase4A_HierarchyProbe.cs
+?? Assets/Editor/Phase4A_HierarchyProbe.cs.meta
+?? Assets/Editor/Phase4A_IntegrationFix.cs
+?? Assets/Editor/Phase4A_IntegrationFix.cs.meta
+?? Assets/Editor/Phase4A_MarkingAlignmentAudit.cs
+?? Assets/Editor/Phase4A_MarkingAlignmentAudit.cs.meta
+?? Assets/Editor/Phase4A_MarkingAlignmentAudit_V2.cs
+?? Assets/Editor/Phase4A_MarkingAlignmentAudit_V2.cs.meta
+?? Assets/Editor/Phase4A_MarkingAlignmentAudit_V2_1.cs
+?? Assets/Editor/Phase4A_MarkingAlignmentAudit_V2_1.cs.meta
+?? Assets/Editor/Phase4A_ParentProbe.cs
+?? Assets/Editor/Phase4A_ParentProbe.cs.meta
+?? Assets/Editor/Phase4A_SourceMapProbe.cs
+?? Assets/Editor/Phase4A_SourceMapProbe.cs.meta
+?? Assets/Editor/Phase4A_TopLevelIntegrationFix.cs
+?? Assets/Editor/Phase4A_TopLevelIntegrationFix.cs.meta
+?? Assets/Editor/Phase4A_TruthProbe.cs
+?? Assets/Editor/Phase4A_TruthProbe.cs.meta
+?? Assets/Editor/Phase4A_UnitRootFix.cs
+?? Assets/Editor/Phase4A_UnitRootFix.cs.meta
+?? Assets/Editor/TableVisualAudit.cs
+?? Assets/Editor/TableVisualAudit.cs.meta
+?? Assets/Editor/TempCleanChainMigration.cs
+?? Assets/Editor/TempCleanChainMigration.cs.meta
+?? Assets/Editor/TempCleanChainRuntimeAudit.cs
+?? Assets/Editor/TempCleanChainRuntimeAudit.cs.meta
+?? Assets/Editor/TempTableAudit.cs
+?? Assets/Editor/TempTableAudit.cs.meta
+?? Assets/Editor/VR147M7InputAudit.cs
+?? Assets/Editor/VR147M7InputAudit.cs.meta
+?? Assets/Editor/Validate147VRPhysics.cs
+?? Assets/Editor/Validate147VRPhysics.cs.meta
+?? Assets/Editor/YOLO_Promote_V007_MarkingPrefab_TMP.cs
+?? Assets/Editor/YOLO_Promote_V007_MarkingPrefab_TMP.cs.meta
+?? Assets/Editor/YOLO_Promote_V007_MarkingUV_TMP.cs
+?? Assets/Editor/YOLO_Promote_V007_MarkingUV_TMP.cs.meta
+?? Assets/Editor/YOLO_V007_Audit_TMP.cs
+?? Assets/Editor/YOLO_V007_Audit_TMP.cs.meta
+?? Assets/Editor/YOLO_V007_Candidate_Audit_TMP.cs
+?? Assets/Editor/YOLO_V007_Candidate_Audit_TMP.cs.meta
+?? Assets/Editor/YOLO_V007_UVMap_TMP.cs
+?? Assets/Editor/YOLO_V007_UVMap_TMP.cs.meta
+?? Assets/Editor/YOLO_V007_UV_Audit_TMP.cs
+?? Assets/Editor/YOLO_V007_UV_Audit_TMP.cs.meta
+?? Assets/Editor/inspect_v007_root.py
+?? Assets/Editor/inspect_v007_root.py.meta
+?? Assets/Imports.meta
+?? Assets/Imports/
+?? Assets/Plugins.meta
+?? Assets/Plugins/
+?? Assets/Scenes/147VR_MainScene.unity.PRE_CLEAN_CHAIN_20260903_2253.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_CLEAN_CHAIN_20260903_2253.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_CLEAN_CHAIN_MANUAL_20260903_2255.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_CLEAN_CHAIN_MANUAL_20260903_2255.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_M74_SCALEFIX_20260904.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_M74_SCALEFIX_20260904.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_M74_SCALE_FIX_20260904.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_M74_SCALE_FIX_20260904.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_PHASE3_BALL_ALIGNMENT_20260907.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_PHASE3_BALL_ALIGNMENT_20260907.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_PROVENANCE_ISOLATION_20260903_224749.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_PROVENANCE_ISOLATION_20260903_224749.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_V007_MAIN_20260905.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_V007_MAIN_20260905.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_V007_YAML_20260905.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_V007_YAML_20260905.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.PRE_WPBSA_STANDARD_LAYOUT_20260907.bak
+?? Assets/Scenes/147VR_MainScene.unity.PRE_WPBSA_STANDARD_LAYOUT_20260907.bak.meta
+?? Assets/Scenes/147VR_MainScene.unity.precert_20260919.bak
+?? Assets/Scenes/147VR_MainScene.unity.precert_20260919.bak.meta
+?? Assets/Scenes/PoolTable_8Ball.unity.preLightingFix.bak
+?? Assets/Scenes/PoolTable_8Ball.unity.preLightingFix.bak.meta
+?? Assets/Scenes/PoolTable_9Ball.unity.preLightingFix.bak
+?? Assets/Scenes/PoolTable_9Ball.unity.preLightingFix.bak.meta
+?? Assets/Scenes/SampleScene.unity.PRE_M7_4_CLEANUP_20260902
+?? Assets/Scenes/SampleScene.unity.PRE_M7_4_CLEANUP_20260902.meta
+?? Assets/Scenes/SampleScene_PRE_M7_4_CLEAN_MAIN_20260903.unity
+?? Assets/Scenes/SampleScene_PRE_M7_4_CLEAN_MAIN_20260903.unity.meta
+?? Assets/Scenes/SampleScene_PRE_M7_4_SCENE_CLEANUP_20260902.unity
+?? Assets/Scenes/SampleScene_PRE_M7_4_SCENE_CLEANUP_20260902.unity.meta
+?? Assets/Scenes/SampleScene_PRE_M7_4_TABLE_SWAP_20260902.unity
+?? Assets/Scenes/SampleScene_PRE_M7_4_TABLE_SWAP_20260902.unity.meta
+?? Assets/Scenes/SampleScene_PRE_M7_4_V004_REPLACEMENT_20260903.unity
+?? Assets/Scenes/SampleScene_PRE_M7_4_V004_REPLACEMENT_20260903.unity.meta
+?? Assets/Scenes/SampleScene_PRE_V004_REPLACEMENT_20260903_045322.unity
+?? Assets/Scenes/SampleScene_PRE_V004_REPLACEMENT_20260903_045322.unity.meta
+?? Assets/Scripts/147/CuteDancer.cs.pre-inputsystem.bak
+?? Assets/Scripts/147/CuteDancer.cs.pre-inputsystem.bak.meta
+?? Assets/Scripts/AAA.meta
+?? Assets/Scripts/AAA/AAA_147VR_BUILD_LOG.md
+?? Assets/Scripts/AAA/AAA_147VR_BUILD_LOG.md.meta
+?? Assets/Scripts/AAA/Cue.meta
+?? Assets/Scripts/AAA/Cue/
+?? Assets/Scripts/AAA/Diagnostics.meta
+?? Assets/Scripts/AAA/Diagnostics/
+?? Assets/Scripts/AAA/Gameplay.meta
+?? Assets/Scripts/AAA/Input.meta
+?? Assets/Scripts/AAA/Input/
+?? Assets/Scripts/AAA/M5.meta
+?? Assets/Scripts/AAA/Physics.meta
+?? Assets/Scripts/AAA/Physics/
+?? Assets/Scripts/PoolTable/SkinCycler.cs.pre-inputsystem.bak
+?? Assets/Scripts/PoolTable/SkinCycler.cs.pre-inputsystem.bak.meta
+?? Assets/Scripts/PoolTable/SkinSelectMenu.cs.pre-inputsystem.bak
+?? Assets/Scripts/PoolTable/SkinSelectMenu.cs.pre-inputsystem.bak.meta
+?? Assets/Scripts/Quest/ControllerMapInfo.cs.meta
+?? Assets/Scripts/Quest/CueBallCollision.cs.meta
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.M5SleepBoundary.bak
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.M5SleepBoundary.bak.meta
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.M5SleepBoundary.final.bak
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.M5SleepBoundary.final.bak.meta
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.M5Timing.bak
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.M5Timing.bak.meta
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.cleanupbak
+?? Assets/Scripts/Quest/M5ShotLifecycle.cs.cleanupbak.meta
+?? Assets/Scripts/Quest/M5ShotObservationBuilder.cs
+?? Assets/Scripts/Quest/M5ShotObservationBuilder.cs.meta
+?? Assets/Scripts/Quest/M5ShotStartState.cs
+?? Assets/Scripts/Quest/M5ShotStartState.cs.meta
+?? Assets/Scripts/Quest/M5ShotTransactionApplier.cs
+?? Assets/Scripts/Quest/M5ShotTransactionApplier.cs.meta
+?? Assets/Scripts/Quest/Rules.meta
+?? Assets/Scripts/Quest/Rules/
+?? Assets/Scripts/Quest/SnookerCueController.cs.pre-m1.bak
+?? Assets/Scripts/Quest/SnookerCueController.cs.pre-m1.bak.meta
+?? Assets/Scripts/Quest/SnookerPhysicsSetup.cs.bak
+?? Assets/Scripts/Quest/SnookerPhysicsSetup.cs.bak.meta
+?? Assets/Scripts/Quest/SnookerShotTracker.cs.meta
+?? Assets/Scripts/Quest/SnookerTurnManager.cs.pre-inputsystem.bak
+?? Assets/Scripts/Quest/SnookerTurnManager.cs.pre-inputsystem.bak.meta
+?? Assets/Scripts/Quest/TabletOptionsMenu.cs.meta
+?? Assets/Scripts/Quest/TabletOptionsMenu.cs.pre-inputsystem.bak
+?? Assets/Scripts/Quest/TabletOptionsMenu.cs.pre-inputsystem.bak.meta
+?? Assets/Settings/147VR_Quest_LightingProfile.asset
+?? Assets/Settings/147VR_Quest_LightingProfile.asset.meta
+?? Assets/Shaders.meta
+?? Assets/Shaders/
+?? Assets/Tests.meta
+?? Assets/Tests/
+?? Assets/_Archive.meta
+?? Assets/_Archive/
+?? Assets/_Recovery.meta
+?? Assets/_Recovery/
+?? Assets/~UnityDirMonSyncFile~3f3e5094ada5f2b438ec88ff090b266a~
+?? Backups/
+?? Docs/147VR_AI_WORK_PROTOCOL.md
+?? Docs/147VR_BASELINE_FREEZE_20260919.md
+?? Docs/147VR_BLENDER_MCP_DIAGNOSTIC_20260902.md
+?? Docs/147VR_BONE_AND_BALL_PORT_STRATEGY.md
+?? Docs/147VR_CONTROLLED_SHOT_EXECUTION.md
+?? Docs/147VR_CURRENT_STATE.md
+?? Docs/147VR_DESKTOP_COMMANDER_PREFLIGHT.md
+?? Docs/147VR_EXECUTION_LOGS.md
+?? Docs/147VR_GOLDEN_CASE_ARCHITECTURE.md
+?? Docs/147VR_GOLDEN_MEASUREMENT_BRIDGE.md
+?? Docs/147VR_GOLDEN_REGRESSION_COVERAGE.md
+?? Docs/147VR_M1_5_GOLDEN_INFRASTRUCTURE.md
+?? Docs/147VR_M24_V2_STATUS.md
+?? Docs/147VR_M2_3_DRAW_CERTIFICATION.md
+?? Docs/147VR_M3_YOLO_PLAN.md
+?? Docs/147VR_M3_YOLO_STATUS.md
+?? Docs/147VR_M4_2_YOLO_STATUS.md
+?? Docs/147VR_M4_YOLO_STATUS.md
+?? Docs/147VR_MASTER_PRODUCTION_ROADMAP.md
+?? Docs/147VR_PHYSICS_AUTHORITY_M1_EXECUTION.md
+?? Docs/147VR_PHYSICS_CERTIFICATION_RUNBOOK.md
+?? Docs/147VR_PROJECT_MEMORY.md
+?? Docs/147VR_REALITY_MAP.md
+?? Docs/147VR_REALITY_MAP_AUTHORITY_ADDENDUM.md
+?? Docs/147VR_TABLE_AUTHORITY_CONTRACT.md
+?? Docs/147VR_TABLE_VISUAL_AUDIT_PHASE1.md
+?? Docs/147VR_TABLE_VISUAL_V004_PREFAB_AUDIT.md
+?? Docs/147VR_TABLE_VISUAL_V006_EXPORT_AUDIT.md
+?? Docs/147VR_UPM_CHILD_PROCESS_INHERITANCE_FIX.md
+?? Docs/147VR_UPM_ENV_GUARD.md
+?? Docs/147VR_UPM_IPC_INCIDENT_20260916.md
+?? Docs/AI_TEAM/ART_BACKLOG.md
+?? Docs/AI_TEAM/BACKUPS/
+?? Docs/AI_TEAM/CLAUDE_COACH_MESSAGE_20260906.md
+?? Docs/AI_TEAM/CLAUDE_STATUS.md
+?? Docs/AI_TEAM/COACH_ACTION_HUNG_PROCESS_KILLED_20260908.md
+?? Docs/AI_TEAM/COACH_BRIEF_RESUME_STALL_GATE_20260908.md
+?? Docs/AI_TEAM/COACH_BRIEF_YOLO_LONGRUN_20260906.md
+?? Docs/AI_TEAM/COACH_CERTIFICATION_M5_1_20260908.md
+?? Docs/AI_TEAM/COACH_CERTIFICATION_M5_2_20260908.md
+?? Docs/AI_TEAM/COACH_CERTIFICATION_V007_MARKING_20260907.md
+?? Docs/AI_TEAM/COACH_CHECKPOINT_EVIDENCE_GATE_20260907.md
+?? Docs/AI_TEAM/COACH_CHECKPOINT_LONGRUN_20260906.md
+?? Docs/AI_TEAM/COACH_CHECKPOINT_ONLY_REPORTING_20260907.md
+?? Docs/AI_TEAM/COACH_CHECKPOINT_PHASE34_20260907.md
+?? Docs/AI_TEAM/COACH_CONFIRMATION_MACHINE_CLEAN_20260908.md
+?? Docs/AI_TEAM/COACH_CORRECTION_M5_2_UPM_NOT_LICENSING_20260908.md
+?? Docs/AI_TEAM/COACH_DECISION_FINAL_20260906.md
+?? Docs/AI_TEAM/COACH_DECISION_PLAYMODE_AND_SPOTS_20260906.md
+?? Docs/AI_TEAM/COACH_DIAGNOSTIC_DC_NOT_RESPONDING_20260908.md
+?? Docs/AI_TEAM/COACH_FINAL_SIGNOFF_WPBSA_20260908.md
+?? Docs/AI_TEAM/COACH_GOAHEAD_POST_REBOOT_20260908.md
+?? Docs/AI_TEAM/COACH_GOAHEAD_RESUME_LONGRUN_20260908.md
+?? Docs/AI_TEAM/COACH_GOAHEAD_V007_MARKING_20260906.md
+?? Docs/AI_TEAM/COACH_GUIDANCE_FIREWALL_LEAD_20260908.md
+?? Docs/AI_TEAM/COACH_GUIDANCE_UPM_ESCALATION_20260908.md
+?? Docs/AI_TEAM/COACH_M5_DECISION_BRIEF_20260906.md
+?? Docs/AI_TEAM/COACH_NOTE_INFRA_HANG_CLEARED_20260908.md
+?? Docs/AI_TEAM/COACH_NOTE_M5_1_INPROGRESS_20260908.md
+?? Docs/AI_TEAM/COACH_NOTE_UV_VERIFICATION_METHOD_20260906.md
+?? Docs/AI_TEAM/COACH_OBSERVATION_FRAME_REFLECTION_20260906.md
+?? Docs/AI_TEAM/COACH_OBSERVATION_SPOT_SWAP_20260906.md
+?? Docs/AI_TEAM/COACH_ROOTCAUSE_CONFIRMED_DUAL_LAUNCHER_20260908.md
+?? Docs/AI_TEAM/COACH_STANDING_BRIEF_YOLO_20260906.md
+?? Docs/AI_TEAM/COACH_VERDICT_OVERNIGHT_RUN_STATUS_20260908.md
+?? Docs/AI_TEAM/GITHUB_COORDINATION_20260908.md
+?? Docs/AI_TEAM/LOCK.md
+?? Docs/AI_TEAM/LUNGMAI_PERSONALITY.md
+?? Docs/AI_TEAM/TECH_CONSTRAINTS.md
+?? Docs/AI_TEAM/Tools/
+?? Docs/AI_TEAM/UnityLogs/
+?? Docs/AI_TEAM/WPBSA_FINAL_GATE_20260908.md
+?? Docs/AI_TEAM/YOLO_LONG_RUN_STANDING_RULES_20260906.md
+?? Docs/AI_TEAM/YOLO_SESSION_LOG_20260906.md
+?? Docs/Backups/
+?? Docs/Evidence/
+?? Docs/M5_AUTHORITY_CHAIN_STATUS.md
+?? Docs/M5_BALL_TREE_INSPECT_20260919.txt
+?? Docs/M5_EXECUTE_PROBE_20260919.txt
+?? Docs/M5_PRE_REFACTOR_BACKUP_20260830_101648/
+?? Docs/M5_REAL_10SHOT_CERT_20260919.json
+?? Docs/M5_TABLE_FRAME_INSPECT_20260919.txt
+?? Docs/M7_4_BACKUPS/
+?? Docs/M7_4_CONSUMER_AUDIT_20260901.md
+?? Docs/M7_4_CONSUMER_AUDIT_20260901.pre_latency.bak.md
+?? Docs/M7_4_MAINSCENE_VISUAL_AUDIT.txt
+?? Docs/M7_4_POST_NORMALIZATION_VERIFY.txt
+?? Docs/M7_4_TABLE_VISUAL_BASE_20260902.md
+?? Docs/M7_4_TABLE_VISUAL_EXECUTION_PLAN.md
+?? Docs/M7_4_TABLE_VISUAL_V004_CERTIFICATION_20260903.md
+?? Docs/M7_4_TABLE_VISUAL_V006_CERTIFICATION_20260903.md
+?? Docs/M7_4_V003_LIVE_AUDIT_20260903.json
+?? Docs/M7_4_V004_LIVE_AUDIT_20260903.json
+?? Docs/M7_4_V006_BOUNDS_AUDIT.txt
+?? Docs/M7_4_V007_22BALL_ALIGNMENT_AUDIT_20260907.json
+?? Docs/M7_4_V007_MARKING_CLOSURE_20260907.json
+?? Docs/M7_4_V007_MARKING_PIXEL_AUDIT_20260907.json
+?? Docs/M7_4_V007_POCKET_ANCHOR_AUDIT_20260907.json
+?? Docs/M7_4_V007_TABLE_SURFACE_AUDIT.json
+?? Docs/M7_4_V007_VISUAL_CLEANUP_20260903.md
+?? Docs/M7_4_V007_marking_audit.py
+?? Docs/M7_4_V007_uv_fit.json
+?? Docs/M7_4_V007_uv_fit.py
+?? Docs/M7_4_V007_uv_topfit.json
+?? Docs/M7_4_V007_uv_topfit.py
+?? Docs/M7_4_badface_detail.py
+?? Docs/M7_4_clean_frame_v008.py
+?? Docs/M7_4_cleanup_ghosts.py
+?? Docs/M7_4_extract_felt.py
+?? Docs/M7_4_frame_audit.py
+?? Docs/M7_4_frame_zero_audit.py
+?? Docs/M7_4_generate_markings.py
+?? Docs/M7_4_material_audit.py
+?? Docs/M7_4_ngon_intersection_audit.py
+?? Docs/M7_4_prepare_v007_export.py
+?? Docs/RUNBOOK_M7_4_SCALE_AND_HEADLESS.md
+?? Docs/TOOLING_KNOWN_ISSUES_UPM_LAUNCHER.md
+?? Docs/TOOLING_KNOWN_ISSUES_UPM_LAUNCHER_ADDENDUM_20260908.md
+?? Docs/Tools/
+?? Docs/V007_PlayMode_Results_20260907.xml
+?? Docs/WAYFINDER/
+?? Docs/YOLO_M7_4_SCENE_REPAIR_PLAN.md
+?? Docs/YOLO_SESSION_LOG_20260906.md
+?? Library_Bee_POST_CLEANROOM_20260905/
+?? Library_Bee_POST_CLEANROOM_20260905_FULL/
+?? Library_Bee_PRE_CLEANROOM_20260905/
+?? Library_PRE_M24_CLEAN_BACKUP_20260829/
+?? M7_4_RuntimeAudit.txt
+?? Packages/com.meta.xr.sdk.core/Editor/HandReadinessTool/HandReadinessPromptProvider.cs.precert_20260919.bak
+?? Packages/com.meta.xr.sdk.core/Editor/HandReadinessTool/HandReadinessPromptProvider.cs.precert_20260919.bak.meta
+?? Packages/com.meta.xr.sdk.core/Editor/HandReadinessTool/HandReadinessRulesProvider.cs.precert_20260919.bak
+?? Packages/com.meta.xr.sdk.core/Editor/HandReadinessTool/HandReadinessRulesProvider.cs.precert_20260919.bak.meta
+?? Packages/com.meta.xr.sdk.core/Editor/MCPBridge/HttpMcpServer.cs.precert_20260919.bak
+?? Packages/com.meta.xr.sdk.core/Editor/MCPBridge/HttpMcpServer.cs.precert_20260919.bak.meta
+?? Packages/manifest.json.147vr-backup
+?? Packages/manifest.json.PRE_BUILTIN_TEST.bak
+?? Packages/manifest.json.PRE_PHASE4A_MANIFEST_MINTEST.bak
+?? Packages/manifest.json.PRE_UPM_ISOLATION.bak
+?? Packages/packages-lock.json.147vr-backup
+?? Packages/packages-lock.json.PRE_PHASE4A_ENVFIX.bak
+?? Packages/packages-lock.json.PRE_PHASE4A_UPM_20260905_052818.bak
+?? Packages/packages-lock.json.PRE_UPM_REPAIR_20260906.bak
+?? ProjectSettings/PackageManagerSettings.asset.DISABLED_TEST
+?? ProjectSettings/PackageManagerSettings.asset.PRE_PHASE4A_UPMSETTINGS.bak
+?? "SNOOKER   VR pool table/Blender/147VR_Table_WPBSA_Visual_Clean_v006.blend"
+?? "SNOOKER   VR pool table/Blender/147VR_Table_WPBSA_Visual_Clean_v007.blend"
+?? "SNOOKER   VR pool table/Blender/147VR_Table_WPBSA_Visual_Clean_v007_MARKING.blend"
+?? "SNOOKER   VR pool table/Blender/147VR_Table_WPBSA_Visual_Clean_v008_MARKING_CLEAN.blend"
+?? "SNOOKER   VR pool table/Blender/v002_audit.png"
+?? "SNOOKER   VR pool table/Blender/v003_live_render.png"
+?? "SNOOKER   VR pool table/Blender/v004_live_hero.png"
+?? "SNOOKER   VR pool table/Blender/v004_live_hero2.png"
+?? "SNOOKER   VR pool table/Blender/v004_live_hero_table.png"
+?? "SNOOKER   VR pool table/Blender/v004_live_pocket_top.png"
+?? "SNOOKER   VR pool table/Blender/v005_live_hero.png"
+?? "SNOOKER   VR pool table/Blender/v005_live_pocket.png"
+?? "SNOOKER   VR pool table/Blender/v006_live_hero_table.png"
+?? "SNOOKER   VR pool table/Blender/v006_live_pocket_hero.png"
+?? "SNOOKER   VR pool table/Blender/v007_live_hero_table.png"
+?? "SNOOKER   VR pool table/_scripts/audit_concertroom.py"
+?? "SNOOKER   VR pool table/_scripts/audit_cue_collection.py"
+?? "SNOOKER   VR pool table/_scripts/audit_materials.py"
+?? "SNOOKER   VR pool table/_scripts/audit_table_visual.py"
+?? "SNOOKER   VR pool table/_scripts/audit_v002.py"
+?? "SNOOKER   VR pool table/_scripts/export_table_fbx.py"
+?? "SNOOKER   VR pool table/_scripts/export_table_fbx_v002.py"
+?? "SNOOKER   VR pool table/_scripts/export_v003.py"
+?? "SNOOKER   VR pool table/_scripts/find_cues.py"
+?? "SNOOKER   VR pool table/_scripts/find_long_meshes.py"
+?? "SNOOKER   VR pool table/_scripts/find_named_cues.py"
+?? "SNOOKER   VR pool table/_scripts/fix_table_visual_v002.py"
+?? "SNOOKER   VR pool table/_scripts/fix_v003.py"
+?? "SNOOKER   VR pool table/_scripts/inspect_ball_materials.py"
+?? "SNOOKER   VR pool table/_scripts/inspect_rods.py"
+?? "SNOOKER   VR pool table/_scripts/inspect_wpbsa_gold.py"
+?? "SNOOKER   VR pool table/_scripts/make_concertroom_env_only.py"
+?? "SNOOKER   VR pool table/_scripts/measure_table_bounds.py"
+?? "SNOOKER   VR pool table/_scripts/prepare_table_base.py"
+?? "SNOOKER   VR pool table/_scripts/render_audit.py"
+?? "SNOOKER   VR pool table/_scripts/verify_concertroom_env.py"
+?? Tools/
+?? Unity/
+?? _Backups_PoolTable_8Ball.preLightingPass.unity
+?? _Backups_PoolTable_9Ball.preLightingPass.unity
+?? _tmp_mcp_export_v006.py
+?? _tmp_mcp_inspect_v005.py
+?? _tmp_mcp_v005_pocket.py
+?? _tmp_mcp_v006_pocket.py
+?? audit_blend.py
+?? patch_prefab.py
+?? patch_v3_aristocrat_legs.py
+?? temp_m5_patch.ps1
+?? temp_yolo_task.ps1
+?? temp_yolo_validate.ps1

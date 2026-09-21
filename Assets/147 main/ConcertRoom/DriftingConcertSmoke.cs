@@ -78,7 +78,7 @@ public class DriftingConcertSmoke : MonoBehaviour
         var vel = ps.velocityOverLifetime;
         vel.enabled = true;
         vel.space = ParticleSystemSimulationSpace.World;
-        vel.y = new ParticleSystem.MinMaxCurve(driftSpeed);
+        vel.y = new ParticleSystem.MinMaxCurve(driftSpeed, driftSpeed);
         vel.x = new ParticleSystem.MinMaxCurve(-driftSpeed * 0.3f, driftSpeed * 0.3f);
         vel.z = new ParticleSystem.MinMaxCurve(-driftSpeed * 0.3f, driftSpeed * 0.3f);
 

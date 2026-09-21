@@ -1,0 +1,18 @@
+﻿M7.4 MAIN SCENE VISUAL AUDIT
+Scene=Assets/Scenes/147VR_MainScene.unity
+GO|active=False|name=Surface|parent=Physics Table (runtime)|pos=(0.00, 33.38, 0.00)|scale=(1.00, 1.00, 1.00)
+GO|active=False|name=Physics Table (runtime)|parent=<root>|pos=(0.00, 0.00, 0.00)|scale=(1.00, 1.00, 1.00)
+RENDERER|active=True|name=Base Table Support|parent=147VR_Table_WPBSA_12ft_VISUAL_MAIN|pos=(-0.05, 50.50, 0.20)|scale=(474.59, 243.21, 15.78)|bounds=(306.89, 5.16, 150.84)|mat=1B_Concrete_Smooth_mqm
+RENDERER|active=True|name=TABLE SURFACE|parent=147VR_Table_WPBSA_12ft_VISUAL_MAIN|pos=(-0.05, 0.32, 0.00)|scale=(97.56, 95.32, 100.00)|bounds=(356.90, 1.27, 177.80)|mat=FELT
+GO|active=False|name=Physics Table (runtime)|parent=<root>|pos=(0.00, 0.00, 0.00)|scale=(1.00, 1.00, 1.00)
+GO|active=False|name=Surface|parent=Physics Table (runtime)|pos=(0.00, -0.02, 0.00)|scale=(1.00, 1.00, 1.00)
+GO|active=False|name=Physics Table (runtime)|parent=<root>|pos=(0.00, 0.00, 0.00)|scale=(1.00, 1.00, 1.00)
+RENDERER|active=True|name=TABLE FRAME|parent=147VR_Table_WPBSA_12ft_VISUAL_MAIN|pos=(-188.03, 76.66, 0.27)|scale=(124.51, 124.51, 253.20)|bounds=(384.70, 17.13, 207.64)|mat=Table Mahogany
+RENDERER|active=False|name=TABLE SURFACE|parent=147VR_Table_WPBSA_12ft_VISUAL_CLEAN_v004|pos=(0.00, 0.00, 0.00)|scale=(100.00, 100.00, 100.00)|bounds=(2.14, 0.85, 3.84)|mat=MAT_Ivory_Finish
+RENDERER|active=True|name=ConcertRoom|parent=<root>|pos=(0.00, 0.00, 0.00)|scale=(100.00, 100.00, 100.00)|bounds=(24.00, 24.00, 0.00)|mat=Mat_ConcertFloor
+GO|active=True|name=147VR_Table_WPBSA_12ft_VISUAL_MAIN|parent=Visual_Meshes_Drop_Here|pos=(0.00, 0.00, 0.00)|scale=(100.00, 100.00, 100.00)
+GO|active=False|name=Surface|parent=Physics Table (runtime)|pos=(0.00, -0.02, 0.00)|scale=(1.00, 1.00, 1.00)
+GO|active=False|name=Surface|parent=Physics Table (runtime)|pos=(0.00, -0.02, 0.00)|scale=(1.00, 1.00, 1.00)
+RENDERER|active=True|name=ConcertSmoke|parent=<root>|pos=(0.00, 0.25, 0.00)|scale=(1.00, 1.00, 1.00)|bounds=(0.00, 0.00, 0.00)|mat=<none>
+GO|active=False|name=147VR_Table_WPBSA_12ft_VISUAL_CLEAN_v004|parent=ConcertRoom|pos=(0.00, 0.00, 0.00)|scale=(100.00, 100.00, 100.00)
+GO|active=False|name=Physics Table (runtime)|parent=<root>|pos=(0.00, 0.00, 0.00)|scale=(1.00, 1.00, 1.00)

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 /// <summary>
 /// In-game one-press skin switcher: presses the cycle key (default Tab) or
@@ -46,7 +47,7 @@ public class SkinCycler : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(cycleKey))
+        if (Keyboard.current != null && Keyboard.current.tabKey.wasPressedThisFrame)
             Cycle();
 
         if (toast != null && toast.gameObject.activeSelf)
@@ -132,7 +133,7 @@ public class SkinCycler : MonoBehaviour
         {
             var es = new GameObject("EventSystem");
             es.AddComponent<UnityEngine.EventSystems.EventSystem>();
-            es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            es.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
         }
         return canvas;
     }

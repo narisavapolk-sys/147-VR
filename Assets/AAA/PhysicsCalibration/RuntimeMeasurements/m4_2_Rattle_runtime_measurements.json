@@ -1,0 +1,79 @@
+{
+    "timestampUtc": "2026-09-20T12:28:46.5869652Z",
+    "unityVersion": "6000.4.4f1",
+    "authority": "Unity PhysX runtime + certified TableSurfaceProfile_RuntimeBaseline",
+    "surfaceProfilePath": "Assets/AAA/PhysicsCalibration/TableSurfaceProfile_RuntimeBaseline.asset",
+    "repetitions": 5,
+    "samples": [
+        {
+            "caseName": "Rattle",
+            "outcome": "Rattle",
+            "entrySpeed": 1.7516064643859864,
+            "entryAngleDeg": -2.4540317058563234,
+            "minMouthDistance": 0.024965820834040643,
+            "finalX": 0.11642493307590485,
+            "finalZ": 0.023750003427267076,
+            "wallContacts": 4,
+            "captured": true,
+            "rejected": false,
+            "jawContact": true,
+            "rattle": true
+        },
+        {
+            "caseName": "Rattle",
+            "outcome": "Rattle",
+            "entrySpeed": 1.7516064643859864,
+            "entryAngleDeg": -2.4540317058563234,
+            "minMouthDistance": 0.024965820834040643,
+            "finalX": 0.11642493307590485,
+            "finalZ": 0.023750003427267076,
+            "wallContacts": 4,
+            "captured": true,
+            "rejected": false,
+            "jawContact": true,
+            "rattle": true
+        },
+        {
+            "caseName": "Rattle",
+            "outcome": "Rattle",
+            "entrySpeed": 1.7516064643859864,
+            "entryAngleDeg": -2.4540317058563234,
+            "minMouthDistance": 0.024965820834040643,
+            "finalX": 0.11642493307590485,
+            "finalZ": 0.023750003427267076,
+            "wallContacts": 4,
+            "captured": true,
+            "rejected": false,
+            "jawContact": true,
+            "rattle": true
+        },
+        {
+            "caseName": "Rattle",
+            "outcome": "Rattle",
+            "entrySpeed": 1.7516064643859864,
+            "entryAngleDeg": -2.4540317058563234,
+            "minMouthDistance": 0.024965820834040643,
+            "finalX": 0.11642493307590485,
+            "finalZ": 0.023750003427267076,
+            "wallContacts": 4,
+            "captured": true,
+            "rejected": false,
+            "jawContact": true,
+            "rattle": true
+        },
+        {
+            "caseName": "Rattle",
+            "outcome": "Rattle",
+            "entrySpeed": 1.7516064643859864,
+            "entryAngleDeg": -2.4540317058563234,
+            "minMouthDistance": 0.024965820834040643,
+            "finalX": 0.11642493307590485,
+            "finalZ": 0.023750003427267076,
+            "wallContacts": 4,
+            "captured": true,
+            "rejected": false,
+            "jawContact": true,
+            "rattle": true
+        }
+    ]
+}

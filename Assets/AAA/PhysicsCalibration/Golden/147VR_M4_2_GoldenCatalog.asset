@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8301acf67f97cab499679d438aa6a439, type: 3}
+  m_Name: 147VR_M4_2_GoldenCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::VR147.AAA.Physics.Golden.M4PocketGoldenCatalog
+  cases:
+  - {fileID: 11400000, guid: 1dd892066bf5b984ea8ba150c26680ed, type: 2}
+  - {fileID: 11400000, guid: c2fa61c1db4c52e429e2a4a52ba552b1, type: 2}
+  - {fileID: 11400000, guid: 74374c73fc210f94cb6cf46251139304, type: 2}
+  - {fileID: 11400000, guid: 38d14e11fbdc7d64c918cd658c7cf588, type: 2}
+  - {fileID: 11400000, guid: 1c4b0829c0527ea4f939a446501d3439, type: 2}
+  - {fileID: 11400000, guid: fc28ac8233f404047b043695659d4451, type: 2}

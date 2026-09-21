@@ -1,0 +1,11 @@
+﻿$ErrorActionPreference='Stop'
+$required=@{
+ PROGRAMDATA='C:\ProgramData'; ALLUSERSPROFILE='C:\ProgramData'; APPDATA='C:\Users\mongo\AppData\Roaming'; LOCALAPPDATA='C:\Users\mongo\AppData\Local'; USERPROFILE='C:\Users\mongo'; TEMP='C:\Users\mongo\AppData\Local\Temp'; TMP='C:\Users\mongo\AppData\Local\Temp'; NO_PROXY='localhost,127.0.0.1'; UNITY_UPM_TIMEOUT='120'
+}
+foreach($k in $required.Keys){[Environment]::SetEnvironmentVariable($k,$required[$k],'Process')}
+$project='C:\Users\mongo\UnityProjects\147 VR'
+$unity='C:\Program Files\Unity\Hub\Editor\6000.4.4f1\Editor\Unity.exe'
+if(!(Test-Path $project)){throw "Project path missing: $project"}
+if(!(Test-Path $unity)){throw "Unity executable missing: $unity"}
+& $unity -batchmode -projectPath $project -quit -logFile -
+exit $LASTEXITCODE

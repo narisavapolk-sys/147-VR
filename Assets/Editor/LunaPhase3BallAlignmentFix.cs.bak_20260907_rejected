@@ -1,0 +1,36 @@
+using System;
+using System.Collections.Generic;
+using UnityEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine;
+
+public static class LunaPhase3BallAlignmentFix
+{
+    public static void Run()
+    {
+        var scene = EditorSceneManager.OpenScene("Assets/Scenes/147VR_MainScene.unity", OpenSceneMode.Single);
+        var root = GameObject.Find("V007_VISUAL_MAIN");
+        if (!root) throw new Exception("V007_VISUAL_MAIN missing");
+        var surface = Array.Find(root.GetComponentsInChildren<Transform>(true), t => t.name == "TABLE SURFACE");
+        if (!surface) throw new Exception("V007 TABLE SURFACE missing");
+        var names = new[] { "White_CueBall", "Red", "Yellow", "Green", "Brown", "Blue", "Pink", "Black" };
+        var balls = new List<Transform>();
+        foreach (var t in root.GetComponentsInChildren<Transform>(true))
+        {
+            foreach (var n in names)
+                if (t.name == n || (n == "Red" && t.name.StartsWith("Red", StringComparison.Ordinal))) { balls.Add(t); break; }
+        }
+        if (balls.Count != 22) throw new Exception($"Expected 22 V007 balls, found {balls.Count}");
+        var center = surface.GetComponent<Renderer>().bounds.center;
+        foreach (var ball in balls)
+        {
+            var p = ball.position - center;
+            p = Quaternion.Euler(0f, -90f, 0f) * p;
+            ball.position = center + p;
+        }
+        EditorSceneManager.MarkSceneDirty(scene);
+        EditorSceneManager.SaveScene(scene);
+        Debug.Log($"[PHASE3 FIX] Rotated {balls.Count} V007 visual balls -90deg around TABLE SURFACE center ({center.x:F6},{center.y:F6},{center.z:F6})");
+        EditorApplication.Exit(0);
+    }
+}

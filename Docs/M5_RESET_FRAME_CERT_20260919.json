@@ -1,0 +1,7 @@
+{
+  "status": "INCONCLUSIVE_ABORTED_SAFE",
+  "reason": "Runtime shot resolved, but reset harness did not reach its completion callback; Unity memory rose above 3 GB, so the Unity process was terminated to protect PC stability.",
+  "fired": 1,
+  "resolved": 1,
+  "resetVerified": false
+}

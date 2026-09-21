@@ -84,6 +84,9 @@ namespace Meta.MCPBridge.Editor
             // Only start if the AI Agent Bridge toggle is enabled (dormant by default).
             Meta.XR.Editor.Callbacks.InitializeOnLoad.Register(() =>
             {
+                if (Application.isBatchMode)
+                    return;
+
                 if (Meta.XR.AI.AgentBridge.Settings.Enabled.Value)
                 {
                     StartIfEnabled();

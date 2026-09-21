@@ -1,0 +1,157 @@
+{
+    "verdict":  "PASS",
+    "ballCount":  22,
+    "playingAreaX":  3.569,
+    "playingAreaZ":  1.778,
+    "baulkX":  -1.0475,
+    "dRadius":  0.292,
+    "pinkX":  0.89225,
+    "blackX":  1.4605,
+    "balls":  [
+                  {
+                      "name":  "Black",
+                      "x":  1.460500,
+                      "y":  0.853532,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Blue",
+                      "x":  0.000000,
+                      "y":  0.853532,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Brown",
+                      "x":  -1.047500,
+                      "y":  0.853532,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Green",
+                      "x":  -1.047500,
+                      "y":  0.853532,
+                      "z":  0.292000
+                  },
+                  {
+                      "name":  "Pink",
+                      "x":  0.892250,
+                      "y":  0.853537,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Red",
+                      "x":  0.944750,
+                      "y":  0.853537,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Red.001",
+                      "x":  0.997250,
+                      "y":  0.853537,
+                      "z":  -0.026250
+                  },
+                  {
+                      "name":  "Red.002",
+                      "x":  0.997250,
+                      "y":  0.853537,
+                      "z":  0.026250
+                  },
+                  {
+                      "name":  "Red.003",
+                      "x":  1.049750,
+                      "y":  0.853537,
+                      "z":  -0.052500
+                  },
+                  {
+                      "name":  "Red.004",
+                      "x":  1.049750,
+                      "y":  0.853537,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Red.005",
+                      "x":  1.049750,
+                      "y":  0.853537,
+                      "z":  0.052500
+                  },
+                  {
+                      "name":  "Red.006",
+                      "x":  1.102250,
+                      "y":  0.853537,
+                      "z":  -0.078750
+                  },
+                  {
+                      "name":  "Red.007",
+                      "x":  1.102250,
+                      "y":  0.853537,
+                      "z":  -0.026250
+                  },
+                  {
+                      "name":  "Red.008",
+                      "x":  1.102250,
+                      "y":  0.853537,
+                      "z":  0.026250
+                  },
+                  {
+                      "name":  "Red.009",
+                      "x":  1.102250,
+                      "y":  0.853537,
+                      "z":  0.078750
+                  },
+                  {
+                      "name":  "Red.010",
+                      "x":  1.154750,
+                      "y":  0.853537,
+                      "z":  -0.105000
+                  },
+                  {
+                      "name":  "Red.011",
+                      "x":  1.154750,
+                      "y":  0.853537,
+                      "z":  -0.052500
+                  },
+                  {
+                      "name":  "Red.012",
+                      "x":  1.154750,
+                      "y":  0.853537,
+                      "z":  0.000000
+                  },
+                  {
+                      "name":  "Red.013",
+                      "x":  1.154750,
+                      "y":  0.853537,
+                      "z":  0.052500
+                  },
+                  {
+                      "name":  "Red.014",
+                      "x":  1.154750,
+                      "y":  0.853537,
+                      "z":  0.105000
+                  },
+                  {
+                      "name":  "White_CueBall",
+                      "x":  -1.019668,
+                      "y":  0.853532,
+                      "z":  -0.159670
+                  },
+                  {
+                      "name":  "Yellow",
+                      "x":  -1.047500,
+                      "y":  0.853537,
+                      "z":  -0.292000
+                  }
+              ],
+    "wpbsa_source":  "WPBSA Official Rulebook 2024-25 / September 2024",
+    "certified_physics_authority_touched":  false,
+    "main_scene_gameplay_ball_spawn_updated":  true,
+    "standardization_reason":  "Corrected MainScene V007 colored-ball and 15-red layout to official 3569x1778 playfield coordinate rules; certified calibration scenes were not edited.",
+    "marking_texture_regenerated":  true,
+    "texture_expected_spot_pixels":  {
+                                         "Green":  "(54,125,69,220)",
+                                         "Pink":  "(194,125,149,220)",
+                                         "Black":  "(29,29,29,230)",
+                                         "Yellow":  "(226,195,34,220)",
+                                         "Blue":  "(69,105,185,220)",
+                                         "Brown":  "(125,82,45,220)"
+                                     }
+}

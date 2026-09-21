@@ -1,0 +1,45 @@
+{
+    "timestampUtc": "2026-08-29T06:27:41.9709243Z",
+    "inputPath": "C:\\Users\\mongo\\UnityProjects\\147 VR\\Assets\\AAA\\PhysicsCalibration\\RuntimeMeasurements\\147VR_GoldenCI_Straight_Input.json",
+    "total": 5,
+    "passed": 5,
+    "failed": 0,
+    "allPassed": true,
+    "results": [
+        {
+            "caseId": "147VR-PHY-001",
+            "revision": 3,
+            "passed": true,
+            "distanceError": 0.0,
+            "peakSpeedError": 0.000051021575927734375
+        },
+        {
+            "caseId": "147VR-PHY-001",
+            "revision": 3,
+            "passed": true,
+            "distanceError": 0.0,
+            "peakSpeedError": 0.000012874603271484375
+        },
+        {
+            "caseId": "147VR-PHY-001",
+            "revision": 3,
+            "passed": true,
+            "distanceError": 0.0,
+            "peakSpeedError": 0.000012874603271484375
+        },
+        {
+            "caseId": "147VR-PHY-001",
+            "revision": 3,
+            "passed": true,
+            "distanceError": 0.0,
+            "peakSpeedError": 0.000012874603271484375
+        },
+        {
+            "caseId": "147VR-PHY-001",
+            "revision": 3,
+            "passed": true,
+            "distanceError": 0.0,
+            "peakSpeedError": 0.000012874603271484375
+        }
+    ]
+}

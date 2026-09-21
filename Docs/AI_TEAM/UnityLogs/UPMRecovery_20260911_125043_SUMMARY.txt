@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20260911_125043
+LogName: UPMRecovery
+ExecuteMethod: 
+Process result: STILL_RUNNING after 300 s (pid=1628)
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\UPMRecovery_20260911_125043.log

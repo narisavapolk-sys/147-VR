@@ -1,0 +1,9 @@
+{
+  "samples": [
+    { "caseId": "147VR-PHY-001", "measuredDistance": 0.72825003, "measuredPeakSpeed": 4.0529304 },
+    { "caseId": "147VR-PHY-001", "measuredDistance": 0.72825003, "measuredPeakSpeed": 4.0529943 },
+    { "caseId": "147VR-PHY-001", "measuredDistance": 0.72825003, "measuredPeakSpeed": 4.0529943 },
+    { "caseId": "147VR-PHY-001", "measuredDistance": 0.72825003, "measuredPeakSpeed": 4.0529943 },
+    { "caseId": "147VR-PHY-001", "measuredDistance": 0.72825003, "measuredPeakSpeed": 4.0529943 }
+  ]
+}

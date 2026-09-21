@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UI;
 
 /// <summary>
@@ -56,7 +57,7 @@ public class SkinSelectMenu : MonoBehaviour
         {
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();
-            es.AddComponent<StandaloneInputModule>();
+            es.AddComponent<InputSystemUIInputModule>();
         }
 
         // Panel

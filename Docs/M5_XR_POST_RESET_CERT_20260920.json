@@ -1,0 +1,27 @@
+{
+  "date": "2026-09-20",
+  "status": "PASS_POST_RESET_XR_INTEGRATION_REGRESSION",
+  "unityVersion": "6000.4.4f1",
+  "mainSceneSha256": "82F053BEF663921C20EB7A0003AF1528348E2DB80A653DFCA831CD9FADF7B4B7",
+  "twoHandSourceSha256": "0BD7606F04193241F275DAD8D6D4D7760F17427DD8368F831E5003B760659C84",
+  "twoHandContract": "PASS",
+  "twoHandContractLog": "Docs/UnityBatchLogs/UnityBatch_20260920_085910.log",
+  "real10Regression": "PASS",
+  "real10Certificate": "Docs/M5_REAL_10SHOT_CERT_20260919.json",
+  "real10Result": {
+    "fired": 10,
+    "resolved": 10,
+    "settled": 10,
+    "errors": 0
+  },
+  "postResetRecovery": "PASS",
+  "unityProcessesAfterRun": 0,
+  "quest2Quest3Hardware": "NOT_RUN",
+  "notes": [
+    "PC hard reset recovered without loss of persisted Main Scene integration.",
+    "Initial direct Unity invocation hit Unity Package Manager IPC; repaired launcher environment restored UPM connectivity.",
+    "Post-reset REAL10 ran through actual Main Scene lifecycle, pots/respots/turns and CuePhysicsAdapter authority.",
+    "No destructive git reset/clean/stash operation was used.",
+    "PlayerViewManager batch warning and XR StopSubsystems shutdown warning did not prevent the certified runtime result."
+  ]
+}
