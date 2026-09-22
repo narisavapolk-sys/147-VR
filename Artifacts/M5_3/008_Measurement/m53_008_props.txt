@@ -1,0 +1,66 @@
+C:\Users\mongo\UnityProjects\147 VR\SNOOKER   VR pool table\_scripts\m53_008_props.py:134: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+C:\Users\mongo\UnityProjects\147 VR\SNOOKER   VR pool table\_scripts\m53_008_props.py:134: DeprecationWarning: 'Material.use_nodes' is expected to be removed in Blender 6.0
+  m.use_nodes = True
+
+=== building chalk ===
+
+FBX export starting... 'C:\\Temp\\147VR_Props\\fbx\\147VR_PROP_CHALK.fbx'
+export finished in 0.0098 sec.
+  objects 1  size(X,Y,Z)=[0.035, 0.035, 0.022]  fbx=147VR_PROP_CHALK.fbx
+
+=== building rest ===
+
+FBX export starting... 'C:\\Temp\\147VR_Props\\fbx\\147VR_PROP_REST.fbx'
+export finished in 0.0128 sec.
+  objects 5  size(X,Y,Z)=[1.58, 0.135, 0.0253]  fbx=147VR_PROP_REST.fbx
+
+=== building cuerack ===
+
+FBX export starting... 'C:\\Temp\\147VR_Props\\fbx\\147VR_PROP_CUERACK.fbx'
+export finished in 0.0128 sec.
+  objects 5  size(X,Y,Z)=[0.42, 0.3, 0.93]  fbx=147VR_PROP_CUERACK.fbx
+
+=== building triangle ===
+
+FBX export starting... 'C:\\Temp\\147VR_Props\\fbx\\147VR_PROP_TRIANGLE.fbx'
+export finished in 0.0085 sec.
+  objects 3  size(X,Y,Z)=[0.312067, 0.270258, 0.038]  fbx=147VR_PROP_TRIANGLE.fbx
+
+=== building scoreboard ===
+
+FBX export starting... 'C:\\Temp\\147VR_Props\\fbx\\147VR_PROP_SCOREBOARD.fbx'
+export finished in 0.0160 sec.
+  objects 9  size(X,Y,Z)=[0.62, 0.24, 1.35]  fbx=147VR_PROP_SCOREBOARD.fbx
+
+=== staging all props into one scene for the props .blend ===
+Info: Saved as "147VR_Props_v001.blend"
+
+================ 147VR PROPS ================
+axis convention : length X, width Y, up Z  ->  FBX axis_up=Y axis_forward=-Z
+  chalk       objs=1   size(X,Y,Z)=[0.035, 0.035, 0.022]        fbx=17196 B
+  rest        objs=5   size(X,Y,Z)=[1.58, 0.135, 0.0253]        fbx=29292 B
+  cuerack     objs=5   size(X,Y,Z)=[0.42, 0.3, 0.93]            fbx=35148 B
+  triangle    objs=3   size(X,Y,Z)=[0.312067, 0.270258, 0.038]  fbx=20668 B
+  scoreboard  objs=9   size(X,Y,Z)=[0.62, 0.24, 1.35]           fbx=37644 B
+--- ASSERTIONS -------------------------------
+  ASSERT_ALL_GROUNDED_AT_Z0                      PASS
+  ASSERT_ALL_HAVE_ASSET_ROLE                     PASS
+  ASSERT_ALL_HAVE_MATERIAL                       PASS
+  ASSERT_NO_CAMERA_OR_LIGHT                      PASS
+  ASSERT_NO_NEGATIVE_SCALE                       PASS
+  ASSERT_NO_SOURCE_BLEND_OPENED                  PASS
+  ASSERT_PROP_NAMES_DO_NOT_COLLIDE_WITH_PHYSICS_NAMES PASS
+  ASSERT_REST_LENGTH_REASONABLE                  PASS
+  ASSERT_SOURCE_BLEND_NOT_MODIFIED               PASS
+  ASSERT_TRIANGLE_INNER_FITS_15_BALLS            PASS
+  ASSERT_TRIANGLE_MEASURED_WIDTH_OK              PASS
+  ASSERT_UNIT_SCALE                              PASS
+  TOTAL                                          12/12
+----------------------------------------------
+props blend : C:\Temp\147VR_Props\147VR_Props_v001.blend   (NEW file - the certified 008 blend was NOT opened)
+manifest    : C:\Temp\147VR_Props\m53_008_props_manifest.json
+==============================================
+Blender 5.2.1 LTS (hash 9e2066aef7ef built 2026-08-25 02:38:20)
+
+Blender quit
