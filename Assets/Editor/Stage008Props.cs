@@ -282,7 +282,7 @@ namespace VR147.EditorTools
                 var go = (GameObject)PrefabUtility.InstantiatePrefab(model, root.transform);
                 go.name = "PROP_" + name;
                 var (pos, yaw) = placements[name];
-                go.transform.SetPositionAndRotation(pos, Quaternion.Euler(0f, yaw, 0f));
+                go.transform.SetPositionAndRotation(pos, name == "CHALK" ? Quaternion.Euler(90f, 0f, 0f) : Quaternion.Euler(0f, yaw, 0f));
 
                 // no simulation cost: props are static scenery
                 foreach (var rb in go.GetComponentsInChildren<Rigidbody>(true))
