@@ -103,7 +103,7 @@ namespace VR147.EditorTools
                 }
 
                 imp.globalScale = 1f;                 // metres in, metres out
-                imp.useFileScale = false;
+                imp.useFileScale = true;
                 imp.bakeAxisConversion = false;       // the FBX already carries Unity axes
                 imp.importCameras = false;
                 imp.importLights = false;
