@@ -1,5 +1,12 @@
 {
-  "status": "RUNNING",
+  "status": "SUPERSEDED",
   "scene": "147VR_MainScene.unity",
-  "shots": []
+  "superseded_by": "Docs/M5_REAL_10SHOT_CERT_20260919.json",
+  "reason": "This file was a RUNNING placeholder and contained zero shot evidence. It must not be interpreted as the authoritative REAL10 result.",
+  "authoritative_result": {
+    "fired": 10,
+    "resolved": 10,
+    "settled": 10,
+    "errors": 0
+  }
 }

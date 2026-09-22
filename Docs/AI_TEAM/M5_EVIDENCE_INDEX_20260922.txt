@@ -1,0 +1,25 @@
+# M5 Evidence Index — 2026-09-22
+
+This index closes repository evidence ambiguity without claiming runtime results that are not present.
+
+## Authoritative committed certificates
+- REAL10: `Docs/M5_REAL_10SHOT_CERT_20260919.json` — PASS; fired 10; resolved 10; settled 10; errors 0.
+- Post-reset XR regression: `Docs/M5_XR_POST_RESET_CERT_20260920.json` — PASS_POST_RESET_XR_INTEGRATION_REGRESSION; Unity 6000.4.4f1; REAL10 regression PASS; Quest 2/3 hardware NOT_RUN.
+
+## Source inventories
+- Rules: `M5_3_RulesUnitTests.cs` — 43 test methods.
+- Runtime transaction: `M5RuntimeTransactionTests.cs` — 20 test methods.
+- Post-Cue reliability: `M5PostCueReliabilityTests.cs` — 3 test methods.
+These counts prove source inventory only. They do not prove that all tests executed and passed.
+
+## Evidence gaps retained explicitly
+- Unity batch logs are ignored by Git via `*.log`; referenced logs are not replayable from this repository.
+- No committed NUnit XML was found for the claimed 43/43 and 20/20 runtime executions.
+- No committed decisive `MissingScripts=0` output was found.
+- Quest 2/3 hardware test remains NOT_RUN.
+
+## Conflict resolution
+`Docs/M5_REAL_10SHOT_FINAL_20260920.json` is explicitly marked SUPERSEDED and points to the authoritative REAL10 certificate.
+
+## Next gate
+Before Main Scene prefab mutation for production table 008, write and review the 008 geometry/collider/calibration contract. Preserve M5 core and historical V007 evidence.
