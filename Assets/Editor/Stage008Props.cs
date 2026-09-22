@@ -253,15 +253,15 @@ namespace VR147.EditorTools
             var placements = new Dictionary<string, (Vector3 pos, float yaw)>
             {
                 // on the +X long rail, a third of the way along the length toward one end
-                { "CHALK", (new Vector3(cx + halfX, railTopY, cz - 0.35f * halfZ), 0f) },
+                { "CHALK", (new Vector3(cx + halfX, railTopY, cz - 0.35f * halfZ), 90f) },
                 // lying on the floor alongside the -X long side, long axis already along Z
-                { "REST", (new Vector3(cx - (halfX + 0.30f), FloorY, cz), 0f) },
+                { "REST", (new Vector3(cx - (halfX + 0.30f), FloorY, cz), 90f) },
                 // on the floor past the +Z end, turned to face the table
-                { "CUERACK", (new Vector3(cx, FloorY, cz + halfZ + 0.45f), 180f) },
+                { "CUERACK", (new Vector3(cx, FloorY, cz + halfZ + 0.45f), 90f) },
                 // on the floor beside the +X long side
-                { "TRIANGLE", (new Vector3(cx + (halfX + 0.30f), FloorY, cz + 0.60f), 0f) },
+                { "TRIANGLE", (new Vector3(cx + (halfX + 0.30f), FloorY, cz + 0.60f), 90f) },
                 // on the floor beyond the -Z head end, facing the table
-                { "SCOREBOARD", (new Vector3(cx, FloorY, cz - (halfZ + 0.60f)), 0f) },
+                { "SCOREBOARD", (new Vector3(cx, FloorY, cz - (halfZ + 0.60f)), 270f) },
             };
 
             var report = new List<string>();
