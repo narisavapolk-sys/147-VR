@@ -177,7 +177,7 @@ namespace VR147.EditorTools
         static void Stage(bool saveScene)
         {
             // ---- locate the table without guessing
-            var setups = Object.FindObjectsByType<SnookerPhysicsSetup>(FindObjectsSortMode.None);
+            var setups = Object.FindObjectsByType<SnookerPhysicsSetup>(FindObjectsInactive.Include, FindObjectsSortMode.None);
             if (setups.Length == 0)
             {
                 Debug.LogError("[Stage008Props] no SnookerPhysicsSetup in the scene - aborting, scene untouched.");
