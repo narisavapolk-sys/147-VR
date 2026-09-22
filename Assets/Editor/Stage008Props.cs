@@ -11,6 +11,26 @@
 //   It also works as a plain MENU ITEM, so batch mode is optional:
 //     147VR / 008 / 1. Configure Prop FBX Import Settings
 //     147VR / 008 / 2. Stage Table Props Into Current Scene
+//     147VR / 008 / 3. Verify Prop Import (shader family + materials)
+//
+// RENDER PIPELINE: THIS PROJECT IS URP, SO MATERIAL IMPORT MODE MATTERS
+//   Verified from the repo: URP 17.4.0 in the manifest; URP registered in GraphicsSettings
+//   (m_RenderPipelineGlobalSettingsMap -> UnityEngine.Rendering.Universal.UniversalRenderPipeline);
+//   Mobile_RPAsset (guid 5e6cbd92db86f4b18aec3ed561671858) assigned per quality level in
+//   QualitySettings.asset; the project's own shader Assets/Shaders/147VR_TableSurfaceMarking.shader
+//   includes Packages/com.unity.render-pipelines.universal/ShaderLibrary; and existing imported
+//   materials here use URP/Lit (shader guid 933532a4fcc9baf4fa0491de14d08ed7, with the
+//   URP-specific properties _BaseMap, _ClearCoatMask, _BlendModePreserveSpecular,
+//   _AddPrecomputedVelocity).
+//
+//   Consequence: the model importer MUST use ImportViaMaterialDescription, which maps the FBX
+//   material description onto the ACTIVE pipeline's Lit shader. ModelImporterMaterialImportMode
+//   .ImportStandard forces the BUILT-IN Standard shader, which renders MAGENTA under URP. An
+//   earlier revision of this file set ImportStandard; that is fixed here.
+//
+//   Material location is External, matching this project's existing convention of separate
+//   "<Model>__<Material>.mat" assets next to the model (see Assets/Prefabs/PoolTable/*.mat), so
+//   the prop materials can be art-directed rather than hidden inside the prefab.
 //
 // BATCH (optional):
 //     Unity.exe -quit -batchmode -projectPath "<proj>" -logFile "<log>" \
@@ -36,6 +56,7 @@
 //   which maps Blender X -> world Z, Blender Y -> world X, Blender Z -> world Y.
 
 using System.Collections.Generic;
+using System.IO;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
@@ -88,13 +109,47 @@ namespace VR147.EditorTools
                 imp.importLights = false;
                 imp.importBlendShapes = false;
                 imp.importAnimation = false;
-                imp.materialImportMode = ModelImporterMaterialImportMode.ImportStandard;
-                imp.materialLocation = ModelImporterMaterialLocation.InPrefab;
+                // NOT ImportStandard - that forces the built-in Standard shader and renders
+                // magenta under URP. This maps onto the active pipeline's Lit shader instead.
+                imp.materialImportMode = ModelImporterMaterialImportMode.ImportViaMaterialDescription;
+                imp.materialLocation = ModelImporterMaterialLocation.External;
+                imp.materialSearch = ModelImporterMaterialSearch.Local;
                 imp.SaveAndReimport();
                 changed++;
             }
             AssetDatabase.Refresh();
             Debug.Log("[Stage008Props] import settings applied to " + changed + "/" + Expected.Length + " prop FBX");
+            VerifyImports();
+        }
+
+        /// <summary>
+        /// Checks the thing that fails silently: a material imported with the wrong shader family
+        /// looks fine in the log and magenta in the headset. Run this after importing.
+        /// </summary>
+        [MenuItem("147VR/008/3. Verify Prop Import (shader family + materials)")]
+        public static void VerifyImports()
+        {
+            string[] guids = AssetDatabase.FindAssets("t:Material", new[] { PropFolder });
+            if (guids.Length == 0)
+            {
+                Debug.LogWarning("[Stage008Props] no materials under " + PropFolder +
+                                 " yet - run menu 1 (Configure Imports) first.");
+                return;
+            }
+
+            int bad = 0;
+            foreach (string g in guids)
+            {
+                string p = AssetDatabase.GUIDToAssetPath(g);
+                var m = AssetDatabase.LoadAssetAtPath<Material>(p);
+                string sh = (m != null && m.shader != null) ? m.shader.name : "<null>";
+                bool urpOk = sh.StartsWith("Universal Render Pipeline/");
+                if (!urpOk) bad++;
+                Debug.Log(string.Format("[Stage008Props] {0}  shader='{1}'  {2}",
+                    Path.GetFileName(p), sh, urpOk ? "URP OK" : "NOT URP -> WILL RENDER WRONG"));
+            }
+            Debug.Log("[Stage008Props] " + guids.Length + " prop material(s), " + bad +
+                      " not URP" + (bad > 0 ? "  <-- fix before staging" : ""));
         }
 
         // ------------------------------------------------------------------ staging
