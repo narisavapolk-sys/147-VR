@@ -174,6 +174,18 @@ namespace VR147.EditorTools
             Stage(true);
         }
 
+        static Bounds GetWorldBounds(BoxCollider box)
+        {
+            Vector3 h = box.size * 0.5f;
+            Vector3 c = box.center;
+            Vector3 p0 = box.transform.TransformPoint(c + new Vector3(-h.x, -h.y, -h.z));
+            Bounds b = new Bounds(p0, Vector3.zero);
+            for (int ix = -1; ix <= 1; ix += 2)
+            for (int iy = -1; iy <= 1; iy += 2)
+            for (int iz = -1; iz <= 1; iz += 2)
+                b.Encapsulate(box.transform.TransformPoint(c + new Vector3(ix * h.x, iy * h.y, iz * h.z)));
+            return b;
+        }
         static void Stage(bool saveScene)
         {
             // ---- locate the table without guessing
@@ -202,7 +214,7 @@ namespace VR147.EditorTools
                 return;
             }
 
-            Bounds tb = bed.bounds;                       // world-space AABB
+            Bounds tb = GetWorldBounds(bed);                 // world-space AABB from collider geometry (works even when the source collider is disabled)
             float surfaceTopY = tb.max.y;
             float halfX = tb.size.x * 0.5f;               // half WIDTH  (1.778 axis)
             float halfZ = tb.size.z * 0.5f;               // half LENGTH (3.569 axis)
