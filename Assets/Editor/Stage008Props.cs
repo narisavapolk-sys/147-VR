@@ -69,9 +69,16 @@ namespace VR147.EditorTools
         const string RootName = "147VR_PROPS_ROOT";
         const string MainScenePath = "Assets/Scenes/147VR_MainScene.unity";
 
-        // Assumption, stated out loud: the scene floor is at Y = 0. Logged on every run so a
-        // wrong value is visible immediately. Adjust here if the real floor differs.
-        const float FloorY = 0f;
+        // Floor height is DERIVED from measured 008 evidence, never assumed.
+        // Artifacts/M5_3/008_Measurement/m53_008_measure.json (Blender frame, Z up):
+        //     TABLE SURFACE top    Blender Z = 0.827211
+        //     EVIRO/Plane ground   Blender Z = 0.000000
+        //     LEGS min (the feet)  Blender Z = 0.001429   -> the legs really do stand on that plane
+        //  => the bed top is 0.827 m above the floor.
+        // In Main Scene the Bed_Collider top sits at world Y = 0, so the floor is at
+        // surfaceTopY - 0.827.  An earlier revision hard-coded the floor at Y = 0, which placed
+        // every floor-standing prop at BED height, i.e. floating ~0.83 m above the floor.
+        const float BedAboveFloor = 0.827f;
 
         // Bounds AREA of each prop's Renderers, in UNITY world axes, from the committed manifest
         // (Artifacts/M5_3/008_Measurement/m53_008_props_manifest.json, 12/12 assertions).
@@ -249,19 +256,24 @@ namespace VR147.EditorTools
                 return;
             }
 
-            // ---- placement table. FloorY for floor items, railTopY for the chalk.
+            // ---- placement table. floorY for floor items, railTopY for the chalk.
+            // floorY is derived from the table itself, never a bare constant.
+            float floorY = surfaceTopY - BedAboveFloor;
+            Debug.Log(string.Format(
+                "[Stage008Props] floorY DERIVED = {0:F4}  (surfaceTopY {1:F4} - bedAboveFloor {2:F3})",
+                floorY, surfaceTopY, BedAboveFloor));
             var placements = new Dictionary<string, (Vector3 pos, float yaw)>
             {
                 // on the +X long rail, a third of the way along the length toward one end
                 { "CHALK", (new Vector3(cx + halfX, railTopY, cz - 0.35f * halfZ), 90f) },
                 // lying on the floor alongside the -X long side, long axis already along Z
-                { "REST", (new Vector3(cx - (halfX + 0.30f), FloorY, cz), 90f) },
+                { "REST", (new Vector3(cx - (halfX + 0.30f), floorY, cz), 90f) },
                 // on the floor past the +Z end, turned to face the table
-                { "CUERACK", (new Vector3(cx, FloorY, cz + halfZ + 0.45f), 90f) },
+                { "CUERACK", (new Vector3(cx, floorY, cz + halfZ + 0.45f), 90f) },
                 // on the floor beside the +X long side
-                { "TRIANGLE", (new Vector3(cx + (halfX + 0.30f), FloorY, cz + 0.60f), 90f) },
+                { "TRIANGLE", (new Vector3(cx + (halfX + 0.30f), floorY, cz + 0.60f), 90f) },
                 // on the floor beyond the -Z head end, facing the table
-                { "SCOREBOARD", (new Vector3(cx, FloorY, cz - (halfZ + 0.60f)), 270f) },
+                { "SCOREBOARD", (new Vector3(cx, floorY, cz - (halfZ + 0.60f)), 270f) },
             };
 
             var report = new List<string>();
