@@ -1,0 +1,194 @@
+{
+  "pass": "m53_008_props",
+  "provided_by": "COACH",
+  "opened_source_blend": null,
+  "modified_source_blend": false,
+  "certified_008_sha256": "c4e0fb162d72146c6f3e0d43b8b18656b63a78315e2c3388ceb656e2b4ce357d",
+  "axis_convention": {
+    "length": "X",
+    "width": "Y",
+    "up": "Z",
+    "fbx_axis_up": "Y",
+    "fbx_axis_forward": "-Z"
+  },
+  "proposed_dimensions": "see SPEC in m53_008_props.py - PROPOSED, not measured truth",
+  "props": {
+    "chalk": {
+      "objects": 1,
+      "object_names": [
+        "Chalk_Body"
+      ],
+      "asset_role": "147VR_PROP_CHALK",
+      "world_min": [
+        -0.0175,
+        -0.0175,
+        0.0
+      ],
+      "world_max": [
+        0.0175,
+        0.0175,
+        0.022
+      ],
+      "size_m": [
+        0.035,
+        0.035,
+        0.022
+      ],
+      "grounded": true,
+      "fbx": "fbx\\147VR_PROP_CHALK.fbx",
+      "fbx_bytes": 17196,
+      "materials": [
+        "M_PROP_Chalk_Blue"
+      ]
+    },
+    "rest": {
+      "objects": 5,
+      "object_names": [
+        "Rest_Ferrule",
+        "Rest_Head_Arm_N",
+        "Rest_Head_Arm_S",
+        "Rest_Head_Cross",
+        "Rest_Shaft"
+      ],
+      "asset_role": "147VR_PROP_REST",
+      "world_min": [
+        -0.79,
+        -0.0675,
+        0.0
+      ],
+      "world_max": [
+        0.79,
+        0.0675,
+        0.0253
+      ],
+      "size_m": [
+        1.58,
+        0.135,
+        0.0253
+      ],
+      "grounded": true,
+      "fbx": "fbx\\147VR_PROP_REST.fbx",
+      "fbx_bytes": 29292,
+      "materials": [
+        "M_PROP_Rest_Brass",
+        "M_PROP_Rest_Wood"
+      ]
+    },
+    "cuerack": {
+      "objects": 5,
+      "object_names": [
+        "Rack_Base",
+        "Rack_Post_L",
+        "Rack_Post_R",
+        "Rack_Rail_1",
+        "Rack_Rail_2"
+      ],
+      "asset_role": "147VR_PROP_CUE_RACK",
+      "world_min": [
+        -0.21,
+        -0.15,
+        0.0
+      ],
+      "world_max": [
+        0.21,
+        0.15,
+        0.93
+      ],
+      "size_m": [
+        0.42,
+        0.3,
+        0.93
+      ],
+      "grounded": true,
+      "fbx": "fbx\\147VR_PROP_CUERACK.fbx",
+      "fbx_bytes": 35148,
+      "materials": [
+        "M_PROP_Rack_Wood"
+      ]
+    },
+    "triangle": {
+      "objects": 3,
+      "object_names": [
+        "Triangle_Rail_1",
+        "Triangle_Rail_2",
+        "Triangle_Rail_3"
+      ],
+      "asset_role": "147VR_PROP_RACK_TRIANGLE",
+      "world_min": [
+        -0.156033,
+        -0.135129,
+        0.0
+      ],
+      "world_max": [
+        0.156033,
+        0.135129,
+        0.038
+      ],
+      "size_m": [
+        0.312067,
+        0.270258,
+        0.038
+      ],
+      "grounded": true,
+      "fbx": "fbx\\147VR_PROP_TRIANGLE.fbx",
+      "fbx_bytes": 20668,
+      "materials": [
+        "M_PROP_Triangle_Plastic"
+      ]
+    },
+    "scoreboard": {
+      "objects": 9,
+      "object_names": [
+        "Board_Base",
+        "Board_Face",
+        "Board_Frame_Bottom",
+        "Board_Frame_Left",
+        "Board_Frame_Right",
+        "Board_Frame_Top",
+        "Board_Post",
+        "Board_Track_1",
+        "Board_Track_2"
+      ],
+      "asset_role": "147VR_PROP_SCOREBOARD",
+      "world_min": [
+        -0.31,
+        -0.12,
+        0.0
+      ],
+      "world_max": [
+        0.31,
+        0.12,
+        1.35
+      ],
+      "size_m": [
+        0.62,
+        0.24,
+        1.35
+      ],
+      "grounded": true,
+      "fbx": "fbx\\147VR_PROP_SCOREBOARD.fbx",
+      "fbx_bytes": 37644,
+      "materials": [
+        "M_PROP_Board_Face",
+        "M_PROP_Board_Wood"
+      ]
+    }
+  },
+  "assertions": {
+    "ASSERT_NO_SOURCE_BLEND_OPENED": true,
+    "ASSERT_SOURCE_BLEND_NOT_MODIFIED": true,
+    "ASSERT_NO_NEGATIVE_SCALE": true,
+    "ASSERT_UNIT_SCALE": true,
+    "ASSERT_ALL_HAVE_ASSET_ROLE": true,
+    "ASSERT_ALL_HAVE_MATERIAL": true,
+    "ASSERT_ALL_GROUNDED_AT_Z0": true,
+    "ASSERT_NO_CAMERA_OR_LIGHT": true,
+    "ASSERT_TRIANGLE_INNER_FITS_15_BALLS": true,
+    "ASSERT_TRIANGLE_MEASURED_WIDTH_OK": true,
+    "ASSERT_REST_LENGTH_REASONABLE": true,
+    "ASSERT_PROP_NAMES_DO_NOT_COLLIDE_WITH_PHYSICS_NAMES": true
+  },
+  "assertions_passed": 12,
+  "assertions_total": 12,
+  "props_blend": "147VR_Props_v001.blend"
+}
