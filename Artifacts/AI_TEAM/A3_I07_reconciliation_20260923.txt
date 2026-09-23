@@ -1,0 +1,21 @@
+A3 I07 RECONCILIATION — calibration cue identity
+Date: 2026-09-23
+HEAD at inspection: 55539c16 (A1.3 evidence commit)
+
+Test evidence:
+Assets/Editor/M5RuntimeTransactionTests.cs:85 — Tracker_Resolves_CalibrationSphere009_ByPointsZero
+Assets/Editor/M5RuntimeTransactionTests.cs:92 — Assert.IsNull(expected)
+This assertion contradicts the method contract and current source behavior; it is a stale test expectation, not a runtime failure.
+
+Source evidence:
+Assets/Scripts/Quest/SnookerBallTracker.cs:185 — calibration cue BallInfo is created with points=0.
+Assets/Scripts/Quest/M5ShotObservationBuilder.cs:68 — points=0 is assigned cue identity 1.
+Assets/Scripts/Quest/M5ShotObservationBuilder.cs:94-101 — points=0 maps to M5PottedBallType.CueBall.
+Assets/Scripts/Quest/Rules/M5SnookerRulesEngine.cs:280 — colour iterator admits only pot.AsColour()!=None.
+Assets/Scripts/Quest/Rules/M5SnookerRulesEngine.cs:288 — typed Count iterator counts only the requested type.
+
+Conclusion:
+I07 = INVALID / STALE_TEST_EXPECTATION for the null assertion.
+No frozen rules-core source was changed.
+The points=0 calibration cue remains a tracked identity for lifecycle/observation, while rule colour/red iterators do not classify it as a colour/red ball.
+Required next action: repair the test assertion only if/when authorized; do not alter frozen rules core.
