@@ -485,3 +485,13 @@ the real project, system environment, firewall.
 - Cleanup verified: no probe residue, no orphan processes; **147 VR source, Main Scene, certified core untouched.**
 
 **B1 / D-3a = PASS.**
+
+## 2026-09-23 - F7 integration line declared
+
+**Decision: Option B — `integration/008-m53` from production tree `d6fe5b9a` (ancestor `1da8ed55`).**
+
+Reason: the production/008 tree is already the current 008 staging line and contains the corrected prop-floor fix. This minimizes the delta from the tree being prepared for production; the validated M5.3/APK history at `7cf232e` will be merged into this integration line as a controlled, reviewable merge. No rebase/rewritten history is permitted.
+
+Integration-line authority: `integration/008-m53`. Final shipping validation must run on this line. The source branches `fix/008-prop-floor-height-20260922` and `checkpoint/147vr-apk-clean-publish` remain historical/reference lines and are not interchangeable with the integration line.
+
+Next controlled step: R2 — commit `ProjectSettings/ProjectVersion.txt` alone for Unity `6000.4.12f1`, with lock dispositions recorded before first real-project open.
