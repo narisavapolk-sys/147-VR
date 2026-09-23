@@ -3,6 +3,11 @@
 Session: memory-reset recovery → 12f1 UPM frontier (D-1 / D-3.0 / D-3a)
 Discipline: F9 — tracked path, sha256 recorded, no `.log` artifacts.
 
+**Column semantics:** the `sha256` column is the **content sha256 of the file's canonical bytes (LF)** —
+it is a verification value for the artifact, **never** a git object id and never an apply anchor.
+Git blob ids and commit ids live in patch `index` lines, `git ls-tree` output and `WHICH_COMMIT` fields.
+Base blob of this index when Pack v8 was generated: `d0158146dc872ba9e77b9050fa7e621bd7c9696e`.
+
 ## Docs/AI_TEAM/
 
 | Artifact | sha256 |
@@ -19,6 +24,7 @@ Discipline: F9 — tracked path, sha256 recorded, no `.log` artifacts.
 | `COACH_WORKORDER_005_S1B_S2_20260923.md` | `bf1041bea95e1a8f65c0d9c3b038c796d842755b04a09a957b9097c1e3a4ad69` |
 | `COACH_WORKORDER_006_S2A_DISPOSITION_20260923.md` | `72c209ec8a480dd2f05226188f6a62206f530ae3f54239d2addfceba563cdb2e` |
 | `COACH_WORKORDER_007_NEXT_ACTIONS_AND_CONVERGENCE_20260923.md` | `c974ad4fcb117f58b2fb6a5dcce923aa4eafd6287add46165566ed40aed046bb` |
+| `COACH_WORKORDER_008_BLOCKED_WINDOW_20260923.md` | `2735e65bde17c1a054d3d2383c0edcc194d65d6faecaccb686ac74776ff3bedb` |
 
 ## Related (recorded outside Docs/AI_TEAM/)
 
