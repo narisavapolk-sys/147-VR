@@ -1,0 +1,29 @@
+# F9b / D3A L2 reproducibility evidence
+WHICH_COMMIT: 4ae1961c5b0555109e5dee13963e5a48fd1c1f6b
+TARGET_TREE_HEAD: 4ae1961c5b0555109e5dee13963e5a48fd1c1f6b
+TARGET_TREE_BRANCH: integration/008-m53
+UNITY_EDITOR: 6000.4.12f1 (3ca267ce8005)
+EMPTY_PROJECT: C:\Temp\147VR_D3A_EMPTY_A2
+UNITY_LOG: C:\Temp\147VR_D3A_L2_probe_repro8.log
+UNITY_LOG_SHA256: 634c0712343fc49246facb2c9c91d968ff4194ee6050dc68e3d23c2d984d7850
+UPM_LOG: C:\Users\mongo\AppData\Local\Unity\Editor\upm.log
+UPM_LOG_SHA256: 13d324afde826399c0cb17d79ea208794be1e0e17c766fd431581ef65154a5c2
+PROBE_SOURCE: Tools/D3A_L2_Probe/D3A_L2_Probe.cs
+PROBE_SOURCE_SHA256: 3421e63c8dbbbfc7528262e2109bea769893e10901d0d5eef8961d783f53885e
+
+ACCESS_PATH: ServicesContainer.Resolve<UpmRegistryClient> -> CheckRegistriesChanged()
+REGISTRY_OPERATION: UnityEditor.PackageManager.UI.Internal.UpmGetRegistriesOperation
+
+UPM_HTTP_200: project:list-packages --> 200 (67 ms)
+UPM_HTTP_200: config:project:get-registries --> 200 (7 ms)
+UPM_HTTP_200: packages:get-all-packageinfo --> 200 (1387 ms)
+
+PROBE_RESULT: endpoint requests reproduced on empty 12f1 project.
+DETERMINISM: controlled launch vector; no claim of physics/rules determinism.
+SCOPE: F9b Package Manager endpoint reproducibility only; no XR/device validation.
+NEGATIVE_ACCEPTANCE_LOG: Docs/UnityBatchLogs/UnityBatch_20260923_124247.log
+NEGATIVE_ACCEPTANCE_LOG_SHA256: cd4c0716dc1b15be7f5bc4f37d56550a5b0c32a0ae1ded14b1fed3a71fa330c6
+NEGATIVE_ACCEPTANCE: PASS - real integration-project open produced no Assets/** mutation, no new probe file, and no D3A L2 probe execution line.
+REAL_OPEN_LOG_RETURN: 0 in log; wrapper exit-code field was blank/UNKNOWN and was not used as the verdict.
+
+NOTE: Unity exit-code handling is not the endpoint verdict; endpoint co-occurrence in upm.log is authoritative.

@@ -539,3 +539,19 @@ Additional log observations: repeated Packages directory monitor buffer overflow
 **F9 evidence:** tracked artifact `Artifacts/M5_3/R3_packages_lock_idempotence_20260923.txt` records both run hashes, UPM SHA256, HTTP-200 observations, before/after lock values, requester finding, and exposure. F9b L2 reproducibility debt remains open.
 
 **D1 gate: PASS / CLOSED.** Working tree is not yet clean only because the new tracked F9 artifact and this state update are pending commit. No further Unity/toolchain work is authorized unless a new failure appears.
+
+## 2026-09-23 - S1b F9b L2 reproducibility CLOSED
+
+**S1b commit:** `4ae1961c5b0555109e5dee13963e5a48fd1c1f6b` adds `Tools/D3A_L2_Probe/D3A_L2_Probe.cs` and README only. Probe source is outside `Assets/` and therefore cannot execute during a normal real-project open.
+
+**Repro result:** fresh empty `6000.4.12f1` project produced `project:list-packages --> 200`, `packages:get-all-packageinfo --> 200`, and `config:project:get-registries --> 200` in UPM evidence. Registry path is `ServicesContainer.Resolve<UpmRegistryClient>` followed by `CheckRegistriesChanged()`; operation type is `UpmGetRegistriesOperation`.
+
+**Evidence:** `Artifacts/M5_3/F9b_D3A_L2_repro_20260923.txt`. Probe SHA256 `3421e63c8dbbbfc7528262e2109bea769893e10901d0d5eef8961d783f53885e`. Repro Unity log SHA256 `634c0712343fc49246facb2c9c91d968ff4194ee6050dc68e3d23c2d984d7850`; UPM log SHA256 at capture `13d324afde826399c0cb17d79ea208794be1e0e17c766fd431581ef65154a5c2`.
+
+**Negative acceptance:** real `integration/008-m53` open completed with Unity log return code 0. No `Assets/**` mutation, no probe file creation, and no `D3A L2` / `D3A_L2_Probe` execution marker. Log SHA256 `cd4c0716dc1b15be7f5bc4f37d56550a5b0c32a0ae1ded14b1fed3a71fa330c6`. Wrapper exit-code field was blank/UNKNOWN; log is authoritative.
+
+**H1/H2 D1 correction:** authoritative D1 commit is full SHA `4e1b131d11b9b14df4a422b110039386ac09209d`. The entire lock diff contains only the two resolved version strings, so no dependency edge or declared minimum changed; the elevation is attributed to Unity 6000.4.12f1 resolver/bundled metadata rather than a package graph edge.
+
+**S1b/F9b gate: PASS / CLOSED.** Next controlled step is S2a: pre-register rules cases from actual rules code before execution. Frozen M5.3 core remains LOCKED; any FAIL inside it is STOP, not permission to patch.
+
+**F9b canonical artifact SHA256:** `630ec16edd4769f15798adfe79a32b405e3372eced0702812677fa8cdd4f8f51` (1795 bytes in staged canonical form).
