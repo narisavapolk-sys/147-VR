@@ -1,0 +1,25 @@
+# R3 / D1 package-lock idempotence evidence
+WHICH_COMMIT: 4e1b131d11b9b14df4a422b110039386ac09209
+TARGET_TREE_HEAD: 4e1b131d11b9b14df4a422b110039386ac09209
+TARGET_TREE_BRANCH: integration/008-m53
+UNITY_EDITOR: 6000.4.12f1 (3ca267ce8005)
+CAUSE: first open under Unity 12f1 re-resolved transitive packages
+REQUESTER_CHECK: no listed dependent requests >=2.6.0 for core-utils or >=3.5.0 for performance
+XR_MINIMA_OBSERVED: hands 2.2.0; management 2.2.1; openxr 2.3.0
+PERFORMANCE_MINIMUM_OBSERVED: 3.0.3
+MANIFEST_CHANGE: none
+LOCK_BEFORE: core-utils 2.5.3; performance 3.4.0
+LOCK_ACCEPTED: core-utils 2.6.0; performance 3.5.0
+FIRST_OPEN_LOG: Docs/UnityBatchLogs/UnityBatch_20260923_114111.log
+FIRST_OPEN_LOG_SHA256: 4DC81FC1DD6F38E8DB62538FB27C2355870E779C7CE238025EF9AC1364CC9E52
+IDEMPOTENCE_LOG: Docs/UnityBatchLogs/UnityBatch_20260923_121424.log
+IDEMPOTENCE_LOG_SHA256: B7E4826125159809063AC7A9B5E4A74B0F2171C07CF2231603F308C2314C59A3
+UPM_LOG: C:\Users\mongo\AppData\Local\Unity\Editor\upm.log
+UPM_LOG_SHA256_AT_CHECK: 9770FC3596B19D75F3F89239E9242236D58895CED379FB0D64475BC9AB9CAD9C
+UPM_HTTP_200: project:list-packages at 10:14:42.145Z, 10:14:43.384Z, 10:14:46.518Z, 10:14:50.309Z
+IDEMPOTENCE_RESULT: PASS — second 12f1 open produced no tracked diff
+SHUTDOWN: no Unity or UnityPackageManager processes remained
+RETURN: Exiting batchmode successfully now; return code 0
+EXPOSURE_SURFACE: XR initialization / hands / management / OpenXR; test-framework performance is test tooling only
+OBSERVATION: duplicate Unsafe.dll warning and XR StopSubsystems shutdown warning were non-fatal and not chased
+NOTE: this evidence does not clear XR device/runtime validation or F9b L2 reproducibility debt

@@ -525,3 +525,17 @@ Package-lock delta: com.unity.test-framework.performance 3.4.0 -> 3.5.0; com.uni
 **Disposition:** do not commit or revert package-lock yet. This is a dependency-graph mutation requiring explicit acceptance and provenance before rules or runtime validation.
 Additional log observations: repeated Packages directory monitor buffer overflow messages, duplicate System.Runtime.CompilerServices.Unsafe.dll warning, and XR StopSubsystems shutdown warning. None caused batch failure.
 **R3 verdict: CONDITIONAL / STOP.** Toolchain launch, UPM resolution, compile/import, and clean shutdown succeeded; acceptance is blocked solely by tracked package-lock mutation. No further Unity runs, rules tests, scene validation, or package cleanup until disposition.
+
+## 2026-09-23 - D1 packages-lock disposition CLOSED
+
+**D1 decision:** ACCEPT WITH DECLARATION. Owner decision delegated to Luna. Commit `4e1b131d11b9b14df4a422b110039386ac09209` contains only `Packages/packages-lock.json` (2 insertions / 2 deletions). No `Packages/manifest.json` change.
+
+**Cause / requester result:** Unity 6000.4.12f1 first-open resolver elevated two transitive packages: `com.unity.xr.core-utils` 2.5.3 -> 2.6.0 and `com.unity.test-framework.performance` 3.4.0 -> 3.5.0. No listed dependent requests >=2.6.0 or >=3.5.0; observed XR minima are hands 2.2.0, management 2.2.1, OpenXR 2.3.0, and performance requester 3.0.3. This is recorded as 12f1 resolver graph elevation, not a manifest-selected dependency.
+
+**Idempotence:** second clean 12f1 project open completed with no further tracked diff. Unity log `Docs/UnityBatchLogs/UnityBatch_20260923_121424.log`, SHA256 `B7E4826125159809063AC7A9B5E4A74B0F2171C07CF2231603F308C2314C59A3`, ended with batchmode return code 0. No Unity/UPM processes remained.
+
+**Exposure:** `xr.core-utils` affects XR initialization / hands / management / OpenXR. The performance package is test tooling only. This disposition does not clear XR device/runtime validation, S3/S5, or the device gate.
+
+**F9 evidence:** tracked artifact `Artifacts/M5_3/R3_packages_lock_idempotence_20260923.txt` records both run hashes, UPM SHA256, HTTP-200 observations, before/after lock values, requester finding, and exposure. F9b L2 reproducibility debt remains open.
+
+**D1 gate: PASS / CLOSED.** Working tree is not yet clean only because the new tracked F9 artifact and this state update are pending commit. No further Unity/toolchain work is authorized unless a new failure appears.
