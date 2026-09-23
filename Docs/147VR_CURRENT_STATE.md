@@ -569,3 +569,18 @@ Additional log observations: repeated Packages directory monitor buffer overflow
 **Cleanup:** temporary S2a probe and .meta were removed from `Assets/Editor`. No source/core mutation was made by the validation run.
 
 **S2a canonical evidence SHA256:** `b465d8ec1607ea0dbd539c9ffb577ba0c83253c17862906aabd32690f4b5b177` (1836 bytes staged canonical form).
+
+## 2026-09-23 — WO#010 Pack v9 / UPM one-session stop
+
+- Pack v9 was fetched from the verified litter.catbox channel, 27,553 bytes, SHA256 8aa949523cd0cee7cd7b3c3589a0591df485b30b873e5e401fb61d9df997382f.
+- Applied exactly one git-am patch at precondition 3b318cce6583114b5dd52f9aa951666cea6c2f3c; resulting commit dac91ca116d1ef62d11519a8f9e48d2259f217ae.
+- A1.3 audit after Pack v9: 16 rows, MATCH=16, MISMATCH=0, MISSING=0, DUPLICATES=0.
+- A1.3 evidence was re-pointed to the new HEAD and preserved its prior HEAD; protocol now distinguishes Coach artifacts from executor evidence under Artifacts/.
+- Re-point/audit commit: 90d7e4abd5b83d1f1152e6f1b96917fb317d8776, pushed; origin matches local.
+- UPM one-session cap was consumed. Pre-flight had no Unity/UnityPackageManager/UnityHub orphan; prior PID 7732 was dead.
+- Fresh retry used Unity 6000.4.12f1, IPC Unity-Upm-v9, purpose-created liveness PID 6576, Server CWD, and 180s outer timeout. The UPM server itself exited code 1 with ERR_INVALID_ARG_TYPE in getLocalConfigFolder/readConfig, before IPC.
+- Unity then timed out after 30s on Unity-Upm-v9; exit code 1. R11/R36 XML was not produced, so R11/R36 are NOT VERIFIED in this session.
+- Classification: BLOCKED / launcher-server-environment defect observed; this run does not discriminate the 12f1 UPM architecture because the server was started without the full prior UPM environment guard. Do not infer an architecture failure.
+- Evidence: Artifacts/M5_3/WO010_UPM_SESSION_20260923.txt; Unity log SHA256 F805667B6F2C90034ECF18E398EA2CC5A14172507742D0067DD345D908D05E7B.
+- No source/core/rules changes were made by the UPM session. No Unity/UPM process remains.
+- STOP for this work window: do not retry UPM or reopen the architecture; next work must proceed only after a new explicit Coach authorization/work order.

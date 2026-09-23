@@ -1,0 +1,29 @@
+WO#010 UPM SESSION — integration/008-m53
+Date: 2026-09-23
+HEAD: 90d7e4abd5b83d1f1152e6f1b96917fb317d8776
+Unity: 6000.4.12f1 (3ca267ce8005)
+Session cap: 1 UPM session; STOP after this retry
+Pack v9 SHA256: 8aa949523cd0cee7cd7b3c3589a0591df485b30b873e5e401fb61d9df997382f
+Delivery channel: litter.catbox.moe/fgwokg.patch
+Pack bytes: 27553
+Pre-flight Unity/UnityPackageManager/UnityHub: none running
+H-UPM-1 prior PID 7732: not alive at pre-flight; prior launcher argv could not be recovered from tracked evidence
+H-UPM-2 prior failed-run exit code: UNKNOWN (no matching prior C:\Temp artifact found)
+Fresh liveness PID: 6576 (PowerShell Start-Sleep 240s); alive when retry launched
+UPM CWD: C:\Temp\UnityEditors\6000.4.12f1\Editor\Data\Resources\PackageManager\Server
+UPM command: UnityPackageManager.exe server -s 6576 --ipc-path Unity-Upm-v9 -l 2
+UPM process PID: 10280
+UPM process result: exit code 1 after 180.19s
+UPM decisive error: TypeError [ERR_INVALID_ARG_TYPE]: The "path" argument must be of type string. Received undefined
+UPM stack: getLocalConfigFolder -> readConfig -> initialize
+Unity argv: Unity.exe -batchmode -nographics -automated -projectPath "C:\Users\mongo\UnityProjects\147 VR" -logFile "C:\Temp\WO010_UPM_v9_Unity.log" -upmIpcPath Unity-Upm-v9 -runTests -testPlatform editmode -testFilter "M5_3_RulesUnitTests.RedAndColourSameStrokeIsOneFoulAndRedIsRemoved;M5_3_RulesUnitTests.RedPottedWhenColourOnUsesDistinctFoulReason" -testResults "C:\Temp\WO010_R11_R36.xml" -quit
+Unity log: C:\Temp\WO010_UPM_v9_Unity.log
+Unity log bytes: 4388
+Unity log SHA256: F805667B6F2C90034ECF18E398EA2CC5A14172507742D0067DD345D908D05E7B
+Unity result: exit code 1; Package Manager could not connect to IPC stream "Unity-Upm-v9" after 30.0 seconds
+Test result XML: MISSING; R11/R36 therefore NOT RUN / NOT VERIFIED
+Observed classification: BLOCKED — the fresh UPM retry did not reach an IPC-connected state.
+Important limitation: the UPM server retry was launched without the prior full UPM environment guard, and it failed in readConfig before IPC. Therefore this session does NOT discriminate the 12f1 UPM architecture; it records a launcher/server-environment defect only.
+No source/core/rules changes were made by the session.
+No Unity/UPM process remains after cleanup.
+STOP: one-session UPM cap consumed; do not retry UPM or reopen the architecture in this work window.
