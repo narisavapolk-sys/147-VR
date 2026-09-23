@@ -1,0 +1,15 @@
+# WO#011 E1 — UPM launcher environment snapshot
+
+HEAD=73125aab25af5e98cad31b976074a84cd930d78e
+BRANCH=
+integration/008-m53
+RESULT=BLOCKED_STOP`r`nCLASSIFICATION=E1 OBSERVATION ONLY; H-UPM-3 NOT CONFIRMED
+H-UPM-3=NOT CONFIRMED (sibling shell only; launcher itself guards TMP; HOME remains residual risk)
+
+APPDATA=C:\Users\mongo\AppData\Roaming
+LOCALAPPDATA=C:\Users\mongo\AppData\Local
+USERPROFILE=C:\Users\mongo
+HOME=
+TEMP=C:\Users\mongo\AppData\Local\Temp
+TMP=
+PATH_FIRST_200=C:\Users\mongo\AppData\Local\npm-cache\_npx\4b4c857f6efdfb61\node_modules\.bin;C:\Users\mongo\node_modules\.bin;C:\Users\node_modules\.bin;C:\node_modules\.bin;C:\Program Files\nodejs\node_modules\npm
