@@ -158,7 +158,7 @@ public sealed class M5_3_RulesUnitTests
                 pots: new[] { P(107, M5PottedBallType.Black), P(4, M5PottedBallType.Red) }));
         Assert.That(d.IsLegal, Is.False);
         Assert.That(d.OpponentPoints, Is.EqualTo(7));
-        Assert.That(d.FoulReasons, Does.Contain(M5FoulReason.RedPottedWhenColourOn.ToString()));
+        Assert.That(d.FoulReasons, Does.Contain(M5FoulReason.RedPottedWhenColourOn));
         Assert.That(d.BallsToRemove[0].BallId, Is.EqualTo(4));
         Assert.That(d.BallsToRespot[0].BallId, Is.EqualTo(107));
     }
@@ -405,7 +405,7 @@ public sealed class M5_3_RulesUnitTests
         var d = M5SnookerRulesEngine.Evaluate(Shot(37, M5BallOn.NominatedColour, 10,
             nominated: M5Colour.Black, first: M5PottedBallType.Black,
             pots: P(4, M5PottedBallType.Red)));
-        Assert.That(d.FoulReasons, Does.Contain(M5FoulReason.RedPottedWhenColourOn.ToString()));
+        Assert.That(d.FoulReasons, Does.Contain(M5FoulReason.RedPottedWhenColourOn));
         Assert.That(d.FoulReasons, Does.Not.Contain(M5FoulReason.ColourPottedWhenRedOn.ToString()));
     }
 
