@@ -516,3 +516,12 @@ Next controlled step: R2 — commit `ProjectSettings/ProjectVersion.txt` alone for
 **R2 = PASS. R3 is next.**
 
 **Provenance correction:** the earlier F7 sentence naming d6fe5b9a as the production tree is imprecise. d6fe5b9a is the B1/D-3a state-document commit on the source branch; the 008 production ancestry reaches 1da8ed55 and then the documentation frontier through 61425b28, 2d8a6ab0, ef6ecf65, 8565a9f3, d6fe5b9a. The authoritative integration branch HEAD is integration/008-m53 and its exact current ancestry is verified by git, not by the prose label above.
+
+## 2026-09-23 - R3 first-open diff captured / STOP for package-lock mutation
+**First-open:** integration/008-m53 @ 4a184045cc7b45e023420a58ed66692a4a368a38, Unity 6000.4.12f1 / changeset 3ca267ce8005. No main scene was manually opened. No Unity or UPM processes remain after shutdown.
+**Runtime evidence:** UnityBatch_20260923_114111.log, 12083 lines, SHA256 4DC81FC1DD6F38E8DB62538FB27C2355870E779C7CE238025EF9AC1364CC9E52. Log ends with batchmode return code 0; launcher wrapper printed a blank exit-code field, so the log is authoritative.
+**R3 diff:** exactly one tracked file changed: Packages/packages-lock.json, 4 lines / 2 insertions / 2 deletions. No Assets, Scenes, ProjectSettings, Artifacts, or certified-core source changes.
+Package-lock delta: com.unity.test-framework.performance 3.4.0 -> 3.5.0; com.unity.xr.core-utils 2.5.3 -> 2.6.0. Neither is directly pinned in manifest; both are transitive resolver state.
+**Disposition:** do not commit or revert package-lock yet. This is a dependency-graph mutation requiring explicit acceptance and provenance before rules or runtime validation.
+Additional log observations: repeated Packages directory monitor buffer overflow messages, duplicate System.Runtime.CompilerServices.Unsafe.dll warning, and XR StopSubsystems shutdown warning. None caused batch failure.
+**R3 verdict: CONDITIONAL / STOP.** Toolchain launch, UPM resolution, compile/import, and clean shutdown succeeded; acceptance is blocked solely by tracked package-lock mutation. No further Unity runs, rules tests, scene validation, or package cleanup until disposition.
