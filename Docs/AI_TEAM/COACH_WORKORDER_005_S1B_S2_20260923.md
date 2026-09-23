@@ -18,7 +18,7 @@
 | **Actual lock delta** | The **entire** file diff is **two lines**: `"version": "3.4.0"` → `"3.5.0"` (line 424) and `"version": "2.5.3"` → `"2.6.0"` (line 465). File size unchanged at 22,251 bytes ✅ |
 | `Packages/manifest.json` | **byte-identical** across the D1 commit ✅ |
 | Evidence commit | `f94a431c` = `Artifacts/M5_3/R3_packages_lock_idempotence_20260923.txt` (25 lines) + `Docs/147VR_CURRENT_STATE.md` ✅ |
-| **F9 artifact hash** | Canonical blob sha256 = `e4c4810d3d48b4b78a924f84e3e9e938c089d999202463d507f3c49683f47277` = **the recorded value** ✅ — the hash was taken from canonical bytes, so the CRLF trap did **not** bite here |
+| **F9 artifact hash** | Canonical blob sha256 = `07328c2b4bdb959a628e1f2b59e05295152f9cfcb9a841802f25b146f0ebbd32` = **the recorded value** ✅ — the hash was taken from canonical bytes, so the CRLF trap did **not** bite here |
 | Artifact completeness | All required fields present: `WHICH_COMMIT` · `TARGET_TREE_*` · `UNITY_EDITOR` · cause · requester check · XR minima · before/accepted versions · both log paths + SHAs · `upm.log` + SHA + HTTP-200 timestamps · idempotence result · shutdown · return code · exposure surface · limitations ✅ |
 
 **⇒ D1 = PASS. The gate is closed.**

@@ -1,10 +1,10 @@
 # R3 / D1 package-lock idempotence evidence
-WHICH_COMMIT: 4e1b131d11b9b14df4a422b110039386ac09209
-TARGET_TREE_HEAD: 4e1b131d11b9b14df4a422b110039386ac09209
+WHICH_COMMIT: 4e1b131d11b9b14df4a422b110039386ac09209d
+TARGET_TREE_HEAD: 4e1b131d11b9b14df4a422b110039386ac09209d
 TARGET_TREE_BRANCH: integration/008-m53
 UNITY_EDITOR: 6000.4.12f1 (3ca267ce8005)
 CAUSE: first open under Unity 12f1 re-resolved transitive packages
-REQUESTER_CHECK: no listed dependent requests >=2.6.0 for core-utils or >=3.5.0 for performance
+REQUESTER_CHECK: no dependent declared minimum changed anywhere in the graph; the entire lock diff is only the two resolved version strings, with no dependency edge added/removed or requested version changed. Resolver elevation therefore originated from Unity 6000.4.12f1 bundled resolver/metadata, not from a package in this project graph.
 XR_MINIMA_OBSERVED: hands 2.2.0; management 2.2.1; openxr 2.3.0
 PERFORMANCE_MINIMUM_OBSERVED: 3.0.3
 MANIFEST_CHANGE: none
