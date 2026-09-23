@@ -495,3 +495,24 @@ Reason: the production/008 tree is already the current 008 staging line and cont
 Integration-line authority: `integration/008-m53`. Final shipping validation must run on this line. The source branches `fix/008-prop-floor-height-20260922` and `checkpoint/147vr-apk-clean-publish` remain historical/reference lines and are not interchangeable with the integration line.
 
 Next controlled step: R2 — commit `ProjectSettings/ProjectVersion.txt` alone for Unity `6000.4.12f1`, with lock dispositions recorded before first real-project open.
+## 2026-09-23 - R2 toolchain pin + first-open lock dispositions
+
+**R2 editor authority:** 6000.4.12f1 / changeset 3ca267ce8005. ProjectSettings/ProjectVersion.txt was changed and committed alone as db9e2738 (chore(toolchain): pin Unity 6000.4.12f1). Unity publishes this exact changeset for 6000.4.12f1. 
+
+**Lock dispositions BEFORE first real-project open:**
+- Certified M5.1/M5.2/M5 rules core: **LOCKED / do not edit**.
+- D8/W1 rail/pocket systems: **LOCKED / do not edit**.
+- V007/GOLDEN visual baseline: **LOCKED / do not edit**.
+- 147VR_M53_VALIDATE: **READ/VALIDATION ONLY**; not the first-open target.
+- Main Scene and 008 prop-floor source: **OBSERVE ONLY** during first-open; no manual scene repair or prop edits.
+- System environment, firewall, Unity Hub registration, launcher source: **LOCKED / no changes**. 12f1 is invoked explicitly from C:\Temp\UnityEditors\6000.4.12f1\Editor\Unity.exe.
+- No rebase/history rewrite; integration authority remains integration/008-m53.
+- First-open acceptance is **R3 diff capture only**. Unexpected source/scene/prefab/package/certification mutation is an immediate STOP; do not normalize or auto-accept it.
+
+**Auto-runner preflight:** known [InitializeOnLoad]/[InitializeOnLoadMethod] code was inspected. The trigger-gated M3/M4/M5 runners have no active environment/marker trigger found in the repository-side checks; M5 ready/go markers are absent and the M4 temp marker is absent. However M24ExistingEditorRegressionOnce is intentionally auto-on-load and can generate regression JSON, while M21* handlers act when their specific calibration scene is opened, and M7_4_V006BoundsAudit writes a Library audit on first import. These are therefore **known first-open side effects**, not unknown execution; R3 must capture them separately from source/scene/certified mutations. TempCleanChainMigration and TempCleanChainRuntimeAudit are trigger-gated and not armed by their project trigger files.
+
+**First-open command constraint:** use only Unity 6000.4.12f1 against the integration worktree; do not open the main scene manually as part of R3. Let project import/compile complete, capture git diff + process inventory, then classify every mutation before any further test.
+
+**R2 = PASS. R3 is next.**
+
+**Provenance correction:** the earlier F7 sentence naming d6fe5b9a as the production tree is imprecise. d6fe5b9a is the B1/D-3a state-document commit on the source branch; the 008 production ancestry reaches 1da8ed55 and then the documentation frontier through 61425b28, 2d8a6ab0, ef6ecf65, 8565a9f3, d6fe5b9a. The authoritative integration branch HEAD is integration/008-m53 and its exact current ancestry is verified by git, not by the prose label above.
