@@ -455,3 +455,19 @@ Next:
 - F11 needs **no tracked change**: `Unity_Batch_Safe.ps1` is parameterized on `-UnityExe` (default is 4f1/Hub).
 - Planning docs are stale: `MASTER_PRODUCTION_ROADMAP` still says Phase 3 active and M5 NOT CERTIFIED, and
   `GATE_STATUS` still says `GATE 4 is not defined yet`. Use `Docs/147VR_REMAINING_WORK_MAP_20260923.md`.
+
+### 2026-09-23 (later) — Toolchain gate cleared; durable lessons
+
+- **Lesson:** project creation needs the editor's native `-createProject <path>` form. The launcher-shaped
+  `-projectPath` + `-createProject` combination failed with `Creating project folder:  failed.` — change one
+  variable, not two.
+- **Lesson:** on 12f1, `config:project:get-registries` is reachable only through the internal package-manager UI
+  client, not the public API. If the probe is not recorded, L2 cannot be re-verified.
+- **Lesson:** the 2026-09-16 ~218 s IPC delay did not recur (0.4 s / 0.0 s). Keep it as an unexplained episodic
+  case; never as a general expectation.
+- **Lesson:** `Code 10 while verifying Licensing Client signature` is not by itself a licensing failure when
+  entitlement resolves.
+- **Lesson:** an index/artifact row written while its own file is still being generated can never verify.
+  Generate the member list first, then write the file (this was hit twice).
+- B1 / D-3a = PASS. Next: F7 integration line → F8 editor-version commit alone → R3 first-open diff → Phase 2
+  validation on the declared line.

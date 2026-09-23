@@ -456,3 +456,32 @@ before/after directory listing and process inventory. Then run D-3a through the 
 
 **Unchanged and untouched:** Main Scene, M5 Rules/Scoring/Turn, V007 / Golden, D8/W1, `147VR_M53_VALIDATE`,
 the real project, system environment, firewall.
+
+### 2026-09-23 (later) — B1 / D-3a PASS
+
+- **A1** (`launcher + -projectPath + -createProject`) = **INVALID VECTOR, discarded** — log: `Creating project folder:  failed.`
+- **A2** native syntax `-createProject C:\Temp\147VR_D3A_EMPTY_A2` = **PASS**. `Assets` empty, no 147 VR material used,
+  `ProjectVersion: 6000.4.12f1 (3ca267ce8005)`.
+- **L3 PASS** — UPM connect → package resolution → compile → clean shutdown:
+  `*** Tundra build success` · `AssetDatabase: script compilation time: 0.688912s` ·
+  `Exiting batchmode successfully now!` · return code 0 · no residual Unity/UnityPackageManager process.
+- **L2 PASS 3/3** — `project:list-packages --> 200` · `packages:get-all-packageinfo --> 200 (2668 ms)` ·
+  `config:project:get-registries --> 200 (4 ms)`.
+- **IPC connect latency 0.4 s** (`Connected to IPC stream "Upm-5652" after 0.4 seconds.`) and 0.0 s in the L2 run.
+  ⇒ **S3 (the 2026-09-16 ~218 s IPC delay) did NOT recur.** It remains unexplained but episodic, not structural —
+  do not promote it to a general "it is just slow".
+- The withdrawn "no IPC after ~302 s" observation is now **formally closed** by this PASS.
+- **Licensing is not a blocker:** `Product: Unity Personal / Type: Assigned / Expiration: Unlimited`;
+  `Code 10 while verifying Licensing Client signature` is followed by a successful entitlement resolve ⇒ not a
+  failure on its own.
+- **Method finding:** `GetRegistries()` does not exist in the public `UnityEditor.PackageManager.Client` API on 12f1;
+  the endpoint was reached through the internal `UnityEditor.PackageManager.UI.Internal.UpmRegistryClient` via an
+  initialized service instance. **Reproducibility debt (F9b):** the probe was deleted, so L2 currently cannot be
+  re-run from the repository — commit a minimal guarded probe plus the `upm.log` excerpt.
+- **Toolchain work stops here** (no launcher edit, no system environment change, no Hub route) unless a new failure
+  is proven. Return to the integration line per `Docs/AI_TEAM/COACH_WORKORDER_004_INTEGRATION_LINE_20260923.md`:
+  declare the line (F7) → commit the editor version alone (F8) → capture the first-open diff (R3) → validate rules
+  on that line.
+- Cleanup verified: no probe residue, no orphan processes; **147 VR source, Main Scene, certified core untouched.**
+
+**B1 / D-3a = PASS.**
