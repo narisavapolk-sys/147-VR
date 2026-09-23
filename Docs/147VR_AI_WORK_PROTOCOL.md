@@ -164,3 +164,22 @@ verified end-to-end because Unity.exe was already running interactively on
 the host when this tool was built (2026-09-06) — running it then would have
 violated the same "One Unity Executor" rule it exists to protect. First real
 user must confirm one successful run and update this section with the result.
+
+---
+
+## Artifact amendment rule (added 2026-09-23)
+
+A Coach artifact under `Docs/AI_TEAM/` may be amended by the executor only when the change is a
+**factual correction of a cross-reference** (a hash, a path, or a commit id) and all three hold:
+
+1. the amendment commit message names the artifact and the field that changed;
+2. `Docs/AI_TEAM/COACH_ARTIFACT_INDEX_20260923.md` (or its successor index) is updated in the
+   **same** commit, because the index row is the verification anchor for the artifact's bytes;
+3. the artifact's own header gains one line recording that it was amended, and by which commit.
+
+Any change to a Coach artifact's **verdict, acceptance criteria or recommendation** is not amended
+in place: it comes back to Coach as a new work order, which supersedes the earlier one by date.
+
+Rationale: on 2026-09-23 an accepted cross-reference amendment to `COACH_WORKORDER_005` landed
+without its index row being updated, so the index no longer verified the artifact. This rule makes
+that class of drift impossible.
