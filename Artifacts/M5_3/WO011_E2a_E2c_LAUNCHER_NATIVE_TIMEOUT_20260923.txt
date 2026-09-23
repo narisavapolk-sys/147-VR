@@ -1,0 +1,33 @@
+﻿# WO#012 E2a/E2c — native launcher session evidence
+
+WHICH_COMMIT=
+73cf7b3b6f8799c48a080e3e32cc3d5ce1f932e5
+UNITY_EDITOR=6000.4.12f1 (3ca267ce8005)
+UNITY_INVOLVED=yes
+LAUNCHER=Docs\Tools\Unity_Batch_Safe.ps1 (unchanged)
+LAUNCH_MODE=tracked launcher; no -upmIpcPath; no -executeMethod
+PROJECT=C:\Users\mongo\UnityProjects\147 VR
+CWD=launcher invocation from project repo
+BEFORE_GIT_STATUS=clean
+PROCESS_PREFLIGHT=Unity/UnityPackageManager absent
+TESTS=editmode; two requested R11/R36 filters
+TEST_RESULTS=C:\Temp\WO011_E2a_R11R36.xml (MISSING)
+LAUNCHER_TIMEOUT_SECONDS=600
+OBSERVED=Unity and UnityPackageManager remained running beyond launcher wait; launcher wrapper then disappeared without a captured exit-code line
+LAUNCHER_EXIT_CODE=NOT_CAPTURED
+UNITY_EXIT_CODE=NOT_CAPTURED (Unity/UPM force-stopped after timeout to leave machine clean)
+CLASSIFICATION=BLOCKED/TIMEOUT — E2a did not reach test execution/result
+UPM_ERROR_SIGNATURES=none found for ERR_INVALID_ARG_TYPE, getLocalConfigFolder, Could not connect, Received undefined
+NATIVE_UPM_IPC=
+[Package Manager] Connected to IPC stream "Upm-8184" after 0.4 seconds.
+ILPP_LAST_MATCH=
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 516.7096ms
+LOG_BYTES=
+313470
+LOG_SHA256=
+489BB1BA7336D995C3091AC4027DB21651CA7248F0AF2A692645CAA71A466942
+E1_ARTIFACT_SHA256=CC5F51822EDE5A6037015C8FE6B23F25AD290688FC60D7889F120CDD30C1EF5D
+E1_LIMIT=E1 was a sibling-shell observation; launcher source itself guards TMP; actual child env was not independently captured
+E2b=NOT AUTHORIZED/TRIGGERED because E2a did not fail with getLocalConfigFolder
+GIT_STATUS_AFTER=clean
+STOP=one E2a session consumed; do not run E2b without new explicit owner authorization
