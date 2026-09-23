@@ -175,7 +175,7 @@ A Coach artifact under `Docs/AI_TEAM/` may be amended by the executor only when 
 1. the amendment commit message names the artifact and the field that changed;
 2. `Docs/AI_TEAM/COACH_ARTIFACT_INDEX_20260923.md` (or its successor index) is updated in the
    **same** commit, because the index row is the verification anchor for the artifact's bytes;
-3. the artifact's own header gains one line recording that it was amended, and by which commit.
+3. the artifact's own header gains an amendment line recording the re-verification/re-pointing and the superseded verification HEAD. Executor evidence under Artifacts/ is re-pointed, not rewritten: preserve the prior HEAD/result, add the new verified HEAD/result, and update the index in the same commit.
 
 Any change to a Coach artifact's **verdict, acceptance criteria or recommendation** is not amended
 in place: it comes back to Coach as a new work order, which supersedes the earlier one by date.

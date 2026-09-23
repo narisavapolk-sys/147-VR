@@ -1,12 +1,18 @@
 A1.3 INDEX SHA256 AUDIT — canonical git bytes
 Date: 2026-09-23
-HEAD: 1f343f0e06b9302bfcebc338cd3e75e8ebc5d21d
+HEAD: dac91ca116d1ef62d11519a8f9e48d2259f217ae
+Previous audit HEAD: 1f343f0e06b9302bfcebc338cd3e75e8ebc5d21d
+Re-verified at HEAD: dac91ca116d1ef62d11519a8f9e48d2259f217ae (LUNA, 2026-09-23): rows=16 MATCH=16 MISMATCH=0 MISSING=0 DUPLICATES=0
+Unity: not involved
+Source pack: Pack v9 SHA256 8aa949523cd0cee7cd7b3c3589a0591df485b30b873e5e401fb61d9df997382f
+Delivery channel: https://litter.catbox.moe/fgwokg.patch
+Amendment: re-pointed/re-verified against the newer HEAD; historical audit result preserved above.
 Method: git show HEAD:<path> -> SHA-256 of canonical Git blob bytes
 Working-tree hashing: NOT USED
-Rows: 14
+Rows: 16
 Duplicates: 0
 MATCH=14
 MISMATCH=0
 MISSING=0
 
-All 14 indexed artifact content SHA-256 values matched the bytes retrieved from HEAD.
+All 16 indexed artifact content SHA-256 values matched the bytes retrieved from HEAD.
