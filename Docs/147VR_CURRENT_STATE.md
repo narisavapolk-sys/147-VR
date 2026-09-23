@@ -390,3 +390,69 @@ Next exact action: recover/diagnose Unity Package Manager IPC while Unity is ful
 - Current M4.2 fresh-runtime runner is ready at Assets/Editor/AAA/M4_2PocketCurrentProfileRuntimeRunner.cs, but fresh current-profile M4.2 execution is deferred while the active Unity Editor owns the project. Historical M4.2 Goldens remain explicitly historical until a fresh run is completed.
 - Current next gate: resolve the APK debug/release application identity, run the new candidate preflight/build from the active Unity Editor, then connect Quest 2/3 and perform device runtime validation.
 
+
+## 2026-09-23 — UPM frontier: standalone IPC established; D-3a still blocked
+
+Provenance: Coach record in `Docs/AI_TEAM/` (see `COACH_ARTIFACT_INDEX_20260923.md`), plus
+`Docs/147VR_REMAINING_WORK_MAP_20260923.md` for the re-based plan.
+
+- **12f1 standalone UPM IPC = PASS.** `UnityPackageManager.exe server -s 10328 --ipc-path Unity-Upm-D1 -l 2`
+  with the process-local env guard and CWD `…\Editor\Data\Resources\PackageManager\Server` produced
+  `IPC server started (IPC path=Unity-Upm-D1)` with **time-to-IPC ≈ 59 ms**.
+  Cross-check: committed 4f1 healthy connects are 0.2 s (2026-09-01) and 0.3 s (2026-08-29) — same order.
+- **WITHDRAWN as evidence:** "12f1 UPM produced no IPC after ~302 s". The launch vector (argv / CWD / PATH)
+  was never recorded, which makes that run **INVALID, not FAIL**. It no longer supports any conclusion.
+- **H1 "12f1 installation incomplete" has no supporting evidence.** The `PackageManager\Server` directory
+  diff (4f1 has `app\app.js`, `app\package.json`, `app\embedded\`, `node-addon-api`; 12f1 does not) is
+  recorded as a **NON-BLOCKING ANOMALY**, not a defect.
+- **IPC path name transform (operational).** The server receives `--ipc-path Unity-Upm-<tag>`; Unity must
+  then be given `-upmIpcPath Upm-<tag>` (the `Unity-` prefix is dropped).
+- **D-3.0 PASS — `-s <pid>` semantics.** Guarded, CWD = Server dir: watched PID alive (`explorer.exe` 7888,
+  **not** the server's true parent) → server stayed alive; watched PID absent (`99999`) →
+  `IPC server started` then shutdown in ~1.01 s with `parent process [99999] is no longer running`.
+  ⇒ `-s` is a **polled liveness token**, not a parent-child relationship. Corroborated by a reclaimed orphan
+  whose `ParentProcessId` had already expired while the server was still alive.
+  Consequence: a pre-started server needs a **purpose-created long-lived process**; do not use `explorer.exe`.
+- **H-b PASS.** `%LOCALAPPDATA%\Unity\Editor\Editor.log` and `Editor-prev.log` exist. The log on record is a
+  **4f1 `-noUpm` run of the real project** (`Version is '6000.4.4f1'`, `-noUpm`,
+  `-projectPath C:\Users\mongo\UnityProjects\147 VR`) ⇒ it is **not** a UPM baseline and says nothing about 12f1.
+- **H-c: no licence block found.** `Product: Unity Personal / Type: Assigned / Expiration: Unlimited`.
+  `Access token is unavailable` appears, but entitlement resolves ⇒ not treated as a failure on its own.
+- **Log-path rule (new).** Specifying `-logFile` (any value) **redirects the log away from `Editor.log`**;
+  `-logFile -` means stdout. Therefore "12f1 did not write `Editor.log`" is **expected behaviour, not an
+  anomaly**, and a bare run with `-logFile -` plus unredirected stdout yields no attributable evidence.
+- **12f1 editor with no project** (bare run): started, lifetime ≈ 17.45 s, exit code 1, no attributable log.
+  Recorded as an **observation only**; the run is INVALID as evidence.
+- **F11 resolved WITHOUT a tracked change.** `Docs\Tools\Unity_Batch_Safe.ps1` is already parameterized
+  (`-ProjectPath`, `-UnityExe`), so 12f1 runs use it with an explicit `-UnityExe` override — no fork, no edit,
+  and the 2026-09-08 "only ever invoke this launcher" decision stands. Its default `$UnityExe` is a **Hub** path
+  (`…\Unity\Hub\Editor\6000.4.4f1\…`) while 12f1 lives at `C:\Temp\UnityEditors\6000.4.12f1\…`
+  ⇒ **4f1 was Hub-installed; 12f1 was not** (see F11b).
+- **Launcher classifier + pre-classified false alarm.** The launcher exits 4 when the log matches
+  `Could not connect to IPC stream` **or** `Received undefined`, and it appends `-quit` for non-test runs.
+  The stock `-quit` path is a documented source of `path argument … undefined`. ⇒ **exit 4 can occur on a
+  healthy run.** Classify by **co-occurrence** (three endpoints = 200 + compile success); never by exit code alone.
+- **`-createProject` reclassified UNTESTED.** Earlier attempts were uninstrumented (no captured argv, no
+  absolute `-logFile`), so they do **not** show the route is broken.
+- **Hub CLI route demoted.** `unity projects create … --editor-version 6000.4.12f1 --template
+  com.unity.template.3d --no-cloud --non-interactive` (Hub CLI at `C:\Program Files\Unity Hub\resources\cli\unity.exe`)
+  hung without creating `C:\Temp\D3A_EMPTY_6412` and without usable output. Leading hypothesis: Hub cannot
+  resolve a non-Hub-installed editor version. Do not re-run before checking Hub's installed-editor list and logs.
+
+### Frontier
+
+| Level | State |
+|---|---|
+| L0 attributable launch | PASS |
+| L1 12f1 standalone IPC | PASS (~59 ms) |
+| L2 Unity ↔ UPM client round-trip (3 endpoints = 200) | UNKNOWN |
+| L3 Unity 12f1 empty-project E2E | BLOCKED / not yet run |
+| D-3b `-upmIpcPath` workaround | NOT AUTHORIZED |
+
+**Next action:** obtain a genuinely empty project created by 12f1 — **one** instrumented `-createProject` run with an
+absolute `-logFile`, the launcher's env/PATH/single-instance hardening copied verbatim, argv recorded as received,
+before/after directory listing and process inventory. Then run D-3a through the tracked launcher with
+`-UnityExe` / `-ProjectPath` overrides.
+
+**Unchanged and untouched:** Main Scene, M5 Rules/Scoring/Turn, V007 / Golden, D8/W1, `147VR_M53_VALIDATE`,
+the real project, system environment, firewall.

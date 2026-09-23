@@ -437,3 +437,21 @@ Next:
 - Quest hardware gate: no authoritative Quest 2/3 device evidence was obtained from the PC during this run. ADB startup was unreliable/hanging and all stray ADB/shell processes were cleaned up. Do not claim Quest 2/3 PASS yet.
 - Current remaining gate: Quest 2/3 hardware build/runtime proof. No change to active gameplay M5 source was required by this physics certification block.
 
+
+## 2026-09-23 — UPM frontier correction (detail in CURRENT_STATE)
+
+- 12f1 standalone UPM IPC = PASS (~59 ms). The earlier "no IPC after ~302 s" observation is **WITHDRAWN**
+  (INVALID run: launch vector unrecorded).
+- H1 "installation incomplete" is unsupported; the `Server\app` directory diff is a **non-blocking anomaly**,
+  not a defect.
+- D-3.0 PASS: `-s <pid>` is a **polled liveness token**, not a parent relationship. A pre-started server needs
+  a purpose-created long-lived process.
+- **Lesson:** never classify a UPM/editor run whose **argv / CWD / PATH / `-logFile` value** were not captured.
+  That run is **INVALID, not FAIL**.
+- **Lesson:** `-logFile` (any value) redirects the log away from `Editor.log`; `-logFile -` means stdout.
+  Absence from `Editor.log` is therefore expected, not anomalous.
+- **Lesson:** `Received undefined` alone is not a verdict — the stock `-quit` path emits it as a documented quirk.
+  Classify by co-occurrence with the three Package Manager endpoints returning 200.
+- F11 needs **no tracked change**: `Unity_Batch_Safe.ps1` is parameterized on `-UnityExe` (default is 4f1/Hub).
+- Planning docs are stale: `MASTER_PRODUCTION_ROADMAP` still says Phase 3 active and M5 NOT CERTIFIED, and
+  `GATE_STATUS` still says `GATE 4 is not defined yet`. Use `Docs/147VR_REMAINING_WORK_MAP_20260923.md`.
