@@ -1,0 +1,34 @@
+# S2a Rules Validation Evidence - 2026-09-23
+
+PRE_REGISTER_COMMIT: e3c6bc4101df300289e9bc29dfdf4a10dc55cd7e
+BRANCH: integration/008-m53
+UNITY: 6000.4.12f1 (3ca267ce8005)
+MODE: log-driven reflection harness; NUnit runner not used
+LOG: Docs/UnityBatchLogs/UnityBatch_20260923_124751.log
+LOG_SHA256: f64036a74224f5d5b1bc274a34e1816e28d296c541024749141cd0bcea354dac
+LOG_BYTES: 225590
+
+SUMMARY: PASS=58 FAIL=3 INVALID=0 NOT_IMPLEMENTED=2 TOTAL=63
+
+RAW FAILURES:
+R11 RedAndColourSameStrokeIsOneFoulWithRedRemoved
+  FAIL: AssertionException expected collection containing string "RedPottedWhenColourOn".
+  CLASSIFICATION: TEST_DEFECT. M5FoulReason is an enum and M5SnookerRulesEngine adds the enum value; the test compares against ToString().
+
+R36 RedPottedWhenColourOnUsesDistinctFoulReason
+  FAIL: AssertionException expected collection containing string "RedPottedWhenColourOn".
+  CLASSIFICATION: TEST_DEFECT. Same enum-vs-string assertion defect as R11.
+
+I07 Tracker_Resolves_CalibrationSphere009_ByPointsZero
+  FAIL: AssertionException expected FindBall("Sphere.009") == null.
+  CLASSIFICATION: STALE_TEST_EXPECTATION. Current SnookerBallTracker intentionally adds active Sphere.009 with points=0 as the calibration cue; FindBall therefore resolves it.
+
+NOT_IMPLEMENTED:
+I19 match progression beyond frameOver: no match-state authority found in current Quest/AAA rules spine.
+I20 multi-frame match winner transition: no match-state authority found in current Quest/AAA rules spine.
+
+CORE DISPOSITION:
+STOP. No M5.3 frozen rules source was changed. No test was altered to make S2a pass.
+S2b is NOT STARTED. The three failures require explicit test-contract disposition before any shell/test changes.
+TEMP_PROBE_CLEANUP: S2a_RulesProbe.cs and .meta removed from Assets/Editor after run.
+TREE_EXPECTATION: clean after evidence/state commit.

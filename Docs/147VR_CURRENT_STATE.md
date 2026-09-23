@@ -555,3 +555,17 @@ Additional log observations: repeated Packages directory monitor buffer overflow
 **S1b/F9b gate: PASS / CLOSED.** Next controlled step is S2a: pre-register rules cases from actual rules code before execution. Frozen M5.3 core remains LOCKED; any FAIL inside it is STOP, not permission to patch.
 
 **F9b canonical artifact SHA256:** `630ec16edd4769f15798adfe79a32b405e3372eced0702812677fa8cdd4f8f51` (1795 bytes in staged canonical form).
+
+## 2026-09-23 - S2a rules validation STOP
+
+**Pre-registration:** `e3c6bc4101df300289e9bc29dfdf4a10dc55cd7e` registered 63 cases from actual rules/runtime source before execution: 43 frozen M5.3 rules cases + 18 runtime/lifecycle/transaction cases + 2 explicit NOT_IMPLEMENTED match-progression cases. S2a used a log-driven reflection harness; NUnit runner was not used.
+
+**Result:** PASS=58, FAIL=3, INVALID=0, NOT_IMPLEMENTED=2. Evidence: `Artifacts/M5_3/S2a_rules_validation_20260923.txt`. Unity log SHA256: `f64036a74224f5d5b1bc274a34e1816e28d296c541024749141cd0bcea354dac`.
+
+**Failure classification:** R11 and R36 are test defects: the frozen tests compare `ReadOnlyCollection<M5FoulReason>` against the string `"RedPottedWhenColourOn"`, while the rules engine stores the enum. I07 is a stale test expectation: `SnookerBallTracker` intentionally registers active `Sphere.009` as the points=0 calibration cue, so `FindBall("Sphere.009")` is expected to resolve it under current source.
+
+**STOP rule applied:** no frozen M5.3 rules/core source was modified and no test was edited to make the result pass. S2b is NOT STARTED pending explicit disposition of these three test-contract defects. Match progression cases I19/I20 remain NOT_IMPLEMENTED because no match-state authority was found in the current Quest/AAA rules spine.
+
+**Cleanup:** temporary S2a probe and .meta were removed from `Assets/Editor`. No source/core mutation was made by the validation run.
+
+**S2a canonical evidence SHA256:** `b465d8ec1607ea0dbd539c9ffb577ba0c83253c17862906aabd32690f4b5b177` (1836 bytes staged canonical form).
