@@ -1,0 +1,120 @@
+﻿WO#023 — LUNA forensic evidence — 2026-09-24
+SCOPE: no Unity launch; no source/physics/runner/certificate mutation.
+
+[1] REMOTE PUSH
+Commit ee6509008ddc72106e59c9e69d36c09e25a83856 pushed to origin/integration/008-m53.
+Verified: git ls-remote origin refs/heads/integration/008-m53
+Verified tree: Artifacts/M5_3/WO021_ORD21A_21B_21C_FORENSICS_20260924.txt
+
+[2] CLOCK / FILE TIMES
+Command: Select-String -LiteralPath "C:\Users\mongo\UnityProjects\147 VR\Docs\UnityBatchLogs\UnityBatch_20260924_144329.log" -Pattern '^Date:'
+Date: 2026-09-24T12:45:33Z
+Command: Get-Item -LiteralPath "C:\Users\mongo\UnityProjects\147 VR\Docs\UnityBatchLogs\UnityBatch_20260924_144329.log","C:\Users\mongo\UnityProjects\147 VR\Docs\M5_REAL_10SHOT_CERT_20260919.json" | Select FullName,Length,CreationTime,CreationTimeUtc,LastWriteTime,LastWriteTimeUtc
+LOG: Creation 2026-09-24 14:45:08 +02; CreationUtc 12:45:08Z; LastWrite 17:17:15 +02; LastWriteUtc 15:17:15Z; bytes 149447; SHA256 1CB049AF63C3DBC7F90C88A5548DD5B19E6E38988AB7D50FAC1EBCAAE485474F
+CERT: Creation 19:31:48 +02; CreationUtc 17:31:48Z; LastWrite 19:32:27 +02; LastWriteUtc 17:32:27Z; bytes 124; SHA256 0D27AD3A205A14D6BD08A46F7C71237FDC190BAB556F59349A3184894A51568E
+IMPORTANT: previously reported cert mtime 13:17:14.951Z is not reproduced by current Get-Item and must be withdrawn for timing calculations.
+
+[3] VERBATIM LOG TAIL 1529-1606
+The following is copied verbatim from the tracked log, with line numbers supplied by the extraction command.
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:140)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs Line: 140)
+
+[INFO ] [relay] log [shell-env] PATH augmented with shell environment (40 entries)
+[INFO ] [relay] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+[Physics] Ready: surface top y=0.827, bounds=(3.57 x 1.78)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+SnookerPhysicsSetup:EnsurePhysics () (at Assets/Scripts/Quest/SnookerPhysicsSetup.cs:124)
+SnookerCueController:PrepareRuntimeShotDependencies () (at Assets/Scripts/Quest/SnookerCueController.cs:135)
+SnookerCueController:Shoot (single) (at Assets/Scripts/Quest/SnookerCueController.cs:356)
+SnookerCueController:ShootAt (UnityEngine.Vector3,single) (at Assets/Scripts/Quest/SnookerCueController.cs:509)
+M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:142)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Scripts/Quest/SnookerPhysicsSetup.cs Line: 124)
+
+[M5 LIFECYCLE] BeginShot seq=1 trackerCount=22
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+M5ShotLifecycle:BeginShot () (at Assets/Scripts/Quest/M5ShotLifecycle.cs:43)
+SnookerCueController:Shoot (single) (at Assets/Scripts/Quest/SnookerCueController.cs:380)
+SnookerCueController:ShootAt (UnityEngine.Vector3,single) (at Assets/Scripts/Quest/SnookerCueController.cs:509)
+M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:142)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Scripts/Quest/M5ShotLifecycle.cs Line: 43)
+
+[M5 ShotTracker] StartState seq=1 striker=1 ballOn=Red reds=14 nomination=None
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+SnookerShotTracker:OnShotFired () (at Assets/Scripts/Quest/SnookerShotTracker.cs:93)
+SnookerCueController:Shoot (single) (at Assets/Scripts/Quest/SnookerCueController.cs:392)
+SnookerCueController:ShootAt (UnityEngine.Vector3,single) (at Assets/Scripts/Quest/SnookerCueController.cs:509)
+M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:142)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Scripts/Quest/SnookerShotTracker.cs Line: 93)
+
+[Cue] Shot -> CuePhysicsAdapter authority. power=0.35 speed=2.36 m/s dir=(-0.21, -0.98)
+UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+UnityEngine.StackTraceUtility:ExtractStackTrace ()
+UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+UnityEngine.Logger:Log (UnityEngine.LogType,object)
+UnityEngine.Debug:Log (object)
+SnookerCueController:Shoot (single) (at Assets/Scripts/Quest/SnookerCueController.cs:401)
+SnookerCueController:ShootAt (UnityEngine.Vector3,single) (at Assets/Scripts/Quest/SnookerCueController.cs:509)
+M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:142)
+UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+
+(Filename: Assets/Scripts/Quest/SnookerCueController.cs Line: 401)
+
+[INFO ] [relay] log Unity client connected with ID: editor-1880-sc5vp6 (relay 1.0.12-build.97)
+[INFO ] [relay] connection.established clientId=editor-1880-sc5vp6 port=9001
+TrimDiskCacheJob: Current cache size 130mb
+[Licensing::Client] Successfully resolved entitlement details
+[Licensing::Client] Successfully resolved entitlement details
+
+[4] ERROR / CRASH SCAN
+Command: Select-String -LiteralPath "C:\Users\mongo\UnityProjects\147 VR\Docs\UnityBatchLogs\UnityBatch_20260924_144329.log" -Pattern 'Exception|NullReference|Crash|Faulting|Unhandled|Fatal|StackTrace'
+Counts: Exception=5; NullReference=0; Crash=1; Faulting=0; Unhandled=2; Fatal=0; StackTrace=68.
+These matches occur in the log globally. The post-FIRE tail 1529-1606 contains no Exception/Crash/Faulting/Unhandled/Fatal line; its StackTrace lines are Unity Debug stack traces attached to normal Debug.Log output.
+Relevant pre-FIRE licensing/cache errors include ObjectDisposedException and licensing timeouts; no causal attribution to FIRE-1 is made here.
+
+[5] APPLICATION EVENT LOG
+Command: Get-WinEvent -FilterHashtable @{LogName='Application'; StartTime='2026-09-24T15:17:00Z'; EndTime='2026-09-24T15:18:00Z'}
+Result: NOT FOUND (no matching Application events). No faulting module identified.
+
+[6] PID 8024 / 1880
+Command: Get-CimInstance Win32_Process -Filter "ProcessId=8024 OR ProcessId=1880" ...
+Result: NOT FOUND — historical PIDs no longer existed when inspected.
+Additional tracked-log evidence: processId=1880 is identified by ##utp EditorInfo as Unity 6000.4.12f1 and relay editorPid=1880; Package Manager connected to Upm-1880. This supports 1880 being the Unity Editor process, not proof of AssetImportWorker. No command line for 8024 was recoverable from the tracked log.
+
+[7] Assembly-CSharp*.csproj
+Command: Get-ChildItem -LiteralPath "C:\Users\mongo\UnityProjects\147 VR" -Filter '*.csproj' -File; then Select-String -Path Assembly-CSharp*.csproj -Pattern 'Editor_Legacy'
+Result: NOT FOUND — no Assembly-CSharp*.csproj files are present at project root in this working tree, so csproj membership cannot be established by this requested discriminator.
+
+[8] FACTUAL INTERPRETATION BOUNDARY
+FIRE line 1528 is followed by actual log entries at 1558 BeginShot, 1573 StartState, 1588 Cue -> CuePhysicsAdapter authority, then relay/licensing output through line 1606. Therefore the prior characterization "log silent after FIRE" is withdrawn. This artifact does not infer why execution stopped.
+
+Commands/results in this artifact were generated from the local project and tracked log without opening Unity.
