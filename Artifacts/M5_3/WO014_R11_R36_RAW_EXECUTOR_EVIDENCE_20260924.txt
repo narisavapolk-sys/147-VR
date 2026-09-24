@@ -1,0 +1,16 @@
+# WO#014 raw executor evidence amendment
+
+RAW TESTRUNNER LINES:
+[TestRunnerTools] Test Finished: M5_3_RulesUnitTests.RedAndColourSameStrokeIsOneFoulAndRedIsRemoved, ResultState: Passed, Duration: 0.030s
+[TestRunnerTools] Test Finished: M5_3_RulesUnitTests.RedPottedWhenColourOnUsesDistinctFoulReason, ResultState: Passed, Duration: 0.005s
+[TestRunnerTools] Run Finished: 147 VR, ResultState: Passed, PassCount: 2, FailCount: 0, SkipCount: 0, Duration: 0.09s
+Test run completed. Exiting with code 0 (Ok). Run completed.
+
+RAW <test-run> ROOT ATTRIBUTES:
+id=2 testcasecount=2 result=Passed total=2 passed=2 failed=0 inconclusive=0 skipped=0 asserts=0 engine-version=3.5.0.0 clr-version=4.0.30319.42000 start-time=2026-09-24 06:23:30Z end-time=2026-09-24 06:23:30Z duration=0.0861365
+
+SOURCE FILES:
+Unity log: Docs/UnityBatchLogs/UnityBatch_20260924_081957.log
+XML: C:\Temp\WO014_R11_R36.xml
+
+Encoding: UTF-8 without BOM; LF-only; no self-hash embedded.
