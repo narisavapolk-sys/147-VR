@@ -1,0 +1,58 @@
+# WO#017 S5 / REAL10 lifecycle forensic evidence
+
+VERDICT: NOT PASS / BLOCKED — runtime lifecycle did not enter PlayMode; no REAL10 shot executed.
+HEAD: b6a41869b592047a97df74024d49d8697ce95399
+BRANCH: integration/008-m53
+UNITY_EDITOR: C:\Temp\UnityEditors\6000.4.12f1\Editor\Unity.exe
+LAUNCHER: Docs/Tools/Unity_Batch_Safe.ps1
+LAUNCHER_SHA256: 8181b6721f4d8fbca4bbbb4b8f839c80961061bda5159d40a619a6da1cc7b6d8
+LAUNCHER_PATCH_COMMIT: b6a41869b592047a97df74024d49d8697ce95399
+INVOCATION: -TimeoutSeconds 2400 -NoQuit -ExecuteMethod M5FinalReal10MainSceneRunner.Run
+START_UTC: 2026-09-24T07:28:24.7093767Z
+CONTROLLED_STOP_LOCAL: 2026-09-24 09:48:21.23
+OBSERVED_WALL_CLOCK: ~1196.52 s
+UNITY_PID: 7032
+UPM_PID: 5804
+ILPP_PID: 7704
+AUTOQUITTER_PID: 4000 (child of Unity; terminated with process tree)
+
+PRE-RUN_09_20_HEAD_BLOB_SHA256: b4295d2c9909a897900a5e9b4d198200ce4a5d0c6d7b6f018dcee578a2339d8e
+PRE-RUN_09_19_CERT_SHA256: 0d27ad3a205a14d6bd08a46f7c71237fdc190bab556f59349a3184894a51568e
+RUNTIME_09_20_RUNNING_SHA256: e861c714f0b89b12e67f357db46739147832e3db8b8629edd81405b997fbdf87
+RUNTIME_09_20_CONTENT: {"status":"RUNNING","scene":"147VR_MainScene.unity","shots":[]}
+POST-RESTORE_09_20_HEAD_BLOB_SHA256: b4295d2c9909a897900a5e9b4d198200ce4a5d0c6d7b6f018dcee578a2339d8e
+POST-RESTORE_09_19_CERT_SHA256: 0d27ad3a205a14d6bd08a46f7c71237fdc190bab556f59349a3184894a51568e
+
+UNITY_LOG: Docs/UnityBatchLogs/UnityBatch_20260924_092824.log
+UNITY_LOG_SHA256: fe8881f1ccf7515b855ff214a72ea21fa337e2046ce71ffec8f86bb3b9e7ff9e
+LAUNCHER_STDOUT: C:\Temp\WO017_S5_launcher_stdout.txt
+LAUNCHER_STDOUT_SHA256: 356c5ac1e5a24c0b26a8d7bda30d3aa1422bba1f1cd69c94af65b2972e38e0db
+LAUNCHER_EXIT: NOT_CAPTURED — Unity was deliberately killed after lifecycle stall; launcher exit is not a gate signal.
+
+RAW OBSERVATIONS:
+AssetDatabase script compilation time: 268.535784s
+Opening scene 'Assets/Scenes/147VR_MainScene.unity'
+No [M5 REAL10] FIRE / SETTLED / RESOLVED / COMPLETE markers were emitted.
+No observed PlayMode entry marker followed scene open.
+The 09-20 JSON stayed status=RUNNING with shots=[] until controlled stop.
+Runner source requires EditorApplication.isPlaying before Tick can initialize runtime components and fire shots.
+
+UNEXPECTED_RUNTIME_GENERATION:
+Assets/StreamingAssets/RuntimeActionBindings.json and RuntimeActionBindings.json were observed at 09:40:00, both 52 bytes with identical content: {"InputActionDefinitions": [],"InputActionSets": []}
+Both files disappeared during/after Unity process-tree shutdown; no content hash was captured before disappearance. They were not retained in the worktree and are not treated as approved source changes.
+
+CLEANUP:
+Unity process tree for PID 7032 was terminated; UPM/ILPP/Unity crash helper children were also terminated.
+Docs/M5_REAL_10SHOT_FINAL_20260920.json restored to HEAD content; canonical HEAD blob SHA verified as above.
+Docs/M5_REAL_10SHOT_CERT_20260919.json remained byte-identical by SHA.
+Final git status: clean.
+Final Unity/UnityPackageManager inventory: none.
+
+HASH PRODUCTION COMMANDS:
+git cat-file blob HEAD:Docs/M5_REAL_10SHOT_FINAL_20260920.json > C:\Temp\m5_0920_head_blob_final.bin
+"C:\Program Files\Git\usr\bin\sha256sum.exe" C:\Temp\m5_0920_head_blob_final.bin
+certutil -hashfile "Docs\M5_REAL_10SHOT_CERT_20260919.json" SHA256
+certutil -hashfile "Docs\UnityBatchLogs\UnityBatch_20260924_092824.log" SHA256
+certutil -hashfile "C:\Temp\WO017_S5_launcher_stdout.txt" SHA256
+
+ENCODING: UTF-8 without BOM; LF-only intended; no self-hash embedded.
