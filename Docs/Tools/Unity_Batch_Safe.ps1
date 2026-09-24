@@ -1,12 +1,16 @@
 # 147VR Unity Batch Safe Launcher
-# Safe Unity 6 batch entrypoint. Test runs intentionally omit -quit so
+# Safe Unity 6 batch entrypoint.
+# -NoQuit is an explicit lifecycle-owner escape hatch for reviewed runners.
+# It only suppresses the launcher-added -quit argument.
+# Test runs intentionally omit -quit so
 # Unity Test Framework controls the PlayMode lifecycle and result shutdown.
 param(
   [string]$ProjectPath = "C:\Users\mongo\UnityProjects\147 VR",
   [string]$UnityExe = "C:\Program Files\Unity\Hub\Editor\6000.4.4f1\Editor\Unity.exe",
   [string]$ExecuteMethod = "",
   [string]$ExtraArgs = "",
-  [int]$TimeoutSeconds = 600
+  [int]$TimeoutSeconds = 600,
+  [switch]$NoQuit
 )
 $ErrorActionPreference = "Stop"
 $unityProcs = Get-Process -Name "Unity","UnityPackageManager" -ErrorAction SilentlyContinue
@@ -36,10 +40,11 @@ $argList = @(
 if ($ExecuteMethod -ne "") { $argList += @("-executeMethod", $ExecuteMethod) }
 if ($ExtraArgs -ne "") { $argList += ($ExtraArgs -split ' ') }
 $isTestRun = $ExtraArgs -match '(^|\s)-runTests(\s|$)'
-if (-not $isTestRun) { $argList += "-quit" }
+if (-not $isTestRun -and -not $NoQuit) { $argList += "-quit" }
 Write-Host "[INFO] Launching Unity with repaired environment..."
 Write-Host "[INFO] Log: $logFile"
 if ($isTestRun) { Write-Host "[INFO] Unity Test Framework run: lifecycle-owned shutdown (no forced -quit)." }
+if ($NoQuit) { Write-Host "[INFO] -NoQuit set: Unity owns its own shutdown (no forced -quit)." }
 $proc = Start-Process -FilePath $UnityExe -ArgumentList $argList -PassThru -NoNewWindow
 $finished = $proc.WaitForExit($TimeoutSeconds * 1000)
 if (-not $finished) {
