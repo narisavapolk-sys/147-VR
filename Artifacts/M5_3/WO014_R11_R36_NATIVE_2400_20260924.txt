@@ -1,0 +1,23 @@
+# WO#014 / ORD-13b — R11/R36 native launcher evidence
+HEAD: c915e195276a6f71bfee7da3f85024d09784eee7
+Branch: integration/008-m53
+Unity: C:\Temp\UnityEditors\6000.4.12f1\Editor\Unity.exe
+Launcher: Docs/Tools/Unity_Batch_Safe.ps1
+Launcher SHA256: 5ABB7A90D909A55FCB071F411DC6B99E7FC7FAD2D55921E0CA70055E70E22CCF
+TimeoutSeconds: 2400
+ExtraArgs: -runTests -testPlatform editmode -testFilter "M5_3_RulesUnitTests.RedAndColourSameStrokeIsOneFoulAndRedIsRemoved;M5_3_RulesUnitTests.RedPottedWhenColourOnUsesDistinctFoulReason" -testResults "C:\Temp\WO014_R11_R36.xml"
+Manual -upmIpcPath: NONE
+Preflight: Unity/UnityPackageManager absent; git status clean
+Native UPM IPC: Upm-4436, connected after 12.0 seconds
+Result: R11 PASS; R36 PASS; PassCount=2; FailCount=0; SkipCount=0
+TestRunner reported: Exiting with code 0 (Ok)
+XML: C:\Temp\WO014_R11_R36.xml; SHA256=74E945263D1707E2BC060C6F6CF35F64A3B61EA997084D876ADD4CAA1D6447DD
+Launcher stdout: C:\Temp\WO014_launcher_stdout.txt; SHA256=5FBCEC492957B314044DA8A5EAFAB4722157772F9A1DECF173BECDCA39B47391
+Unity log: Docs/UnityBatchLogs/UnityBatch_20260924_081957.log; SHA256=4103F2A0CAA559FA5E27AE70C5F43748DB410D48EE82A3E8432F4FB7833F3ACE
+Launcher observability anomaly: launcher printed blank Unity exit code and returned LAUNCHER_EXIT=1 although Unity TestRunner completed with code 0; classify as launcher exit-capture/observability defect, not test failure.
+Postflight: no Unity/UPM process; known test-generated tracked mutations restored; git status clean.
+Hash provenance commands (run after commit):
+git show HEAD:Artifacts/M5_3/WO014_R11_R36_NATIVE_2400_20260924.txt | sha256sum
+PowerShell equivalent: git show HEAD:Artifacts/M5_3/WO014_R11_R36_NATIVE_2400_20260924.txt | % { [Text.Encoding]::UTF8.GetBytes($_) } ... (do not use; canonical command is git show piped to sha256sum in Git Bash)
+Canonical evidence hash is intentionally NOT embedded in this file because hashing the file including its own hash would be circular.
+Encoding requirement: UTF-8 without BOM; canonical LF git blob bytes.
