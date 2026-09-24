@@ -1,0 +1,95 @@
+[WO021 / ORD-21a-b-c forensic evidence]
+Observation date: 2026-09-24 (UTC)
+Purpose: capture the historical 09-24 TMP runtime window, current Library state, and 33DD recovery scope.
+No Unity process was launched by this investigation.
+Repo: C:\Users\mongo\UnityProjects\147 VR
+Branch: integration/008-m53
+HEAD before evidence write: a005870d7e4e0e4e8db6b0b6b51aa03c86a4e078
+Working tree before evidence write: CLEAN
+Unity evidence log: Docs\UnityBatchLogs\UnityBatch_20260924_144329.log
+Log SHA256: 1CB049AF63C3DBC7F90C88A5548DD5B19E6E38988AB7D50FAC1EBCAAE485474F
+Log size: 149447 bytes
+Log CreationTimeUtc: 2026-09-24T12:45:08Z
+Log LastWriteTimeUtc: 2026-09-24T15:17:15Z
+Unity version in log: 6000.4.12f1 (3ca267ce8005)
+Runner invocation in log: M5Real10ShotMainSceneCertification_TMP.Run
+UPM IPC observed: Upm-1880
+[ORD-21a marker window]
+Observed sequence in 12f1 TMP log:
+[M5 REAL10] Main Scene runtime components found
+[M5 REAL10] FIRE 1/10 aim=(-1.048,0.854,-0.292) power=0.35
+[M5 LIFECYCLE] BeginShot seq=1 trackerCount=22
+[M5 ShotTracker] StartState seq=1 striker=1 ballOn=Red reds=14 nomination=None
+[Cue] Shot -> CuePhysicsAdapter authority. power=0.35 speed=2.36 m/s dir=(-0.21, -0.98)
+No subsequent [M5 LIFECYCLE] tick seq=1 was observed.
+No SETTLED, RESOLVED, SHOT_REJECTED, or COMPLETE marker followed in this log.
+The log ended after relay connection / cache activity.
+Interpretation: F5a is resolved to a post-shot-1 stall before the first 60-step
+FixedUpdate lifecycle observation; this is not evidence of a simple "never
+dropped below settle threshold" condition.
+[09-19 historical authoritative-path evidence]
+Success log: Docs\UnityBatchLogs\M5_REAL10_FIXED_20260919.log
+SHA256: 45D12CC8925E052943AADF0B6FDE062D12678503739F956BF7B88F98B78009F5
+Size: 308589 bytes
+CreationTimeUtc: 2026-09-19T16:39:27Z
+LastWriteTimeUtc: 2026-09-19T16:42:11Z
+Historical Unity: 6000.4.4f1 (360f97ecca93)
+Historical invocation: M5Real10ShotMainSceneCertification_TMP.Run
+UPM IPC: Upm-5728 after 0.4 seconds
+Success markers: FIRE 1/10; FIRE 10/10; Settled seq=10 steps=778 settledFor=1.520
+Final marker: [M5 REAL10] COMPLETE status=PASS fired=10 resolved=10 settled=10 errors=0
+This proves the historical runner path reached a real 10-shot PASS on that run.
+It does not close exact executed-source bytes because of the recorded 33DD->36A9 TOCTOU gap.
+[TOCTOU / source provenance]
+Baseline manifest timestamp: 2026-09-19T18:33:20.7914352+02:00
+Baseline runner SHA256: 33DD4F3CD007487F6947B30E6480BCCA6C858BD282732589F0F6C83E5FD40A66
+Current runner SHA256: 36A9CD693612BA43A14DA0CCE2EF0B94069AF42906ED57591675A893ED75A085
+Current runner LastWriteTimeUtc: 2026-09-19T16:34:13Z
+Historical successful run start: 2026-09-19T16:39:27Z
+Therefore the runner changed about 53 seconds after baseline capture and about
+5m14s before the successful 09-19 run. Exact executed bytes are not provable
+from the manifest pair alone.
+Search for runner copies under C:\Users\mongo: exactly one result (the project file).
+Search for runner copies under C:\Temp: zero results.
+Within those searched roots, 33DD was not recoverable.
+[ORD-21b Library state]
+This snapshot was taken after later 09-24 activity; it is NOT a clean pre-run baseline.
+Library root: 5639778372 bytes across 75349 files; LastWriteTimeUtc 2026-09-24T17:43:59Z
+Library\Bee: 372715244 bytes across 3534 files; created 2026-09-24T17:39:21Z
+Library\ScriptAssemblies: 266 DLLs, 42762752 bytes; directory LastWriteTimeUtc 2026-09-23T09:43:20Z
+Key DLLs were rewritten at about 17:43:49-17:43:54Z:
+Assembly-CSharp.dll SHA256 0FFFFBE0504478ED6D616558611DFE069D4923B42E3EC12A4B1C6D3B51AC9D19
+Assembly-CSharp-Editor.dll SHA256 AA1175EF0ADC57F5E4094588CD244382C510D53E0A0B05F9A7821C404D8180E2
+147VR.PlayModeTests.dll SHA256 59EC3FAA585F40EC077194AB3E2F9EA7D6AC577637546C2771AA0E5E43CCF3F7
+The 09-24 log itself recorded Assembly-CSharp-firstpass invalid/recompile signals.
+[Source / event-path observations]
+Current TMP source file SHA256: 36A9CD693612BA43A14DA0CCE2EF0B94069AF42906ED57591675A893ED75A085
+Its Git SHA-1 is 6b92817a054cf436b5452c64d7826275e1f75a5b.
+Git tree df2b3394 contains the same blob 6b92817a054cf436b5452c64d7826275e1f75a5b.
+df2b3394 timestamp: 2026-09-21T09:03:17+02:00.
+M5ShotLifecycle.FixedUpdate logs a tick every 60 physics steps and settles only
+after 1.5s below the 0.01 m/s measured-speed threshold.
+SnookerShotTracker resolves only from the PhysicsSettled event contract.
+Therefore absence of even the first lifecycle tick is a stronger discriminator
+than a merely-too-high speed hypothesis.
+[Uncontrolled editor activity / confounder]
+Before FIRE in the 12f1 log, a legacy InitializeOnLoad delayCall executed:
+_147VR_TableVisualPrefabBuilder:Run()
+and logged "147VR TABLE BUILD BLOCKED: FBX missing:
+Assets/BlenderTest/147VR_Table_WPBSA_12ft_VISUAL_CLEAN_v006.fbx".
+No evidence here proves this error caused the post-shot-1 stall.
+It is recorded as an uncontrolled editor runner/writer and should be isolated
+from future certification runs rather than treated as the root cause.
+A 09-24 [M5 REAL] calibration runner was searched for in this log and produced
+no [M5 REAL] markers, so that runner is not observed as active in this session.
+
+[Current disposition]
+ORD-21a: COMPLETE enough to establish the exact 12f1 TMP phase window.
+ORD-21b: COMPLETE as a post-session Library/Bee/ScriptAssemblies snapshot.
+ORD-21c: COMPLETE within C:\Users\mongo and C:\Temp search scope; 33DD unrecoverable there.
+F5a remains the primary observed signature: post-shot-1 stall before first
+60-step M5 lifecycle tick. Cause remains UNKNOWN.
+S5 remains UNKNOWN / NOT AUTHORISED.
+008 remains NOT AUTHORISED.
+No Unity run was performed during this forensic work.
+No source/physics changes were made.
