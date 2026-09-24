@@ -1,0 +1,66 @@
+﻿# WO#013a — native-path timeout log-tail forensics
+
+WHICH_COMMIT=
+313a110401e8f6afa7a040ef5a8bd02677a3fda5
+UNITY_INVOLVED=yes
+LOG_PATH=
+C:\Users\mongo\UnityProjects\147 VR\Docs\UnityBatchLogs\UnityBatch_20260923_222059.log
+LOG_BYTES=
+313470
+LOG_SHA256=
+489BB1BA7336D995C3091AC4027DB21651CA7248F0AF2A692645CAA71A466942
+FILE_CREATED=2026-09-23 22:20:59
+FILE_LAST_WRITE=2026-09-23 22:33:01
+ELAPSED_LOG_WINDOW=12m02s
+TAIL_LINE_COUNT=40
+FINAL_PHASE=IL POST-PROCESSING (Unity ILPP)
+DECISION_RULE=H-E3-1 PASS: log shows continued ILPP activity through final line; no evidence of multi-minute silence before cutoff
+ORD13a_RESULT=TIMEOUT-SHORTER-THAN-COMPLETION / proceed to conditional ORD-13b
+TEST_BOOTSTRAP=NOT REACHED
+RUNNING_TESTS=NOT REACHED
+R11_R36=NOT VERIFIED
+GAP_MEASUREMENT=No per-line timestamps exist in this ILPP log format; exact silence interval cannot be computed from log timestamps. However, sequential request/processing/200-response records continue through line 3410 and file LastWriteTime is the cutoff boundary.
+LAUNCHER_EXIT_CODE=NOT_CAPTURED in prior session
+LOG_TAIL_40_START
+
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.VisualScripting.SettingsProvider.Editor.dll, with 140 defines and 293 references
+info: Microsoft.AspNetCore.Hosting.Diagnostics[1]
+      Request starting HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - application/grpc -
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[0]
+      Executing endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      Processing assembly Library/Bee/artifacts/1900b0aE.dag/Unity.XR.OpenXR.Features.MetaQuestSupport.Editor.dll, with 141 defines and 292 references
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      processors: Unity.Jobs.CodeGen.JobsILPostProcessor, Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor, zzzUnity.Burst.CodeGen.BurstILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Jobs.CodeGen.JobsILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Jobs.CodeGen.JobsILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running Unity.Pipeline.CodeGen.HotReloadInPlaceILPostProcessor
+info: Unity.ILPP.Runner.PostProcessingPipeline[0]
+      running zzzUnity.Burst.CodeGen.BurstILPostProcessor
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 11.8019ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 11.9678ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 273.4327ms
+info: Microsoft.AspNetCore.Routing.EndpointMiddleware[1]
+      Executed endpoint 'gRPC - /UnityILPP.PostProcessing/PostProcessAssembly'
+info: Microsoft.AspNetCore.Hosting.Diagnostics[2]
+      Request finished HTTP/2 POST http://ilpp/UnityILPP.PostProcessing/PostProcessAssembly - 200 - application/grpc 516.7096ms
+LOG_TAIL_40_END
