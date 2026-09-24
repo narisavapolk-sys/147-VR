@@ -1,0 +1,36 @@
+WO#026 / ORD-26 — Pre-FIRE Degradation Discriminator
+branch=integration/008-m53
+base_tip=8ea7ed010890f05b217edf6e222270d08deeb14c
+mode=read-only forensic; no Unity/batch/REAL10/source/cert/physics/launcher changes
+26c target=Docs/UnityBatchLogs/UnityBatch_20260924_144329.log
+26c target SHA256=1CB049AF63C3DBC7F90C88A5548DD5B19E6E38988AB7D50FAC1EBCAAE485474F
+26c baseline=Docs/UnityBatchLogs/M5_REAL10_FIXED_20260919.log
+26c baseline SHA256=45D12CC8925E052943AADF0B6FDE062D12678503739F956BF7B88F98B78009F5
+26c header structure=VALID: both logs contain Build/Version, OS, BatchMode, architecture, Date, COMMAND LINE ARGUMENTS
+26c versions differ: 09-19=6000.4.4f1; 09-24=6000.4.12f1; header kind/field structure remains comparable
+09-19 Date=L8 2026-09-19T16:39:27Z; lines=4244; LastWrite=2026-09-19T16:42:11.1479404Z
+09-24 Date=L7 2026-09-24T12:45:33Z; lines=1606; LastWrite=2026-09-24T15:17:15.8731184Z
+M1 formula used exactly as registered: (LINES_total - LINES_DateHeader)/span_seconds
+M1(09-19)=(4244-8)/164.1479404=25.8059893391145 lines/s
+M1(09-24)=(1606-7)/9102.8731184=0.175658825428191 lines/s
+M1 ratio=146.909722732172
+26c decision=SUPPORTED because M1(09-19) >= 3 x M1(09-24)
+26a sweep window=2026-09-24T13:17:16Z to 2026-09-24T15:17:15Z
+26a hits=890; Library=887; Logs=2; all other listed roots=0
+26a minute buckets: 13:17=205, 13:22=42, 13:23=63, 13:24=63, 13:25=119, 13:26=16, 13:27=26, 13:28=25, 13:29=331
+26a longest quiet interval=107.6319 min, from last observed write 13:29:37.9576725Z to 15:17:15.8731184Z
+26a interpretation=filesystem evidence consistent with a block/stall; not proof that Unity itself stalled
+26b ISO timestamps in target: L7 Date 12:45:33Z; L113 Licensing 13:16:33.37994Z; L123 Licensing 13:16:33.8317122Z
+26b no additional ISO-8601 timestamps were found in target log
+26d FIRE stack trace originates from Debug.Log at M5Real10ShotMainSceneCertification_TMP.cs:140
+26d Physics Ready stack trace originates from Debug.Log at SnookerPhysicsSetup.cs:124
+26d therefore both 1529-1538 and 1543-1556 are Log-level stack traces, not LogWarning/LogError/LogException
+26d SHOT_REJECTED is implemented with Debug.LogError at runner:146, but does not appear in target tail
+26e LastSceneManagerSetup.txt Created=2026-08-22T18:06:11.1574334Z; LastWrite=2026-09-24T13:17:16.9097761Z; LEN=101
+26e content identifies 147VR_MainScene.unity loaded=1 active=1; LastWrite is a subsequent write and play-mode-entry anchor used by this WO
+26f WO023 WT_LEN=9064; Git blob LEN=8986; WT SHA256=DAFC3E7A77B4174C5A81FE4C31B46C480ED40DF6EF70760ECA77F8DEA7BFB0C6
+26f loneLF=42; loneCR=0; git diff --ignore-cr-at-eol and git status for WO023 empty
+26f decision=mixed EOL CONFIRMED; canonical Git blob remains LF SHA256=58D90D720F053484599CCDD11BB47D264DEFAE5E9686573F6EA6C9AE2F6C1F50
+state update=F5a'' SUPPORTED; F5a' cause UNKNOWN; physics <60 steps CONDITIONALLY ESTABLISHED; stall/hook-exit/native-crash NOT ESTABLISHED; TIMEOUT UNKNOWN
+constraints respected=Unity not opened; no source/runner/cert/physics/launcher mutation; one artifact only
+hash command for artifact: Get-FileHash .\Artifacts\M5_3\WO026_LUNA_ORD26_FORENSICS_20260924.txt -Algorithm SHA256
