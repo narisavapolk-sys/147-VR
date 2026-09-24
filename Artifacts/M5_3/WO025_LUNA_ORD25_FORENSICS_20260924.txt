@@ -1,0 +1,90 @@
+﻿WO#025 — LUNA forensic evidence
+Date: 2026-09-24
+Scope: no Unity run; no source/physics/cert mutation.
+
+25a ISO-8601 in 2026-09-24 log:
+7: Date: 2026-09-24T12:45:33Z
+113: [Licensing::IpcConnector] Successfully connected to: "LicenseClient-mongo" at "2026-09-24T13:16:33.37994Z"
+123: [Licensing::IpcConnector] Successfully connected to: "LicenseClient-mongo-notifications" at "2026-09-24T13:16:33.8317122Z"
+
+25b FIRE→BeginShot intervening lines (FIRE line 1528; BeginShot line 1558):
+1529: UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+1530: UnityEngine.StackTraceUtility:ExtractStackTrace ()
+1531: UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+1532: UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+1533: UnityEngine.Logger:Log (UnityEngine.LogType,object)
+1534: UnityEngine.Debug:Log (object)
+1535: M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:140)
+1536: UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+1537: 
+1538: (Filename: Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs Line: 140)
+1539: 
+1540: [INFO ] [relay] log [shell-env] PATH augmented with shell environment (40 entries)
+1541: [INFO ] [relay] log Unity MCP Relay server started | Port: 9002 | Endpoints: /mcp/start-server, /mcp/stop-server, /mcp/server-status, /mcp/call-tool
+1542: [Physics] Ready: surface top y=0.827, bounds=(3.57 x 1.78)
+1543: UnityEngine.Debug:ExtractStackTraceNoAlloc (byte*,int,string)
+1544: UnityEngine.StackTraceUtility:ExtractStackTrace ()
+1545: UnityEngine.DebugLogHandler:Internal_Log (UnityEngine.LogType,UnityEngine.LogOption,string,UnityEngine.Object)
+1546: UnityEngine.DebugLogHandler:LogFormat (UnityEngine.LogType,UnityEngine.Object,string,object[])
+1547: UnityEngine.Logger:Log (UnityEngine.LogType,object)
+1548: UnityEngine.Debug:Log (object)
+1549: SnookerPhysicsSetup:EnsurePhysics () (at Assets/Scripts/Quest/SnookerPhysicsSetup.cs:124)
+1550: SnookerCueController:PrepareRuntimeShotDependencies () (at Assets/Scripts/Quest/SnookerCueController.cs:135)
+1551: SnookerCueController:Shoot (single) (at Assets/Scripts/Quest/SnookerCueController.cs:356)
+1552: SnookerCueController:ShootAt (UnityEngine.Vector3,single) (at Assets/Scripts/Quest/SnookerCueController.cs:509)
+1553: M5Real10ShotMainSceneCertification_TMP:Tick () (at Assets/Editor/M5Real10ShotMainSceneCertification_TMP.cs:142)
+1554: UnityEditor.EditorApplication:Internal_CallUpdateFunctions ()
+1555: 
+1556: (Filename: Assets/Scripts/Quest/SnookerPhysicsSetup.cs Line: 124)
+1557: 
+1558: [M5 LIFECYCLE] BeginShot seq=1 trackerCount=22
+
+25c artifact EOL/diff: git diff --ignore-cr-at-eol --stat => EMPTY; git status --short => EMPTY at capture.
+
+25e healthy 09-19 offsets from FIRE line 1223:
+step=60 line=1279 offset=56
+step=120 line=1290 offset=67
+step=180 line=1324 offset=101
+step=240 line=1335 offset=112
+Settled seq=1 line=1357 offset=134: [M5 LIFECYCLE] Settled seq=1 steps=358 settledFor=1.520
+
+25d machine-local evidence: findstr type membership:
+Library\ScriptAssemblies\Assembly-CSharp.dll
+
+25d LastSceneManagerSetup metadata/content:
+
+
+FullName         : C:\Users\mongo\UnityProjects\147 VR\Library\LastSceneManagerSetup.txt
+Length           : 101
+CreationTimeUtc  : 8/22/2026 6:06:11 PM
+LastWriteTimeUtc : 9/24/2026 1:17:16 PM
+sceneSetups:
+- path: Assets/Scenes/147VR_MainScene.unity
+  isLoaded: 1
+  isActive: 1
+  isSubScene: 0
+
+25d Application Error query 2026-09-24T13:17Z..17:40Z:
+
+
+TimeCreated      : 9/24/2026 7:20:32 PM
+ProviderName     : Application Error
+Id               : 1000
+LevelDisplayName : Error
+Message          : Faulting application name: svchost.exe, version: 10.0.26100.1150, time stamp: 0xfdace0d9
+                   Faulting module name: combase.dll, version: 10.0.26100.3775, time stamp: 0x1f53cd6b
+                   Exception code: 0xc0000005
+                   Fault offset: 0x000000000013ab27
+                   Faulting process id: 0xB30
+                   Faulting application start time: 0x1DD4C47095582D4
+                   Faulting application path: C:\WINDOWS\System32\svchost.exe
+                   Faulting module path: C:\WINDOWS\System32\combase.dll
+                   Report Id: 6200d278-60ed-4cee-ad8c-797aa292163e
+                   Faulting package full name: 
+                   Faulting package-relative application ID:
+
+25d source paths:
+Healthy log: Docs\UnityBatchLogs\M5_REAL10_FIXED_20260919.log
+Target log: Docs\UnityBatchLogs\UnityBatch_20260924_144329.log
+Certificate: Docs\M5_REAL_10SHOT_CERT_20260919.json
+Prior artifact: Artifacts\M5_3\WO023_LUNA_ORD22_CLOCK_TAIL_CRASH_PID_ASMFORENSICS_20260924.txt
