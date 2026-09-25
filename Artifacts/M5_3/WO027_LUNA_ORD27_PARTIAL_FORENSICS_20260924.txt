@@ -1,0 +1,23 @@
+WO027 LUNA ORD27 PARTIAL FORENSICS — 2026-09-25
+
+Purpose: preserve valid forensic findings without overstating unresolved historical state.
+
+27c RESULT — SUPPORTED
+Target: Docs/UnityBatchLogs/UnityBatch_20260924_144329.log
+L1558 BeginShot seq=1; L1588 [Cue] Shot -> CuePhysicsAdapter authority is the last lifecycle marker. L1602-L1606 are relay connection/cache/licensing housekeeping. No subsequent M5 lifecycle/tick/Settled marker is present through target end. Process continued writing housekeeping after lifecycle output stopped.
+Finding: F5a' lifecycle halt after Cue authority — SUPPORTED.
+
+27a/27d — UNRESOLVED
+Historical ScriptAssemblies/path grouping could not be established from the failed earlier grouping attempt. Current filesystem mtimes cannot attest the historical 13:22–13:29 state because later writes overwrite mtimes. Do not substitute current-state evidence for historical evidence.
+
+F-TIME-01 — current-state substitution for historical state is INVALID. The 26a sweep is a survivor-set observation/lower bound, not a complete historical write-set.
+
+F-27-1 — INFERENCE: BeginShot/StartState/Cue marker positions differ by a constant +18 lines versus the healthy log. This is a line-count proxy only until content correspondence is established.
+F-27-2 — SUPPORTED as surviving-path observation: two Logs files were inside the historical sweep; they are the remaining log-path evidence, but their content alone did not establish F5a''' mechanism.
+F5a''' remains NOT ESTABLISHED at the end of ORD-27.
+
+27e historical log-chain listing was not used to infer mechanism.
+
+State lock: F5a' SUPPORTED; F5a'' SUPPORTED order-invariant; F5a''' NOT ESTABLISHED at ORD-27 close; stall/hook-exit/native-crash NOT ESTABLISHED; TIMEOUT UNKNOWN.
+
+27a/27d negative result is itself a finding: current-state != historical-state.

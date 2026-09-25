@@ -1,0 +1,36 @@
+WO028 LUNA ORD28 FORENSICS — 2026-09-25
+
+Scope: read-only forensic recovery. No Unity launch, no source/runner/cert/physics/launcher changes.
+
+28a — Logs survivor check
+Current Logs directory contains historical relay.txt (LastWrite 2026-09-24T13:29:37.9576725Z) and traces.jsonl (LastWrite 2026-09-24T17:44:12.3575796Z). No worker log in Logs had a 17:00–18:00 LastWrite at current state. Therefore 28a alone does not establish compile/reload from worker logs.
+
+28b — 18-line correspondence
+Healthy 09-19: FIRE at L1223, BeginShot L1235, StartState L1250, Cue L1265, first lifecycle tick L1279 (step=60).
+Target 09-24: FIRE L1528, BeginShot L1558, StartState L1573, Cue L1588; no lifecycle tick through L1606. Line-count proxy gives 1528+56+18=1602, matching relay connected at L1602. This remains INFERENCE, not proof that an 18-line runtime block caused the offset.
+
+28c — CONTAMINATION EVENT / F5a''' mechanism
+Artifact: Docs/UnityBatchLogs/UnityBatch_20260924_193849.log
+LastWrite UTC: 2026-09-24T17:44:13.0040425Z; Date: 2026-09-24T17:38:50Z.
+Observed: L123 CodeReloadManager initialized; L123 Begin MonoManager ReloadAssembly; L138 successfully reloaded assembly; L140 Domain Reload Profiling; L262 [ScriptCompilation] Requested script compilation because Assembly Definition File(s) changed; L263 script-compilation-related AssetDatabase changes; L282 BuildPipeline bee_backend ScriptAssemblies; L286 DisplayProgressbar: Compiling Scripts; L287 ScriptCompilationBuildProgram; L290 bee_backend ScriptAssemblies.
+Decision: F5a''' recompile/domain-reload mechanism — SUPPORTED. This session directly accounts for later ScriptAssemblies mtime contamination around 17:43. No inference from current mtime alone is used; the causal evidence is the dated batch log.
+
+28d — TIMER
+Exact searches for 7200, TimeSpan.FromHours, Application.quitting, and CancelInvoke returned no matches. Decision: F-TIMER-01 remains HYPOTHESIS/NOT ESTABLISHED; no exact textual 2-hour timeout signature found. Empty grep is not proof that no indirect timeout exists.
+
+28g — survivor-set accounting
+Current-state sweep using the original 2026-09-24 13:17:16Z–15:17:15Z window returned TOTAL=890: Library 887 (880 Library/BurstCache/JIT/Hashes/Objects, 5 Library, 2 Library/Search), Logs 2, UserSettings/AI.Generators 1. The non-Library/non-Logs survivor is UserSettings/AI.Generators/DragAndDropCache.asset at 2026-09-24T13:29:31.4346244Z. This is current-state survivor evidence and must not be treated as a complete historical write-set.
+
+28e escalation: NOT NEEDED because 28c independently established F5a''' mechanism.
+
+FINAL LOCK
+F5a' lifecycle halt after Cue authority — SUPPORTED.
+F5a'' pre-FIRE session degradation — SUPPORTED, order-invariant.
+F5a''' recompile/domain-reload mechanism — SUPPORTED via 193849 dated batch log.
+F-TIME-01 current-state substitution for historical state — INVALID.
+F-27-1 line offset — INFERENCE only.
+F-TIMER-01 2h timeout — NOT ESTABLISHED.
+stall/hook-exit/native crash — NOT ESTABLISHED.
+TIMEOUT — UNKNOWN.
+F-BUILD-01 runtime assembly membership CONFIRMED; player-build failure NOT PROVEN.
+F-PROV-01 OPEN; F-HOOK-01 STANDS; S5 UNKNOWN; 008 NOT AUTHORISED; Pack v10 BLOCKED.

@@ -1,0 +1,75 @@
+WO#030 — LUNA ORD-30 FORENSICS — raw controlled-negative evidence
+Date: 2026-09-25
+Branch: integration/008-m53
+Target: Docs/UnityBatchLogs/UnityBatch_20260924_144329.log
+Healthy: Docs/UnityBatchLogs/M5_REAL10_FIXED_20260919.log
+
+[30a] LIVENESS
+target exists=True lines=1606
+healthy exists=True lines=4244
+Result: PASS — file reads are valid.
+
+[30b] CONTROL — exact pattern family
+Pattern:
+CodeReloadManager|ReloadAssembly|ScriptCompilation|Compiling Scripts|Reloading assemblies|ScriptAssemblies|Bee backend|DisplayProgressbar
+TARGET = 207 matches
+HEALTHY = 208 matches
+
+Representative HEALTHY:
+L117 CodeReloadManager initialized
+L122 Begin MonoManager ReloadAssembly
+L263 DisplayProgressbar: Compiling Scripts
+L268 Begin MonoManager ReloadAssembly
+L727 Reloading assemblies for play mode
+L728 Reloading assemblies after forced synchronous recompile
+
+Representative TARGET:
+L91 CodeReloadManager initialized
+L110 Begin MonoManager ReloadAssembly
+L278 DisplayProgressbar: Compiling Scripts
+L299 Begin MonoManager ReloadAssembly
+L1012 Reloading assemblies for play mode
+L1013 Reloading assemblies after forced synchronous recompile
+
+Control interpretation:
+The signature family is present in both runs at comparable startup/play-mode positions.
+Therefore it is Unity startup/play-mode boilerplate, not target-specific proof of F5a-prime.
+Do not use this signature family as causal evidence for the lifecycle halt.
+
+[30c] DECISIVE POST-HALT CONTROL
+Halt anchor: target L1588 = [Cue] Shot -> CuePhysicsAdapter authority
+AFTER_1588_COUNT (main pattern) = 0
+AFTER_1588_LOOSE (Reload|Compil|Bee|MonoManager) = 0
+Target tail after halt contains housekeeping markers including:
+relay connected
+connection.established
+TrimDiskCacheJob
+Licensing (2 occurrences)
+
+Decision:
+No reload/compile signature occurs after L1588.
+
+[FINAL DECISION RULE]
+F5a-prime recompile/domain-reload mechanism:
+NOT ESTABLISHED
+INVESTIGATION BRANCH CLOSED
+
+Reason:
+30a proves liveness/read correctness.
+30b shows same signature family in healthy and target (207 vs 208).
+30c shows zero matching signatures after the lifecycle halt.
+Therefore the signature does not establish the halt mechanism.
+
+LOCKED RELATED STATE
+F5a-prime = SUPPORTED (lifecycle halt after Cue authority, process continues housekeeping)
+F5a-double-prime = SUPPORTED (pre-FIRE degradation; 146.9x / 42.7x / 44.9x)
+F5a-triple-prime = NOT ESTABLISHED; BRANCH CLOSED
+F-TIME-01 = current-state substitution for historical state INVALID
+F-TIMER-01 = HYPOTHESIS / UNKNOWN
+<60 physics steps = CONDITIONALLY ESTABLISHED
+stall / hook-exit / native crash = NOT ESTABLISHED
+TIMEOUT = UNKNOWN
+
+Method note:
+This artifact records the raw 30a/30b/30c values used for the closure decision.
+No Unity run, REAL10 rerun, source/physics/cert/launcher mutation was performed for ORD-30.
