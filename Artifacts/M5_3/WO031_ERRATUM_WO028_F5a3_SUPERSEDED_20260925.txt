@@ -1,0 +1,52 @@
+WO#031 - ERRATUM: WO028 F5a-prime conclusion SUPERSEDED
+Date: 2026-09-25
+Branch: integration/008-m53
+Base (as committed): 7643e319f5e5d4e467faf662e5501b9c93c6dc28
+
+[SUPERSEDED ITEM]
+File: Artifacts/M5_3/WO028_LUNA_ORD28_FORENSICS_20260924.txt
+Text superseded:
+  - section [28c]: "Decision: F5a''' recompile/domain-reload mechanism - SUPPORTED."
+  - section [FINAL LOCK]: "F5a''' recompile/domain-reload mechanism - SUPPORTED via 193849 dated batch log."
+superseded_by: Artifacts/M5_3/WO030_LUNA_ORD30_FORENSICS_20260924.txt
+Authoritative: Docs/AI_TEAM/COACH_CLOSURE_030_FORENSIC_CLOSED_20260925.md
+
+Reason:
+  WO028 attributed the TARGET session's halt mechanism to the 193849 session, but 193849 is a
+  LATER session (Date 2026-09-24T17:38:50Z, LastWrite 17:44:13.0040425Z) and is therefore
+  contamination evidence, not target-session mechanism evidence.
+  ORD-30 tested the target session directly:
+    30a liveness PASS (target 1606 lines / healthy 4244 lines)
+    30b same signature family in both runs -> TARGET 207 vs HEALTHY 208 => boilerplate
+    30c AFTER_1588_COUNT = 0 (main pattern) and AFTER_1588_LOOSE = 0
+  => no reload/compile signature occurs after the halt anchor L1588
+  => no mechanism for the halt is established from target-session evidence.
+
+[UNCHANGED AND STILL VALID - keep from WO028]
+  28c contamination attribution: the 193849 session rewrote Library/ScriptAssemblies, therefore
+      current mtimes cannot attest the historical 13:22-13:29 state. (F-TIME-01 causal half.)
+  28g accounting CLOSED: the single unclassified survivor is
+      UserSettings/AI.Generators/DragAndDropCache.asset (LastWrite 13:29:31.4346244Z)
+      => 890 = 887 (Library) + 2 (Logs) + 1.
+  28a Logs survivors at current state: relay.txt (LastWrite 13:29:37.9576725Z) and
+      traces.jsonl (LastWrite 17:44:12.3575796Z). These are relay artifacts, not
+      AssetImportWorker logs. Note: 13:29:37.9576725Z is the same instant recorded as the last
+      filesystem activity in the 26a sweep.
+  28d exact searches for 7200 / TimeSpan.FromHours / Application.quitting / CancelInvoke
+      returned no matches => F-TIMER-01 NOT ESTABLISHED (an empty grep is not proof).
+
+[CORRECTED FINAL STATE]
+  F5a'   SUPPORTED  (lifecycle halt after Cue authority; process continued housekeeping)
+  F5a''  SUPPORTED  (pre-FIRE session degradation; order-invariant)
+  F5a''' NOT ESTABLISHED  -  INVESTIGATION BRANCH CLOSED
+  F-TIME-01 current-state substitution for historical state = INVALID
+  F-TIMER-01 HYPOTHESIS / NOT ESTABLISHED
+  <60 physics steps  CONDITIONALLY ESTABLISHED
+  stall / hook-exit / native crash = NOT ESTABLISHED
+  TIMEOUT = UNKNOWN
+  F-PROV-01 OPEN; F-HOOK-01 STANDS; S5 UNKNOWN; 008 NOT AUTHORISED; Pack v10 BLOCKED
+
+[Method note]
+  This erratum is a separate act so that the superseded artifact stays verbatim and its
+  canonical hash remains stable (per the WO#017 decision #2 supersession rule).
+  No Unity run, REAL10 rerun, or source/physics/cert/launcher mutation was performed.

@@ -35,6 +35,7 @@ Base blob of this index when Pack v8 was generated: `d0158146dc872ba9e77b9050fa7
 
 | Artifact | sha256 |
 |---|---|
+| `Artifacts/M5_3/WO031_ERRATUM_WO028_F5a3_SUPERSEDED_20260925.txt` | `28af2b5cceb0fe46febaf7d5501635a02e96108ee6aedfa0cc0a60f34c2996a2` |
 | `Docs/147VR_REMAINING_WORK_MAP_20260923.md` | `66f38c7f4d8d2bb49dfe1f279bb7393979eb33322818cc3ea9bd4fda172b9f04` |
 
 
