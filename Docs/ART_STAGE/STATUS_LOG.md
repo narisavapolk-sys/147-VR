@@ -1,25 +1,42 @@
-# 147 VR — ART Status Log (2026-10-11, owner present)
+# 147 VR — CURRENT STATUS / HANDOFF (2026-10-11) — authoritative
 
-## Setup V008 — DONE (owner ran the menu)
-- Scene `Assets/Scenes/147VR_MainScene_V008_TEST.unity` created (original MainScene untouched).
-- `147VR_Table_V008_OPT_VISUAL` placed at old slot; URP materials + FELT applied; DARC 4-light rig added; old `Prefab_WPBSA_12Foot_Snooker` disabled (physics `Bed_Collider` kept).
+> For any AI/human resuming. Read THIS first; older docs may be stale. Honest state, not aspirational.
 
-## Venue — exported + staged
-- `147VR_Venue_Crucible.fbx` (17.3MB, 321 meshes, ~300k tris) from the Crucible .blend, no table.
-- Staged to `Assets/AAA/ImportedSnooker/Venue/`.
-- NOTE: no image textures came through (venue materials are procedural/flat like the table) → needs URP material/bake pass for full look.
+## Git
+- Branch `integration/008-m53`. Commit **`377eb543`** "feat(art): integrate v008_OPT table + arena HDRI skybox + crowd billboards + SFX" (129 files) is **LOCAL, NOT PUSHED** (PAT is read-only; owner pushes).
+- Still untracked (not in commit): folder `.meta`s, `Assets/AAA/TEST_ART_AAA/` (v008 source), scenes `147VR_MainScene_ART_V006`, `..._V008_CLEAN_TEST`, `..._PRE_V008` (backup), `Assets/Editor/LunaV008CleanSwapTest.cs` (not authored here).
+- LFS covers fbx/png/hdr/wav/blend. Scratch `Docs/ART_STAGE/{blend_archive,export,bake}/` gitignored.
 
-## Issue found: stray white "Cube" on the felt
-- A placeholder cube (FBX leftover, named `Cube*`) sits on the play surface. Being removed by the new menu tool.
+## DONE + VERIFIED
+- UPM/toolchain blocker fixed (connects 0.7s on Unity **6000.4.4f1**, the only editor installed). Canonical launcher `Docs/Tools/Unity_Batch_Safe.ps1`.
+- Table **v008_OPT** game FBX (243k tris) + LOD1(95k)/LOD2(45k) + URP materials (from extracted params) + FELT (`Green_Felt_Texture_V007.png`) + AO — staged under `Assets/AAA/ImportedSnooker/V008_OPT/`.
+- WPBSA verified vs v007: baulk 737mm / D 292mm / Brown-centre correct; **pockets(6)+cushions(4) identical** → swap is physics-compatible. `TABLE FRAME` confirmed present (dark material). Evidence: `Docs/ART_STAGE/*.json`.
+- 13 SFX clips in `Assets/Audio/SFX`.
+- Editor tools (MenuItem, no auto-run): `147VR/Art/{Setup V008 Table, Cleanup Strays+Place Venue, Strip Venue, Strip Props+Placeholder Cube, Apply Arena Skybox, Clear Skybox, Promote V008_TEST->MainScene}` + `147VR/Audio/Configure SFX Import`.
 
-## New editor tool
-- `147VR/Art/Cleanup Strays + Place Venue` (Assets/Editor/147VR_ArtMaterials_Tools.cs): unpacks the table prefab, destroys `Cube*` children, instantiates the venue as `147VR_VENUE_CRUCIBLE` dressing, saves the scene.
+## DONE but NOT YET VERIFIED (must check)
+- **Skybox**: `arena_panorama.png` (no-table) + Apply menu exist, but owner saw GRAY — likely Scene-view not rendering skybox, or Apply not run. **Unconfirmed working.**
+- **Table placement/height** in `147VR_MainScene_V008_TEST` / promoted MainScene: not screenshot-verified against physics plane 0.756 (felt may float ~7cm).
+- **SFX import settings** (Vorbis/Streaming): menu written; not confirmed executed.
 
-## Next
-1. Run the Cleanup+Venue menu → screenshot.
-2. If the white box isn't named `Cube*`, capture its name and target it precisely.
-3. Assess look/lighting; align table felt to physics plane 0.756 if balls float/sink.
-4. LOD/decimate (table 243k + venue 300k tris) for Quest; AudioMixer + wire SFX; re-run Golden regression.
+## NOT DONE
+- AudioMixer asset + wiring SFX to gameplay events (cue strike / ball-ball / cushion / pocket / crowd / frame-win).
+- LODGroup assembly in Unity (LOD meshes exist but not wired).
+- Material **bake** for full AAA look (materials are flat colors; DARC lighting approximated by 3 point + 1 dir lights, not baked).
+- **Re-run Golden regression** after the swap (confirm physics unchanged) — REQUIRED before trusting gameplay.
+- Quest perf / device gate (no device evidence).
 
-## Constraints (unchanged)
-- 16GB RAM: never Unity+Blender heavy at once. Don't delete Library/PackageCache. Batch -executeMethod unreliable here (ShaderGraph editor-asm compile abort) → GUI menu is the reliable path.
+## GOTCHAS (do not repeat)
+- 16GB RAM: NEVER run Unity + Blender together; NEVER leave multiple Unity instances (found 3 earlier = freeze cause).
+- Do NOT delete `Library/PackageCache` (no global cache on this PC → offline-unrecoverable).
+- Batch `-executeMethod` unreliable (ShaderGraph editor-asm compile aborts batch) → use the **GUI editor**.
+- A compile error in an `Assets/Editor` script forces Safe Mode (avoid tuple-dict initializers; use `AudioImporter.SaveAndReimport()`; `UnpackPrefabInstance` before destroying prefab children).
+- Keep raw `.blend` OUT of `Assets/` (Unity tries to convert → error).
+- GitHub PAT is read-only → agent cannot push; owner pushes.
+
+## Suggested next order
+1. Verify/fix skybox display (Game view / Scene-view skybox; Lighting>Skybox Material = ArenaSkybox).
+2. Screenshot table placement; align felt to 0.756; dedup extra DARC lights.
+3. Run `Configure SFX Import`; create AudioMixer; wire SFX to events.
+4. Bake materials (Cycles) for AAA look.
+5. Assemble LODGroups; then re-run Golden regression + perf.

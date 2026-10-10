@@ -58,3 +58,11 @@ Headless landmark comparison **v006 (new art) vs v007 (current certified)** — 
 4. LOD/decimate the ~409k-tri table before Quest.
 5. AudioMixer + set SFX import to Vorbis/Streaming + wire SFX to gameplay events.
 6. Re-run Golden regression to confirm physics unchanged after the swap.
+
+## Current handoff state (2026-10-11) — see Docs/ART_STAGE/STATUS_LOG.md for the authoritative snapshot
+
+- Chosen base = **v008_OPT** (WPBSA-verified, 243k tris + LODs, URP materials + FELT + AO staged).
+- **Commit `377eb543`** on `integration/008-m53` exists but is **NOT pushed** (read-only PAT; owner pushes).
+- **Still pending verification**: arena skybox display (owner saw gray), table height/placement vs physics plane 0.756, SFX import settings.
+- **Not done**: AudioMixer + SFX event wiring, LODGroup assembly, material bake, **Golden regression re-run**, Quest perf/device gate.
+- Do NOT trust "source complete" as "runtime complete"; re-run Golden before claiming the swap is safe.
