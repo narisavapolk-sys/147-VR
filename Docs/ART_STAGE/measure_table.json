@@ -1,0 +1,281 @@
+{
+  "blend": "147VR_Table_WPBSA_Visual_Clean_v006_DARC_LIGHTING_ART_V04.blend",
+  "unit_system": "METRIC",
+  "scale_length": 1.0,
+  "mesh_count": 160,
+  "total_objects": 181,
+  "materials": [
+    "0I_Gold_mqm",
+    "147VR_BALL_Black",
+    "147VR_BALL_Blue",
+    "147VR_BALL_Brown",
+    "147VR_BALL_Green",
+    "147VR_BALL_Pink",
+    "147VR_BALL_Red",
+    "147VR_BALL_White",
+    "147VR_BALL_Yellow",
+    "147VR_Pocket_Brass",
+    "147VR_Pocket_Leather",
+    "147VR_Pocket_Net",
+    "147VR_Pocket_Stitch",
+    "147VR_Pocket_Throat",
+    "147VR_Pocket_Throat_Dark",
+    "1B_Concrete_Smooth_mqm",
+    "4C_Leather_Black_mqm",
+    "Black",
+    "Dots Stroke",
+    "FELT",
+    "Gound Colour",
+    "MAT_WPBSA_Line",
+    "Table Mahogany",
+    "Table Mahogany.001",
+    "cw-FABRIC-01",
+    "sy_dark_matte"
+  ],
+  "image_textures": 15,
+  "physics_named": [],
+  "world_min": [
+    -24.1158,
+    -28.8318,
+    -0.01
+  ],
+  "world_max": [
+    18.9304,
+    53.215,
+    0.8798
+  ],
+  "world_dims_XYZ_m": [
+    43.0462,
+    82.0469,
+    0.8898
+  ],
+  "max_Z_surface_top_guess": 0.8798,
+  "top_objects": [
+    {
+      "name": "TABLE FRAME",
+      "dims": [
+        3.847,
+        2.076,
+        0.171
+      ],
+      "center": [
+        0.0,
+        -0.001,
+        0.778
+      ],
+      "polys": 15958
+    },
+    {
+      "name": "Base Table Support",
+      "dims": [
+        3.069,
+        1.508,
+        0.052
+      ],
+      "center": [
+        0.001,
+        -0.001,
+        0.535
+      ],
+      "polys": 6
+    },
+    {
+      "name": "Side Cushion.002",
+      "dims": [
+        1.677,
+        1.776,
+        0.036
+      ],
+      "center": [
+        -0.884,
+        -0.001,
+        0.845
+      ],
+      "polys": 1450
+    },
+    {
+      "name": "Side Cushion.001",
+      "dims": [
+        1.673,
+        1.776,
+        0.036
+      ],
+      "center": [
+        0.883,
+        -0.001,
+        0.845
+      ],
+      "polys": 1450
+    },
+    {
+      "name": "TABLE SURFACE",
+      "dims": [
+        3.569,
+        1.778,
+        0.013
+      ],
+      "center": [
+        0.001,
+        -0.001,
+        0.821
+      ],
+      "polys": 96
+    },
+    {
+      "name": "NEW LEG-001",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -1.375,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.001",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -1.375,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.002",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -0.476,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.003",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -0.476,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.006",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        0.474,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.007",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        0.474,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.008",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        1.375,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.009",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        1.375,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "Corner Support-001",
+      "dims": [
+        0.257,
+        0.278,
+        0.305
+      ],
+      "center": [
+        1.465,
+        0.65,
+        0.646
+      ],
+      "polys": 11049
+    },
+    {
+      "name": "Corner Support-004",
+      "dims": [
+        0.257,
+        0.278,
+        0.305
+      ],
+      "center": [
+        -1.453,
+        -0.669,
+        0.654
+      ],
+      "polys": 11049
+    }
+  ],
+  "total_polys": 454284,
+  "compare": {
+    "footprint_XY": [
+      43.0462,
+      82.0469
+    ],
+    "cert_footprint": [
+      1.78,
+      3.57
+    ],
+    "height_Z": 0.8898,
+    "surface_top_Z": 0.8798,
+    "cert_surface_top": 0.756
+  },
+  "fbx": "C:\\Users\\mongo\\UnityProjects\\147 VR\\Docs\\ART_STAGE\\export\\147VR_Table_WPBSA_V006_DARC_V04.fbx",
+  "fbx_bytes": 20112588
+}

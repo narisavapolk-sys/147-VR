@@ -1,51 +1,60 @@
 # 147 VR — Production Gate Status
 
 > Project: 147 VR
-> Unity: 6000.4.4f1
-> Platform focus: VR
-> Status: GATE 3 — COMPLETE (manual scene validation passed)
-> Last updated: 2026-08-24
+> Unity: 6000.4.4f1 (canonical, locked)
+> Platform focus: VR (Meta Quest 2/3)
+> Status: GATE 3 COMPLETE · GATE 4 (toolchain) PROVEN · GATE 5 (device) PENDING
+> Last updated: 2026-10-10
 
 ## Gates
 
-- GATE 1: COMPLETE
-- GATE 2: COMPLETE
-- GATE 3: COMPLETE
+- GATE 1 Foundation: COMPLETE
+- GATE 2 Core Systems: COMPLETE
+- GATE 3 Production Readiness: COMPLETE
+- GATE 4 Toolchain & integration-line proof: **PROVEN (2026-10-10)** — see below
+- GATE 5 Device (Quest) gate: **PENDING** — no on-device evidence yet
 
-## Git Baseline
+## GATE 4 — Toolchain (resolved 2026-10-10)
 
-- Branch: `main`
-- Baseline: `ac43a11` — `chore: establish 147 VR project baseline`
-- Gate 1 record: `cbb7f38` — `docs: mark gate 1 git baseline complete`
-- Working tree was clean before Gate 2/3 work.
-- Remote `origin`: `https://github.com/narisavapolk-sys/147-VR.git`
-- Git LFS attributes cover the project's large binary asset classes.
+- The long-standing "Package Manager could not connect to IPC after 30s" blocker is **resolved**: Unity 6000.4.4f1 batch now connects UPM in **0.7s** (license OK, 86 packages registered) via the canonical launcher `Docs\Tools\Unity_Batch_Safe.ps1` (sanitized PATH + full env incl. ALLUSERSPROFILE, single-instance guard, no `-noUpm`).
+- Launcher drift consolidated: `Tools\Launch_147VR_Safe.ps1` → `.DEPRECATED`; only `Unity_Batch_Safe.ps1` is approved.
+- Editor standardized to **6000.4.4f1** (pinned in `ProjectSettings/ProjectVersion.txt`). 6000.4.12f1 and 6000.4.5f1 removed from the machine to stop Bee full-rebuild churn.
+- The batch-mode ShaderGraph "GUID" compile errors were **batch-only artifacts**; opening the project in the Unity GUI editor loads and compiles cleanly (MainScene renders).
+- Machine stability: hard freezes during this work were traced to **RAM exhaustion (16 GB)** when Unity batch overlapped Blender/Chrome — NOT Defender (project path already AV-excluded) and NOT disk (SSD). Workflow rule: run Unity and Blender **one at a time**, other heavy apps closed.
+- Residual: a clean package-aware batch exit-code-0 capture has not been recorded post-fix (batch aborts on editor-only package errors); the GUI editor is the current compile authority.
 
-## GATE 2 Acceptance
+## ART — Phase 3 Table Visual (in progress, 2026-10-10)
 
-- Runtime gameplay spine documented.
-- Responsibilities and dependency direction documented.
-- Reusable core vs scene/presentation boundaries documented.
-- Existing Quest systems identified as the gameplay core.
-- Architecture contract recorded in `ARCHITECTURE.md`.
+- New table + venue art received as Blender sources (`.blend`): `147VR_Table_WPBSA_Visual_Clean_v006_DARC_LIGHTING_ART_V04` (table) and `147VR_008_CRUCIBLE_..._NO_TABLE` (venue).
+- Measured vs certified: play surface **3.57 × 1.78 m** matches the Golden-certified footprint → **not a geometry regression**. No colliders/rigidbodies in the art (physics authority untouched).
+- Exported a clean **game FBX** (137 parts; 22 balls + a 43×82 m stray floor excluded; pocket clamps included), staged at `Assets\AAA\ImportedSnooker\V006_DARC_V04\`.
+- SFX imported to `Assets\Audio\SFX` (13 clips: cue strike/chalk, ball-ball/cushion/pocket, crowd ambience/gasp/cheer/applause, fireworks).
 
-## GATE 3 Acceptance
+### ART — open items / risks
 
-- Production readiness contract recorded in `PRODUCTION_READINESS.md`.
-- Unity version is pinned to `6000.4.4f1`.
-- XR Management/OpenXR and URP/Input System dependencies are present.
-- `SampleScene`, `PoolTable_8Ball`, and `PoolTable_9Ball` are now enabled in EditorBuildSettings.
-- Manual YAML scene scan found no zero-GUID missing-script references in all three scenes.
-- Existing `ProjectValidator` remains available for full Unity Editor batch validation.
+- **Materials are procedural/DARC-lit and do NOT survive FBX export** → must **bake** basecolor/normal/roughness/AO (Cycles; Windows headless cannot use EEVEE) and rebuild URP materials, then relight in-engine.
+- **~409k tris** on the table alone → needs **decimation/LOD** before Quest certification.
+- **Visual felt top Z ≈ 0.83 vs certified physics plane 0.756** → lower/align the visual ~7 cm on placement; long axis is Blender-X (may need 90° rotation).
+- Swap must be **non-destructive**: duplicate `147VR_MainScene` first; keep `Bed_Collider` + `SnookerPhysicsSetup` + spot markings authoritative; re-run Golden regression after.
 
-## Important Note
+## Rule (unchanged)
 
-The Desktop Commander Unity batch invocation timed out before producing a validation log, so the final scene acceptance above is based on direct scene YAML validation plus project configuration inspection, not a successful Unity batch exit code. Do not claim a Unity runtime/build test passed until that batch validation is rerun successfully.
+Source/contract completeness is never reported as runtime/production completeness. No PASS claim without committed evidence artifacts.
 
-## Blender MCP
+## ART verification result (2026-10-10)
 
-Blender remains intentionally closed. Blender MCP is not required for Gates 1–3 and should only be enabled when asset-pipeline work begins.
+Headless landmark comparison **v006 (new art) vs v007 (current certified)** — evidence in `Docs/ART_STAGE/compare_v006_v007.json`:
+- **Pockets (6) and cushions (4): identical coordinates** → potting/cushion gameplay unaffected by a swap.
+- **Black / Pink / centre(Blue) / reds triangle: identical.**
+- **Baulk line / D / bottom colours differ — and v006 is the WPBSA-correct one:** v006 baulk 737mm, D radius 292mm, Brown at baulk centre (all per WPBSA); v007 has D radius ~330mm and Green/Brown swapped (off-spec). v006 is therefore an upgrade, not a regression.
+- Code check: `CuePhysicsAdapter`/`BallMotionController` use `ballRadius = 0.02625` (52.5mm) — matches v006 art; `SnookerBallTracker` captures ball `homePosition` from scene transforms at runtime (no hardcoded spot conflict). Balls are runtime-spawned, so edit-mode shows none (expected).
 
-## Next Gate
+**Swap status:** executed non-destructively to `Assets/Scenes/147VR_MainScene_ART_V006.unity` (original `147VR_MainScene.unity` untouched, LastWrite 2026-09-25). Old table disabled there for rollback.
 
-GATE 4 is not defined yet. The next production step should be a focused gameplay/runtime verification pass rather than more foundation scaffolding.
+**Next steps (require Unity CLOSED before any Blender work — RAM/freeze):**
+1. Bake v006 materials (Cycles: basecolor/normal/roughness/AO) → rebuild URP materials (procedural/DARC did NOT survive FBX; table currently looks flat).
+2. Align new table felt top to physics plane 0.756 (art felt ~0.83 → lower ~0.07).
+3. Import venue (`147VR_008_CRUCIBLE_..._NO_TABLE.blend`) as separate dressing layer.
+4. LOD/decimate the ~409k-tri table before Quest.
+5. AudioMixer + set SFX import to Vorbis/Streaming + wire SFX to gameplay events.
+6. Re-run Golden regression to confirm physics unchanged after the swap.

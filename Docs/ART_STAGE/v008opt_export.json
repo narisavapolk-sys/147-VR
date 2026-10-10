@@ -1,0 +1,321 @@
+{
+ "source": "147VR_Table_WPBSA_Visual_Clean_v008_MARKING_OPT.fbx",
+ "kept_meshes": 93,
+ "tris": 243185,
+ "materials": [
+  {
+   "name": "0I_Gold_mqm",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.82,
+   "image": null,
+   "basecolor": [
+    0.55,
+    0.3,
+    0.055,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Black",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.006,
+    0.006,
+    0.006,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Blue",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.02,
+    0.18,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Brown",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.2,
+    0.055,
+    0.015,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Green",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.03,
+    0.3,
+    0.06,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Pink",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.95,
+    0.2,
+    0.55,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Red",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.0,
+    0.0,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_White",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.92,
+    0.92,
+    0.92,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_BALL_Yellow",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.95,
+    0.75,
+    0.02,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_Pocket_Brass",
+   "baseColor": null,
+   "roughness": 0.24,
+   "metallic": 0.82,
+   "image": null,
+   "basecolor": [
+    0.55,
+    0.3,
+    0.055,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_Pocket_Leather",
+   "baseColor": null,
+   "roughness": 0.43,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.8,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_Pocket_Net",
+   "baseColor": null,
+   "roughness": 0.75,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.72,
+    0.66,
+    0.52,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_Pocket_Throat",
+   "baseColor": null,
+   "roughness": 0.7,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.018,
+    0.012,
+    0.009,
+    1.0
+   ]
+  },
+  {
+   "name": "147VR_Pocket_Throat_Dark",
+   "baseColor": null,
+   "roughness": 0.58,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.004,
+    0.002,
+    0.001,
+    1.0
+   ]
+  },
+  {
+   "name": "1B_Concrete_Smooth_mqm",
+   "baseColor": null,
+   "roughness": 0.0,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.8,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "4C_Leather_Black_mqm",
+   "baseColor": null,
+   "roughness": 0.0,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.8,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "Black",
+   "baseColor": null,
+   "roughness": 0.22,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.006,
+    0.006,
+    0.006,
+    1.0
+   ]
+  },
+  {
+   "name": "cw-FABRIC-01",
+   "baseColor": null,
+   "roughness": 0.2143,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.0495,
+    0.0495,
+    0.0495,
+    1.0
+   ]
+  },
+  {
+   "name": "Dots Stroke",
+   "baseColor": null,
+   "roughness": 0.5,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.8,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "FELT",
+   "baseColor": null,
+   "roughness": 0.72,
+   "metallic": 0.0,
+   "image": "Green Felt Texture-2.png"
+  },
+  {
+   "name": "Material",
+   "baseColor": null,
+   "roughness": 0.5,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.8,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "Material.001",
+   "baseColor": null,
+   "roughness": 0.5,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.8,
+    0.8,
+    0.8,
+    1.0
+   ]
+  },
+  {
+   "name": "Table Mahogany",
+   "baseColor": null,
+   "roughness": 0.27,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.095,
+    0.018,
+    0.012,
+    1.0
+   ]
+  },
+  {
+   "name": "Table Mahogany.001",
+   "baseColor": null,
+   "roughness": 0.3,
+   "metallic": 0.0,
+   "image": null,
+   "basecolor": [
+    0.16,
+    0.035,
+    0.018,
+    1.0
+   ]
+  }
+ ],
+ "fbx": "C:\\Users\\mongo\\UnityProjects\\147 VR\\Docs\\ART_STAGE\\export\\147VR_Table_V008_OPT_GAME.fbx",
+ "fbx_bytes": 7037244,
+ "textures_copied": [
+  "147VR_Table_V008_OPT_GAME.fbx",
+  "147VR_Table_WPBSA_V006_DARC_V04.fbx",
+  "147VR_Table_WPBSA_V006_DARC_V04_GAME.fbx",
+  "147VR_Table_WPBSA_V006_DARC_V04_TABLEONLY.fbx"
+ ]
+}

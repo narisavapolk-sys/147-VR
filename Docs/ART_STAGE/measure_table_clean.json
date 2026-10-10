@@ -1,0 +1,672 @@
+{
+  "included_count": 125,
+  "excluded_count": 35,
+  "included_polys": 369861,
+  "table_aabb": {
+    "X": 3.847,
+    "Y": 2.076,
+    "Z": 0.874,
+    "topZ": 0.864
+  },
+  "excluded": [
+    {
+      "name": "Plane",
+      "dims": [
+        43.046,
+        82.047,
+        0.0
+      ],
+      "center": [
+        -2.593,
+        12.192,
+        0.0
+      ],
+      "polys": 1,
+      "reason": "huge/room-floor"
+    },
+    {
+      "name": "Ball Catcher Clamp End",
+      "dims": [
+        0.014,
+        0.077,
+        0.027
+      ],
+      "center": [
+        -1.389,
+        -0.895,
+        0.497
+      ],
+      "polys": 6560,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Ball Catcher Clamp End.001",
+      "dims": [
+        0.014,
+        0.077,
+        0.027
+      ],
+      "center": [
+        -1.389,
+        0.896,
+        0.497
+      ],
+      "polys": 6560,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Ball Catcher Clamp End.002",
+      "dims": [
+        0.014,
+        0.077,
+        0.027
+      ],
+      "center": [
+        0.39,
+        -0.895,
+        0.497
+      ],
+      "polys": 6560,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Ball Catcher Clamp End.003",
+      "dims": [
+        0.014,
+        0.077,
+        0.027
+      ],
+      "center": [
+        1.386,
+        -0.896,
+        0.497
+      ],
+      "polys": 6560,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Ball Catcher Clamp End.004",
+      "dims": [
+        0.014,
+        0.077,
+        0.027
+      ],
+      "center": [
+        1.386,
+        0.895,
+        0.497
+      ],
+      "polys": 6560,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Ball Catcher Clamp End.005",
+      "dims": [
+        0.014,
+        0.077,
+        0.027
+      ],
+      "center": [
+        0.391,
+        0.895,
+        0.497
+      ],
+      "polys": 6560,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Black",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.435,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Blue",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        0.0,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Brown",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        1.048,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Green",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        1.048,
+        -0.292,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Pink",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -0.859,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "ball-like"
+    },
+    {
+      "name": "Red",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -0.912,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.001",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -0.957,
+        -0.026,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.002",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -0.957,
+        0.026,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.003",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.003,
+        -0.053,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.004",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.003,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.005",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.003,
+        0.053,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.006",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.048,
+        -0.079,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.007",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.048,
+        -0.026,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.008",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.048,
+        0.026,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.009",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.048,
+        0.079,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.010",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.094,
+        -0.105,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.011",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.094,
+        -0.053,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    },
+    {
+      "name": "Red.012",
+      "dims": [
+        0.053,
+        0.053,
+        0.053
+      ],
+      "center": [
+        -1.094,
+        -0.0,
+        0.854
+      ],
+      "polys": 2048,
+      "reason": "tiny-sphere(ball?)"
+    }
+  ],
+  "included_top": [
+    {
+      "name": "NEW LEG-001",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -1.375,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.001",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -1.375,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.002",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -0.476,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.003",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        -0.476,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.006",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        0.474,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.007",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        0.474,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.008",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        1.375,
+        -0.582,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "NEW LEG-001.009",
+      "dims": [
+        0.209,
+        0.209,
+        0.509
+      ],
+      "center": [
+        1.375,
+        0.58,
+        0.256
+      ],
+      "polys": 19200
+    },
+    {
+      "name": "TABLE FRAME",
+      "dims": [
+        3.847,
+        2.076,
+        0.171
+      ],
+      "center": [
+        0.0,
+        -0.001,
+        0.778
+      ],
+      "polys": 15958
+    },
+    {
+      "name": "Corner Support-001",
+      "dims": [
+        0.257,
+        0.278,
+        0.305
+      ],
+      "center": [
+        1.465,
+        0.65,
+        0.646
+      ],
+      "polys": 11049
+    },
+    {
+      "name": "Corner Support-002",
+      "dims": [
+        0.257,
+        0.277,
+        0.305
+      ],
+      "center": [
+        1.456,
+        -0.669,
+        0.654
+      ],
+      "polys": 11049
+    },
+    {
+      "name": "Corner Support-003",
+      "dims": [
+        0.257,
+        0.277,
+        0.305
+      ],
+      "center": [
+        -1.454,
+        0.667,
+        0.654
+      ],
+      "polys": 11049
+    },
+    {
+      "name": "Corner Support-004",
+      "dims": [
+        0.257,
+        0.278,
+        0.305
+      ],
+      "center": [
+        -1.453,
+        -0.669,
+        0.654
+      ],
+      "polys": 11049
+    },
+    {
+      "name": "Rod 2",
+      "dims": [
+        0.399,
+        0.062,
+        0.147
+      ],
+      "center": [
+        -1.602,
+        -0.891,
+        0.561
+      ],
+      "polys": 9152
+    },
+    {
+      "name": "Rod 2.001",
+      "dims": [
+        0.399,
+        0.062,
+        0.147
+      ],
+      "center": [
+        -1.602,
+        0.899,
+        0.561
+      ],
+      "polys": 9152
+    },
+    {
+      "name": "Rod 2.002",
+      "dims": [
+        0.399,
+        0.062,
+        0.147
+      ],
+      "center": [
+        0.177,
+        -0.891,
+        0.561
+      ],
+      "polys": 9152
+    },
+    {
+      "name": "Rod 2.005",
+      "dims": [
+        0.399,
+        0.062,
+        0.147
+      ],
+      "center": [
+        0.177,
+        0.898,
+        0.561
+      ],
+      "polys": 9152
+    },
+    {
+      "name": "Rod 3.003",
+      "dims": [
+        0.399,
+        0.062,
+        0.147
+      ],
+      "center": [
+        1.601,
+        -0.896,
+        0.561
+      ],
+      "polys": 9152
+    },
+    {
+      "name": "Rod 3.004",
+      "dims": [
+        0.399,
+        0.062,
+        0.147
+      ],
+      "center": [
+        1.6,
+        0.895,
+        0.561
+      ],
+      "polys": 9152
+    },
+    {
+      "name": "Side Support-001",
+      "dims": [
+        1.222,
+        0.053,
+        0.305
+      ],
+      "center": [
+        0.716,
+        0.779,
+        0.653
+      ],
+      "polys": 5502
+    }
+  ],
+  "fbx": "C:\\Users\\mongo\\UnityProjects\\147 VR\\Docs\\ART_STAGE\\export\\147VR_Table_WPBSA_V006_DARC_V04_TABLEONLY.fbx",
+  "fbx_bytes": 16531708
+}

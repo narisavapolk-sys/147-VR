@@ -1,0 +1,68 @@
+{
+ "table": {
+  "meshes": 93,
+  "tris": 243185,
+  "has_frame": true,
+  "frame_names": [
+   "TABLE FRAME"
+  ],
+  "surface_names": [
+   "TABLE SURFACE"
+  ]
+ },
+ "table_lods": [
+  {
+   "lod": 1,
+   "ratio": 0.35,
+   "tris": 95089,
+   "path": "147VR_Table_V008_OPT_GAME_LOD1.fbx"
+  },
+  {
+   "lod": 2,
+   "ratio": 0.12,
+   "tris": 44565,
+   "path": "147VR_Table_V008_OPT_GAME_LOD2.fbx"
+  }
+ ],
+ "venue": {
+  "meshes": 314,
+  "tris": 727958,
+  "crowd_like_count": 164,
+  "crowd_sample": [
+   "Curtain_Header.001",
+   "Spectator_0000",
+   "Spectator_0001",
+   "Spectator_0002",
+   "Spectator_0003",
+   "Spectator_0004",
+   "Spectator_0005",
+   "Spectator_0006",
+   "Spectator_0007",
+   "Spectator_0008",
+   "Spectator_0009",
+   "Spectator_0010"
+  ],
+  "bounds_x": [
+   -11.12,
+   5.18
+  ],
+  "bounds_z": [
+   -47.47,
+   4.05
+  ]
+ },
+ "venue_lods": [
+  {
+   "lod": 1,
+   "ratio": 0.4,
+   "tris": 306677,
+   "path": "147VR_Venue_Crucible_LOD1.fbx"
+  },
+  {
+   "lod": 2,
+   "ratio": 0.15,
+   "tris": 131863,
+   "path": "147VR_Venue_Crucible_LOD2.fbx"
+  }
+ ]
+}

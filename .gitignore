@@ -116,3 +116,9 @@ InitTestScene*.unity*
 # Tracked backup debris guard
 *.cleanupbak
 *.cleanupbak.meta
+
+# ART working scratch (large blends/exports) - local only, not for git
+Docs/ART_STAGE/blend_archive/
+Docs/ART_STAGE/export/
+Docs/ART_STAGE/bake/
+Docs/ART_STAGE/147VR_Table_WPBSA_Visual_Clean_v006_DARC_LIGHTING_ART_V04/

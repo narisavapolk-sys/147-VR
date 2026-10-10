@@ -1,0 +1,40 @@
+{
+  "included_count": 137,
+  "excluded_count": 23,
+  "included_polys": 409227,
+  "clamps_included": [
+    "Ball Catcher Clamp End",
+    "Ball Catcher Clamp End.001",
+    "Ball Catcher Clamp End.002",
+    "Ball Catcher Clamp End.003",
+    "Ball Catcher Clamp End.004",
+    "Ball Catcher Clamp End.005"
+  ],
+  "excluded_names": [
+    "Black",
+    "Blue",
+    "Brown",
+    "Green",
+    "Pink",
+    "Plane",
+    "Red",
+    "Red.001",
+    "Red.002",
+    "Red.003",
+    "Red.004",
+    "Red.005",
+    "Red.006",
+    "Red.007",
+    "Red.008",
+    "Red.009",
+    "Red.010",
+    "Red.011",
+    "Red.012",
+    "Red.013",
+    "Red.014",
+    "White_CueBall",
+    "Yellow"
+  ],
+  "fbx": "C:\\Users\\mongo\\UnityProjects\\147 VR\\Docs\\ART_STAGE\\export\\147VR_Table_WPBSA_V006_DARC_V04_GAME.fbx",
+  "fbx_bytes": 18367340
+}
