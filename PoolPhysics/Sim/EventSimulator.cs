@@ -78,6 +78,7 @@ namespace PoolPhysics.Sim
         public void BeginShot()
         {
             CollisionCount=0; InitialEnergy=TotalEnergy(); PeakTotalEnergy=InitialEnergy; _zeroTime=0;
+            EventLog.Clear();
             if (Trace) TraceLog.Clear();
             if (Balls.Count>1)
             {
@@ -90,6 +91,32 @@ namespace PoolPhysics.Sim
 
         public bool Trace;                             // per-iteration debug log (detdbg)
         public readonly List<string> TraceLog = new List<string>();
+
+        // ---- EVENT PUMP (audio/haptics integration; disabled by default) ----
+        /// <summary>Recorded gameplay events. Appended ONLY when RecordEvents=true so the
+        /// hot loop stays allocation-free otherwise; draining does not affect determinism.</summary>
+        public enum PoolEventKind : byte { BallBall = 0, Cushion = 1, Jaw = 2, Pocket = 3 }
+        public struct PoolEventSim
+        {
+            public PoolEventKind Kind;
+            public int BallIndex;                 // ball whose motion is resolved
+            public int OtherIndex;                // second ball, or -1 for cushion/jaw/pocket
+            public Vector3 Position;              // contact XZ, Y = ball centre height
+            public Vector2 Normal;                // planar unit normal (radial for jaw); zero for pocket
+            public float ImpactSpeed;             // closing speed along the normal (m/s); pocket refused
+        }
+        public bool RecordEvents;
+        public readonly List<PoolEventSim> EventLog = new List<PoolEventSim>();
+
+        /// <summary>Copy events accumulated since the last drain (or BeginShot) into
+        /// <paramref name="into"/> and clear the internal log (no per-frame allocation).</summary>
+        public void DrainEvents(List<PoolEventSim> into)
+        {
+            for (int i = 0; i < EventLog.Count; i++) into.Add(EventLog[i]);
+            EventLog.Clear();
+        }
+        void LogEvent(PoolEventKind kind, int a, int bAt, Vector3 pos, Vector2 n, float speed)
+            => EventLog.Add(new PoolEventSim { Kind = kind, BallIndex = a, OtherIndex = bAt, Position = pos, Normal = n, ImpactSpeed = speed });
 
         public StepResult Step(float maxTime)
         {
@@ -124,6 +151,28 @@ namespace PoolPhysics.Sim
                     if (A.Phase!=BallPhase.Rest)
                         for (int r=0;r<Table.Rails.Count;r++){ float tt=SweptRailTOI(A,Table.Rails[r],dtNext); if(tt<toi){toi=tt;ai=i;bi=-1;isCushion=true;rail=Table.Rails[r];} }
                 }
+                // RAIL-JAW sweep: every rail ENDPOINT is a round cap (radius = ball radius).
+                // Without caps a ball can escape through a pocket mouth between two rail ends.
+                bool isJaw=false; Vector2 jawPoint=default;
+                for (int i=0;i<Balls.Count;i++){ var A=Balls[i]; if(!A.Active||A.Pocketed||A.Phase==BallPhase.Rest)continue;
+                    var ab=A; Vector2 accA=Accel(ref ab); Vector2 vA=new Vector2(A.Velocity.X,A.Velocity.Z);
+                    for (int r=0;r<Table.Rails.Count;r++){ var RL=Table.Rails[r];
+                        for (int e=0;e<2;e++){ var E=e==0?RL.A:RL.B;
+                            Vector2 dp=new Vector2(A.Position.X-E.X, A.Position.Z-E.Z);
+                            float tt=SweptQuarticTOI(dp,vA,accA,A.Radius,dtNext);
+                            if (tt<toi){ toi=tt; ai=i; bi=-1; isCushion=true; isJaw=true; jawPoint=new Vector2(E.X,E.Z); rail=RL; } } }
+                }
+                // POCKET sweep as a first-class event: crossing a pocket circle is time-stamped
+                // by the same analytic CCD, so a ball aimed at a mouth falls IN rather than
+                // clipping a cushion first. Policy: pocket wins equal times (tt<=toi).
+                bool isPocket=false; int pocketIdx=-1;
+                for (int i=0;i<Balls.Count;i++){ var A=Balls[i]; if(!A.Active||A.Pocketed||A.Phase==BallPhase.Rest)continue;
+                    var ab=A; Vector2 accA=Accel(ref ab); Vector2 vA=new Vector2(A.Velocity.X,A.Velocity.Z);
+                    for (int p=0;p<Table.Pockets.Count;p++){ var PK=Table.Pockets[p];
+                        Vector2 dp=new Vector2(A.Position.X-PK.Center.X, A.Position.Z-PK.Center.Z);
+                        float tt=SweptQuarticTOI(dp,vA,accA,PK.Radius,dtNext);
+                        if (tt<=toi){ toi=tt; ai=i; bi=-1; isCushion=false; isJaw=false; isPocket=true; pocketIdx=p; } }
+                }
 
                 float dt = toi;
                 if (Trace) TraceLog.Add($"  ev ai={ai} bi={bi} cush={isCushion} toi={toi:R} dtNext={dtNext:R}");
@@ -131,7 +180,7 @@ namespace PoolPhysics.Sim
                 // (ai=-1, no rail) below CONTACT_TOL is a real sub-μs end of a segment:
                 // advancing it explains forward progress (otherwise a ball with slip u just
                 // over EPS can end up in an eternal zero-advance loop → InvalidState).
-                bool isContactEvent = (ai >= 0) || isCushion;
+                bool isContactEvent = (ai >= 0) || isCushion || isPocket;
                 if (isContactEvent && dt <= CONTACT_TOL) { if (++_zeroTime > MAX_ZERO_TIME) { res.Reason=TerminationReason.InvalidState; break; } dt=0f; }
                 else { _zeroTime=0; if (dt>dtNext) dt=dtNext; }
 
@@ -144,15 +193,41 @@ namespace PoolPhysics.Sim
 
                 // Resolve the single earliest event this iteration (clusters converge over
                 // successive iterations via the depenetration pass + repeated events).
-                if (isCushion && bi<0 && ai>=0){ var b=Balls[ai]; ResolveCushion(ref b, rail); Balls[ai]=b; CollisionCount++; }
-                else if (ai>=0 && bi>=0){ var A=Balls[ai]; var B=Balls[bi]; ResolveBallBall(ref A,ref B); Balls[ai]=A; Balls[bi]=B; CollisionCount++; }
+                if (isPocket && ai>=0 && pocketIdx>=0){ var b=Balls[ai];
+                    if (RecordEvents) LogEvent(PoolEventKind.Pocket, ai, -1, b.Position, Vector2.Zero, b.Velocity.Length());
+                    b.Pocketed=true; b.Velocity=Vector3.Zero; b.AngularVelocity=Vector3.Zero; b.Phase=BallPhase.Rest; Balls[ai]=b; }
+                else if (isCushion && bi<0 && ai>=0){
+                    var b=Balls[ai];
+                    if (isJaw){ // round-cap contact: normal points radially from the cap centre
+                        Vector2 rel=new Vector2(b.Position.X-jawPoint.X, b.Position.Z-jawPoint.Y);
+                        float rl=rel.Length();
+                        Vector2 inward = rl>1e-9f ? rel/rl : new Vector2(rail.Inward.X, rail.Inward.Z);
+                        if (RecordEvents) LogEvent(PoolEventKind.Jaw, ai, -1, b.Position, inward, MathF.Max(0f, -(b.Velocity.X*inward.X+b.Velocity.Z*inward.Y)));
+                        ResolveCushionAtPoint(ref b, jawPoint, inward);
+                    } else {
+                        Vector2 inw=new Vector2(rail.Inward.X, rail.Inward.Z);
+                        if (RecordEvents) LogEvent(PoolEventKind.Cushion, ai, -1, b.Position, inw, MathF.Max(0f, -(b.Velocity.X*inw.X+b.Velocity.Z*inw.Y)));
+                        ResolveCushion(ref b, rail);
+                    }
+                    Balls[ai]=b; CollisionCount++; }
+                else if (ai>=0 && bi>=0){
+                    var A=Balls[ai]; var B=Balls[bi];
+                    if (RecordEvents){
+                        Vector2 d=new Vector2(B.Position.X-A.Position.X, B.Position.Z-A.Position.Z);
+                        float dist=d.Length();
+                        Vector2 n = dist>1e-7f ? d/dist : FallbackNormal(A,B);
+                        float vn = (B.Velocity.X-A.Velocity.X)*n.X + (B.Velocity.Z-A.Velocity.Z)*n.Y;
+                        LogEvent(PoolEventKind.BallBall, ai, bi, A.Position, n, MathF.Max(0f, vn));
+                    }
+                    ResolveBallBall(ref A,ref B); Balls[ai]=A; Balls[bi]=B; CollisionCount++; }
                 { double e=TotalEnergy(); if(e>PeakTotalEnergy) PeakTotalEnergy=e; }   // after resolve
 
                 // SWEPT pocket capture: segment prev->new crossing a pocket circle
                 for (int i=0;i<Balls.Count;i++){ var b=Balls[i]; if(!b.Active||b.Pocketed)continue;
                     foreach(var pk in Table.Pockets){
                         if (SegmentHitsCircle(prevPos[i], b.Position, new Vector2(pk.Center.X, pk.Center.Z), pk.Radius))
-                        { b.Pocketed=true; b.Velocity=Vector3.Zero; b.AngularVelocity=Vector3.Zero; b.Phase=BallPhase.Rest; break; } }
+                        { if (RecordEvents) LogEvent(PoolEventKind.Pocket, i, -1, b.Position, Vector2.Zero, b.Velocity.Length());
+                          b.Pocketed=true; b.Velocity=Vector3.Zero; b.AngularVelocity=Vector3.Zero; b.Phase=BallPhase.Rest; break; } }
                     Balls[i]=b; }
                 if (Trace) TraceLog.Add($"  st t={t:R} " + string.Join(";", System.Linq.Enumerable.Select(Balls, b => b.Position.X.ToString("R") + "," + b.Position.Z.ToString("R") + "," + b.Phase + "@" + MathF.Sqrt(b.Velocity.X*b.Velocity.X+b.Velocity.Z*b.Velocity.Z).ToString("R") + "," + b.AngularVelocity.Y.ToString("R"))));
             }
@@ -220,23 +295,17 @@ namespace PoolPhysics.Sim
 
         /// <summary>Trajectory-consistent sphere-sphere TOI: solves |dp+dv t+0.5 da t^2|=rr
         /// (quadratic motion, not linear) via bracket+bisect → deterministic under time-chunking.</summary>
-        float SweptSphereTOI(Ball A, Ball B, float tHigh)
+        /// <summary>Shared exact CCD: first time a point on a quadratic path
+        /// p(t)=p0+v t+½a t² reaches distance rr from a STATIC centre (dp = p0−C).
+        /// Used by ball-ball (rel moving point), rail jaw caps and pocket capture.</summary>
+        float SweptQuarticTOI(Vector2 dp, Vector2 dv, Vector2 da, float rr, float tHigh)
         {
-            Vector2 dp=new Vector2(B.Position.X-A.Position.X, B.Position.Z-A.Position.Z);
-            Vector2 dv=new Vector2(B.Velocity.X-A.Velocity.X, B.Velocity.Z-A.Velocity.Z);
-            var aA=A; var aB=B; Vector2 da=Accel(ref aB)-Accel(ref aA);
-            float rr=A.Radius+B.Radius;
             float c=dp.LengthSquared()-rr*rr;
-            // TOUCH tolerance: floats stored at coordinates ~50 lose ~4e-6 m of absolute
-            // precision, so "exactly touching" can land just above zero (c>0). Treat a
-            // surface gap <= GAP_EPS as contact; ResolveBallBall's depenetration pass
-            // finishes the rest.
+            // TOUCH tolerance: floats at coordinates ~50 lose ~4e-6 m; treat a surface gap
+            // <= GAP_EPS as contact. Separating → no event; approaching → contact now.
             if (c <= 2f*rr*GAP_EPS + GAP_EPS*GAP_EPS) { float b0=2*Vector2.Dot(dp,dv); return (b0 < 0f) ? 0f : float.PositiveInfinity; }
             if (tHigh<=0f) return float.PositiveInfinity;
-            // EXACT first-contact CCD: q(t)=|d(t)|^2-rr^2 is a quartic; q'(t)/2 is a cubic.
-            // Between successive critical points q is monotone, so no interior dip can be
-            // missed by sampling; bisection inside a monotone piece converges to THE root.
-            // Purely analytic => bit-deterministic and independent of window chunking.
+            // EXACT first-contact: q(t)=|d(t)|^2-rr^2 quartic; q'(t)/2 cubic; monotone pieces.
             float c3=0.5f*(da.X*da.X+da.Y*da.Y);
             float c2=1.5f*(da.X*dv.X+da.Y*dv.Y);
             float c1=dp.X*da.X+dv.X*dv.X+dp.Y*da.Y+dv.Y*dv.Y;
@@ -258,7 +327,16 @@ namespace PoolPhysics.Sim
             return float.PositiveInfinity;
         }
 
-        const float GAP_EPS = 1e-5f;   // touching tolerance in metres (see SweptSphereTOI)
+        const float GAP_EPS = 1e-5f;   // touching tolerance in metres (see SweptQuarticTOI)
+
+        float SweptSphereTOI(Ball A, Ball B, float tHigh)
+        {
+            Vector2 dp=new Vector2(B.Position.X-A.Position.X, B.Position.Z-A.Position.Z);
+            Vector2 dv=new Vector2(B.Velocity.X-A.Velocity.X, B.Velocity.Z-A.Velocity.Z);
+            var aA=A; var aB=B; Vector2 da=Accel(ref aB)-Accel(ref aA);
+            float rr=A.Radius+B.Radius;
+            return SweptQuarticTOI(dp, dv, da, rr, tHigh);
+        }
 
         /// <summary>Real critical points of the swept-distance quartic = real roots of a cubic
         /// a3 t^3 + a2 t^2 + a1 t + a0, kept in (0, tHigh], ascending. Degenerate leading
@@ -382,15 +460,25 @@ namespace PoolPhysics.Sim
 
         void ResolveCushion(ref Ball ball, Rail rail)
         {
-            Vector3 inward=new Vector3(rail.Inward.X,0,rail.Inward.Z);
+            Vector2 inward=new Vector2(rail.Inward.X, rail.Inward.Z);
             Vector2 c=ClosestPointOnSeg(new Vector2(ball.Position.X,ball.Position.Z), new Vector2(rail.A.X,rail.A.Z), new Vector2(rail.B.X,rail.B.Z));
-            ball.Position=new Vector3(c.X+inward.X*ball.Radius, ball.Radius, c.Y+inward.Z*ball.Radius);
-            float vn=Vector3.Dot(ball.Velocity,inward);
+            ResolveCushionAtPoint(ref ball, c, inward);
+        }
+
+        /// <summary>Cushion response at an arbitrary contact point with a chosen inward
+        /// normal (rail line: clamped foot + rail normal; jaw cap: radial normal).</summary>
+        void ResolveCushionAtPoint(ref Ball ball, Vector2 c, Vector2 inward)
+        {
+            inward=Vector2.Normalize(inward);
+            ball.Position=new Vector3(c.X+inward.X*ball.Radius, ball.Radius, c.Y+inward.Y*ball.Radius);
+            Vector2 inw=inward;                          // keep Vector3 math identical to before
+            Vector3 inward3=new Vector3(inw.X,0,inw.Y);
+            float vn=Vector3.Dot(ball.Velocity,inward3);
             if (vn<0){
-                float e=Profile.CushionRestitution; ball.Velocity-=(1+e)*vn*inward;
-                Vector3 vt=ball.Velocity-Vector3.Dot(ball.Velocity,inward)*inward;
-                ball.Velocity=Vector3.Dot(ball.Velocity,inward)*inward+vt*(1-Profile.CushionFriction*0.1f);
-                Vector3 tangent=new Vector3(-inward.Z,0,inward.X);
+                float e=Profile.CushionRestitution; ball.Velocity-=(1+e)*vn*inward3;
+                Vector3 vt=ball.Velocity-Vector3.Dot(ball.Velocity,inward3)*inward3;
+                ball.Velocity=Vector3.Dot(ball.Velocity,inward3)*inward3+vt*(1-Profile.CushionFriction*0.1f);
+                Vector3 tangent=new Vector3(-inward3.Z,0,inward3.X);
                 ball.Velocity+=tangent*(Profile.CushionGear*ball.AngularVelocity.Y*ball.Radius);
                 ball.AngularVelocity*=Profile.CushionSpinLoss;
                 if (Profile.CushionThrowCoeff!=0f){ float ts=vt.Length(); if(ts>1e-5f) ball.Velocity-=vt/ts*(Profile.CushionThrowCoeff*(-vn)); }

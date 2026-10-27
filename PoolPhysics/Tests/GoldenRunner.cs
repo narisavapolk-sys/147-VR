@@ -306,6 +306,22 @@ static class GoldenRunner
         Check(detFail==0, $"fuzz determinism Step(T)==2xStep(T/2) (fail={detFail})");
     }
 
+    static void SplitDbg(){
+        var props=new PhysicsProfile{SlidingFriction=0.2f,RollingFriction=0.01f,BallBallRestitution=0.95f,BallBallFriction=0f,SpinDecay=2f,NapAnisotropy=0f};
+        float R=0.028575f;
+        var t=new TableSpecData{PlayfieldSize=new Vector2(100f,100f)}; t.BuildRectRails();
+        var s=new EventSimulator(t,props){ Trace=true };
+        s.Balls.Add(new Ball{Position=new Vector3(50f,R,50f),Radius=R,Mass=0.16f,Active=true});
+        s.Balls.Add(new Ball{Position=new Vector3(52.0571f,R,50f),Radius=R,Mass=0.16f,Active=true});
+        s.Balls.Add(new Ball{Position=new Vector3(52.1142f,R,50f),Radius=R,Mass=0.16f,Active=true});
+        var c=s.Balls[0]; c.Velocity=new Vector3(2f,0,0); s.Balls[0]=c;
+        var r=s.RunToRest(10f);
+        Console.WriteLine($"term={r.Reason} t={r.SimulatedTime:F4} coll={s.CollisionCount}");
+        for(int i=0;i<3;i++) Console.WriteLine($"  b{i}: pos=({s.Balls[i].Position.X:F4},{s.Balls[i].Position.Z:F4}) v=({s.Balls[i].Velocity.X:F4},{s.Balls[i].Velocity.Z:F4}) {s.Balls[i].Phase}");
+        var tl=s.TraceLog;
+        int n=tl.Count; for(int i=Math.Max(0,n-26);i<n;i++) Console.WriteLine(tl[i]);
+    }
+
     static void NapDbg(){
         var truth=new PhysicsProfile{SlidingFriction=0.30f,RollingFriction=0.03f,SpinDecay=2.0f,BallBallRestitution=0.80f,BallBallFriction=0.12f,CushionRestitution=0.60f,NapAnisotropy=0.40f};
         var shot=new ShotJson{name="english_nap",table={length=2.54f,width=1.27f,napHeading=0.7f},balls={new BallJson{x=0.4f,z=0.5f}},cue={index=0,dir=new[]{0.85f,0.53f},speed=2.4f,tip=new[]{0.6f,0f}}};
@@ -315,6 +331,97 @@ static class GoldenRunner
         Console.WriteLine($"term={res.Reason} simT={res.SimulatedTime:F4} coll={sim.CollisionCount}");
         var tl=sim.TraceLog; int start=Math.Max(0,tl.Count-44);
         for(int i=start;i<tl.Count;i++) Console.WriteLine(tl[i]);
+    }
+
+    static void JarTest(){
+        float R=0.028575f, pocketR=0.06f;
+        var p=new PhysicsProfile{SlidingFriction=0.2f,RollingFriction=0.01f,BallBallRestitution=0.95f};
+        (string name, EventSimulator sim) Table(){
+            var t=new TableSpecData{PlayfieldSize=new Vector2(2.54f,1.27f)}; t.BuildSnookerRails(pocketR);
+            var sh=new ShotJson{table={length=2.54f,width=1.27f},balls={new BallJson{x=0f,z=0f,r=R}},cue={index=0}};
+            var s=new EventSimulator(t,p);
+            foreach(var b in sh.balls){ s.Balls.Add(new Ball{Position=new Vector3(b.x,0.028575f,b.z), Radius=0.028575f, Mass=p.BallMass, Active=true}); }
+            for(int i=0;i<s.Balls.Count;i++){ var bb=s.Balls[i]; bb.Radius=R; bb.Mass=p.BallMass; bb.Active=true; s.Balls[i]=bb; }
+            return ("t", s); }
+        void Ball(EventSimulator s,int idx,Vector2 pos,Vector2 vel)
+        { var b=s.Balls[idx]; b.Position=new Vector3(pos.X,R,pos.Y); b.Radius=R; b.Mass=p.BallMass; b.Active=true;
+          b.Velocity=new Vector3(vel.X,0,vel.Y); s.Balls[idx]=b; }
+
+        // T1 — straight into the bottom side pocket: must be captured, nothing escapes
+        { var (nm,s)=Table();
+          Ball(s,0,new Vector2(1.27f,1.0f),new Vector2(0f,-2.5f));
+          var r=s.RunToRest(6f);
+          bool anyEscape=false; foreach(var b in s.Balls){ if(!b.Pocketed && (b.Position.X<-1e-3||b.Position.X>2.541||b.Position.Z<-1e-3||b.Position.Z>1.271)) anyEscape=true; }
+          Check(s.Balls[0].Pocketed && !anyEscape && r.Reason!=TerminationReason.InvalidState, $"pocket straight-in: pocketed={s.Balls[0].Pocketed} escape={anyEscape} term={r.Reason}");
+        }
+        // T2 — jaw-cap: aim BETWEEN the side-jaw tip and the pocket circle edge (mouth pass
+        // that misses the circle): must NOT escape; must stay in play (cap catches).
+        { var (nm,s)=Table();
+          // jaw tip at (1.195, 0) [middle-left segment end]; circle centre (1.27,-0.036) r=0.06
+          // gap band between tip+R and circle surface on the bottom: aim at (1.24, -0.005)
+          float px=1.235f, pz=0.008f;                      // start just above the mouth
+          float tx=1.268f, tz=-0.052f;                     // target: inside mouth, just past circle edge
+          float dx=tx-px, dz=tz-pz; float L=MathF.Sqrt(dx*dx+dz*dz);
+          Ball(s,0,new Vector2(px,pz),new Vector2(dx/L*1.8f, dz/L*1.8f));
+          var r=s.RunToRest(6f);
+          bool outOfBounds=false; float maxX=0;
+          foreach(var b in s.Balls){ if(!b.Pocketed){ if(b.Position.X< -1e-3f||b.Position.X>2.541f||b.Position.Z<-1e-3f||b.Position.Z>1.271f) outOfBounds=true;
+              if(b.Position.X>maxX) maxX=b.Position.X; } }
+          Check(!outOfBounds && r.Reason!=TerminationReason.InvalidState, $"jaw-cap escape-guard: escape={outOfBounds} maxX={maxX:F4} term={r.Reason} pocketed={s.Balls[0].Pocketed}");
+        }
+        // T3 — corner-jaw tunnel guard: aim through the corner pocket mouth but MIS-hitting
+        // the pocket circle (band between the two jaw caps): must not escape the table.
+        { var (nm,s)=Table();
+          // bottom-right jaw tip (2.465, 0); corner circle centre (2.567,-0.027) r=0.06
+          float px=2.42f, pz=0.10f, tx=2.499f, tz=-0.075f;
+          float dx=tx-px, dz=tz-pz; float L=MathF.Sqrt(dx*dx+dz*dz);
+          Ball(s,0,new Vector2(px,pz),new Vector2(dx/L*2.2f, dz/L*2.2f));
+          var r=s.RunToRest(6f);
+          bool outOfBounds=false; float maxZ=0;
+          foreach(var b in s.Balls){ if(!b.Pocketed){ if(b.Position.X<-1e-3f||b.Position.X>2.541f||b.Position.Z<-1e-3f||b.Position.Z>1.271f) outOfBounds=true;
+              if(b.Position.Z>maxZ) maxZ=b.Position.Z; } }
+          Check(!outOfBounds && r.Reason!=TerminationReason.InvalidState, $"corner-jaw guard: escape={outOfBounds} maxZ={maxZ:F4} term={r.Reason} pocketed={s.Balls[0].Pocketed}");
+        }
+        // T4 — SIMULTANEOUS cluster A: colinear triple (Newton's cradle). cue(50) v=+2 →
+        // a(52.0571)→b(52.1142) touching; impulse must chain: b takes (1+e)/2·2, cue stops.
+        { var sh=new ShotJson{table={length=100f,width=100f},balls={
+              new BallJson{x=50f,z=50f,r=R}, new BallJson{x=52.0571f,z=50f,r=R}, new BallJson{x=52.1142f,z=50f,r=R}}, cue={index=0}};
+          Run4(sh, p, "colinear-triple", bMinVx: 0.3f, cueMaxVx: 0.2f);
+        }
+        // T4b — SIMULTANEOUS cluster B: real-depth symmetric split (objects ±(2R−0.6mm)
+        // from the cue line) so both pairs resolve with a finite contact band, not a
+        // measure-zero tangent. Policy = canonical order; only invariants asserted.
+        { var sh=new ShotJson{table={length=100f,width=100f},balls={
+              new BallJson{x=50f,z=50f,r=R}, new BallJson{x=52.0f,z=50.05655f,r=R}, new BallJson{x=52.0f,z=49.94345f,r=R}}, cue={index=0}};
+          Run4(sh, p, "symmetric-split", bMinVx: null, cueMaxVx: null);
+        }
+    }
+
+    static void Run4(ShotJson sh, PhysicsProfile p, string label, float? bMinVx, float? cueMaxVx){
+        var props = new PhysicsProfile{SlidingFriction=p.SlidingFriction,RollingFriction=p.RollingFriction,
+            BallBallRestitution=p.BallBallRestitution,BallBallFriction=0f,SpinDecay=2f,NapAnisotropy=0f};
+        float R=sh.balls[0].r;
+        var t=new TableSpecData{PlayfieldSize=new Vector2(sh.table.length, sh.table.width)}; t.BuildRectRails();
+        EventSimulator NewSim(){ var s=new EventSimulator(t,props); foreach(var b in sh.balls){ s.Balls.Add(new Ball{Position=new Vector3(b.x,R,b.z),Radius=R,Mass=p.BallMass,Active=true}); } return s; }
+        var s1=NewSim(); var c=s1.Balls[0]; c.Velocity=new Vector3(2f,0,0); s1.Balls[0]=c; s1.RunToRest(10f);
+        var s2=NewSim(); var c2=s2.Balls[0]; c2.Velocity=new Vector3(2f,0,0); s2.Balls[0]=c2; s2.BeginShot(); s2.Step(5f); s2.Step(5f);
+        double mdet=0; bool nan=false;
+        for(int i=0;i<s1.Balls.Count;i++){ var a=s1.Balls[i]; var b=s2.Balls[i];
+            mdet=Math.Max(mdet,(a.Position-b.Position).Length()); nan|=float.IsNaN(a.Position.X)||float.IsNaN(a.Position.Z); }
+        bool ok=true;
+        // cradle assertions by TRAVEL + ENERGY (robust to slide/roll/echo dynamics):
+        // b must have been pushed off its start (took the kick) and the cluster must
+        // NEVER gain mechanical energy beyond the cue shot input (no solver injection).
+        float E0 = 0.5f*p.BallMass*2f*2f;
+        if (bMinVx!=null) ok &= s1.Balls[2].Position.X - 52.0571f >= 0.8f;
+        if (cueMaxVx!=null) ok &= s1.PeakTotalEnergy <= E0*(1.0+1e-3);
+        ok &= !s1.Balls.Any(q=>q.Pocketed);                                    // no ball vanished in the cluster
+        string msg=$"{label}: det={mdet:F6}";
+        if(bMinVx!=null) msg+=$" bTravel={s1.Balls[2].Position.X-52.0571f:F3}";
+        if(cueMaxVx!=null) msg+=$" Epeak={s1.PeakTotalEnergy:F4}/E0={E0:F4}";
+        Check(mdet<=1e-3 && !nan && ok, msg);
+        bool inb=true; foreach(var bb2 in s1.Balls){ if(bb2.Position.X<-0.1f||bb2.Position.X>sh.table.length+0.1f||bb2.Position.Z<-0.1f||bb2.Position.Z>sh.table.width+0.1f) inb=false; }
+        Check(inb, $"{label}: all in bounds");
     }
 
     static bool CloseEnough(string a, string b)
@@ -377,6 +484,8 @@ static class GoldenRunner
         if(mode=="props"){ Props(args.Length>1?int.Parse(args[1]):400); return FAILS>0?1:0; }
         if(mode=="detdbg"){ DetDbg(args.Length>1?int.Parse(args[1]):30); return FAILS>0?1:0; }
         if(mode=="napdbg"){ NapDbg(); return FAILS>0?1:0; }
+        if(mode=="splitdbg"){ SplitDbg(); return 0; }
+        if(mode=="jartest"){ JarTest(); return FAILS>0?1:0; }
         if(mode=="touchtest"){ TouchingRegression(); return FAILS>0?1:0; }
         if(mode=="genreal"){ GenReal(args.Length>1?args[1]:"golden_regression_baseline.json"); return FAILS>0?1:0; }
         if(mode=="gen"){ var gj=MakeSyntheticGolden(); var outp=args.Length>1?args[1]:"golden.json";

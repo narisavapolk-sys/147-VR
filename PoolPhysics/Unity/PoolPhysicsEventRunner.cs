@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using PoolPhysics.Sim;
@@ -41,6 +42,21 @@ namespace PoolPhysics.Unity
         [SerializeField] float defaultBallRadius = 0.028575f;
         [SerializeField] float defaultBallMass = 0.160f;
 
+        [Header("Events (audio / haptics)")]
+        [Tooltip("Enable the sim's event pump. Cost is proportional to event count only.")]
+        [SerializeField] bool recordEvents = true;
+        [Tooltip("Debug-log every drained sim event.")]
+        [SerializeField] bool logEvents = false;
+
+        /// <summary>Sim gameplay events drained after each fixed step — wire audio/haptics here.
+        /// Fired on the main thread; subscribers should be cheap (queue, don't block).</summary>
+        public event Action<EventSimulator.PoolEventSim> SimEvent;
+        /// <summary>Edge-triggered when the table reaches rest after a shot (hand-off point for
+        /// scoring/respawn logic).</summary>
+        public event Action ShotFinished;
+        readonly List<EventSimulator.PoolEventSim> _events = new List<EventSimulator.PoolEventSim>();
+        bool _shotActive, _wasAtRest;
+
         EventSimulator _sim;
         readonly List<Rigidbody> _bodies = new List<Rigidbody>();
         readonly List<Transform> _renderTargets = new List<Transform>();   // parallel to sim.Balls (skips nulls)
@@ -73,6 +89,7 @@ namespace PoolPhysics.Unity
                 prevT.Add(p); currT.Add(p); bodies.Add(t.GetComponent<Rigidbody>()); rts.Add(t);
             }
             tmp.CueBallIndex = 0;
+            tmp.RecordEvents = recordEvents;
             _sim = tmp; _prev.Clear(); _prev.AddRange(prevT); _curr.Clear(); _curr.AddRange(currT);
             _bodies.Clear(); _bodies.AddRange(bodies); _renderTargets.Clear(); _renderTargets.AddRange(rts);
             _dirty = false;
@@ -83,6 +100,7 @@ namespace PoolPhysics.Unity
             if (_owns) return;
             if (_dirty || _sim == null) Build();
             if (_sim == null) { Debug.LogError("[PoolPhysics] cannot take ownership (no sim)"); return; }
+            _sim.RecordEvents = recordEvents;
             for (int i = 0; i < _bodies.Count; i++)
             {
                 var rb = _bodies[i]; if (rb == null) continue;
@@ -104,10 +122,22 @@ namespace PoolPhysics.Unity
                 var rb = _bodies[i]; if (rb == null) continue;
                 var b = _sim.Balls[i];
                 rb.isKinematic = false;
-                rb.position = ToUnity(b.Position); rb.velocity = ToUnityDir(b.Velocity); rb.angularVelocity = ToUnityDir(b.AngularVelocity);
+                if (b.Pocketed)
+                {
+                    // ball fell during sim ownership: hand it back PARKED and HIDDEN with zero
+                    // momentum so the legacy path / respawn code sees a consistent pocketed state.
+                    rb.position = ToUnity(b.Position);
+                    rb.velocity = Vector3.zero; rb.angularVelocity = Vector3.zero;
+                    if (rb.gameObject.activeSelf) rb.gameObject.SetActive(false);
+                }
+                else
+                {
+                    if (!rb.gameObject.activeSelf) rb.gameObject.SetActive(true);
+                    rb.position = ToUnity(b.Position); rb.velocity = ToUnityDir(b.Velocity); rb.angularVelocity = ToUnityDir(b.AngularVelocity);
+                }
             }
             foreach (var d in legacyDrivers) if (d != null) d.enabled = true;
-            _owns = false; enabled_override = false;
+            _owns = false; enabled_override = false; _shotActive = false;
         }
 
         /// <summary>Fire the cue ball (world dir, m/s, tip=(side,follow/draw)). Only acts when this backend owns physics.</summary>
@@ -120,6 +150,7 @@ namespace PoolPhysics.Unity
             CueStrike.Apply(ref cue, ToSimDir(worldDir), speed, new SimVector2(tip.x, tip.y), _sim.Profile, elevation);
             _sim.Balls[_sim.CueBallIndex] = cue;
             _sim.BeginShot();
+            _shotActive = true; _wasAtRest = false;
         }
 
         void FixedUpdate()
@@ -129,6 +160,39 @@ namespace PoolPhysics.Unity
             for (int i = 0; i < _sim.Balls.Count && i < _prev.Count; i++) _prev[i] = _curr[i];
             _sim.Step(Time.fixedDeltaTime);           // advance exactly one physics frame; no per-frame energy reset
             for (int i = 0; i < _sim.Balls.Count && i < _curr.Count; i++) _curr[i] = _sim.Balls[i].Position;
+
+            // drain the event pump and surface gameplay events (audio/haptics/scoring)
+            if (recordEvents && _sim.EventLog.Count > 0)
+            {
+                _events.Clear(); _sim.DrainEvents(_events);
+                for (int i = 0; i < _events.Count; i++)
+                {
+                    var ev = _events[i];
+                    if (logEvents) Debug.Log($"[PoolPhysics] sim {ev.Kind}: ball {ev.BallIndex}{(ev.OtherIndex >= 0 ? $" vs {ev.OtherIndex}" : "")} speed {ev.ImpactSpeed:F2} m/s");
+                    SimEvent?.Invoke(ev);
+                }
+            }
+            bool rest = _sim.AllAtRest;
+            if (_shotActive && rest && !_wasAtRest)
+            {
+                _shotActive = false;
+                ShotFinished?.Invoke();
+            }
+            _wasAtRest = rest;
+        }
+
+        /// <summary>Read one ball's simulated state in TABLE-LOCAL space (for editor tests/AI).
+        /// pos = metres from the playfield corner; vel/ang in local space.</summary>
+        public bool TryGetSimBall(int index, out Vector3 pos, out Vector3 vel, out Vector3 ang, out bool pocketed)
+        {
+            pos = vel = ang = default; pocketed = false;
+            if (_sim == null || index < 0 || index >= _sim.Balls.Count) return false;
+            var b = _sim.Balls[index];
+            pos = new Vector3(b.Position.X, b.Position.Y, b.Position.Z);
+            vel = new Vector3(b.Velocity.X, b.Velocity.Y, b.Velocity.Z);
+            ang = new Vector3(b.AngularVelocity.X, b.AngularVelocity.Y, b.AngularVelocity.Z);
+            pocketed = b.Pocketed;
+            return true;
         }
 
         void Update()
