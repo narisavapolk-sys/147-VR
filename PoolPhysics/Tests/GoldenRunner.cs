@@ -21,7 +21,8 @@ static class GoldenRunner
         public int collisionCount; public double energyError; public ProfileJson profile;
     }
     class ProfileJson { public float slidingFriction, rollingFriction, spinDecay, ballBallRestitution, ballBallFriction, cushionRestitution, cushionFriction, napAnisotropy, napSteer; }
-    class TableJson { public float length=2.54f, width=1.27f, napHeading=0f; }
+    class TableJson { public float length=2.54f, width=1.27f, napHeading=0f, pocketRadius=0f; public List<PocketJson> pockets=new(); }
+    class PocketJson { public float x, z; }
     class BallJson { public float x, z, r=0.028575f, m=0.16f; }
     class CueJson { public int index=0; public float[] dir={1,0}; public float speed=2f; public float[] tip={0,0}; public float elev=0f; }
     class ExpJson { public float x,z; public bool pocketed=false; public float vx,vz,wx,wy,wz; public string phase="Rest"; }
@@ -40,7 +41,9 @@ static class GoldenRunner
     };
 
     static List<Ball> BuildBalls(ShotJson s){ var l=new List<Ball>(); foreach(var b in s.balls) l.Add(new Ball{Position=new Vector3(b.x,0,b.z),Radius=b.r,Mass=b.m,Active=true}); return l; }
-    static TableSpecData BuildTable(ShotJson s){ var t=new TableSpecData{PlayfieldSize=new Vector2(s.table.length,s.table.width),NapHeading=s.table.napHeading}; t.BuildRectRails(); return t; }
+    static TableSpecData BuildTable(ShotJson s){ var t=new TableSpecData{PlayfieldSize=new Vector2(s.table.length,s.table.width),NapHeading=s.table.napHeading}; t.BuildRectRails();
+        if (s.table.pockets!=null) foreach (var pk in s.table.pockets) t.Pockets.Add(new Pocket{ Center=new Vector3(pk.x,0,pk.z), Radius=s.table.pocketRadius });
+        return t; }
 
     static (double path,double peak,int cc,TerminationReason term) EventSim(ShotJson s, PhysicsProfile p){
         var sim=new EventSimulator(BuildTable(s), p);
@@ -242,6 +245,40 @@ static class GoldenRunner
         Console.WriteLine($"wrote {outp} ({g.shots.Count} REGRESSION-BASELINE shots; self-generated, not independent real-physics proof)");
     }
 
+    static void GenBay(float L,float W,string outp,float pocketR=0f){
+        var baseP=new PhysicsProfile{Gravity=9.806f,PoolBallRadius=0.028575f,BallMass=0.160f,SlidingFriction=0.20f,RollingFriction=0.010f,SpinDecay=1.47f,BallBallRestitution=0.95f,BallBallFriction=0.06f,CushionRestitution=0.75f,CushionFriction=0.20f};
+        var g=new GoldenJson(); float cz=W/2f;
+        List<PocketJson> MkPockets(){ var l=new List<PocketJson>(); if(pocketR<=0f) return l;
+            l.Add(new PocketJson{x=0,z=0}); l.Add(new PocketJson{x=L/2,z=0}); l.Add(new PocketJson{x=L,z=0});
+            l.Add(new PocketJson{x=0,z=W}); l.Add(new PocketJson{x=L/2,z=W}); l.Add(new PocketJson{x=L,z=W}); return l; }
+        var defs=new (string,(float,float)[],float[],float,float[],bool)[]{
+            ("bay_headon_v1",new[]{(0.5f,0.635f)},new[]{1f,0f},1f,new[]{0f,0f},false),
+            ("bay_headon_v3",new[]{(0.5f,0.635f)},new[]{1f,0f},3f,new[]{0f,0f},false),
+            ("bay_follow",new[]{(0.5f,0.635f)},new[]{1f,0f},2.5f,new[]{0f,0.6f},false),
+            ("bay_draw",new[]{(0.5f,0.635f)},new[]{1f,0f},2.5f,new[]{0f,-0.6f},false),
+            ("bay_cut_half",new[]{(0.5f,0.635f),(1.4f,0.675f)},new[]{1f,0f},2.5f,new[]{0f,0f},false),
+            ("bay_touching",new[]{(1.0f,0.635f),(1.05715f,0.635f)},new[]{1f,0f},2f,new[]{0f,0f},false),
+            ("bay_near_rail",new[]{(1.2f,0.03f)},new[]{0f,-1f},2f,new[]{0f,0f},false),
+        };
+        foreach(var d in defs){
+            var p=(PhysicsProfile)baseP.Clone();
+            var shot=new ShotJson{name=d.Item1,table={length=L,width=W,pocketRadius=pocketR,pockets=MkPockets()},cue={index=0,dir=d.Item3,speed=d.Item4,tip=d.Item5},
+                profile=new ProfileJson{slidingFriction=p.SlidingFriction,rollingFriction=p.RollingFriction,spinDecay=p.SpinDecay,ballBallRestitution=p.BallBallRestitution,ballBallFriction=p.BallBallFriction,cushionRestitution=p.CushionRestitution,cushionFriction=p.CushionFriction,napAnisotropy=p.NapAnisotropy,napSteer=p.NapSteer}};
+            foreach(var b in d.Item2){ float z = b.Item2 < 0.1f ? b.Item2 : b.Item2 - 0.635f + cz;
+                shot.balls.Add(new BallJson{x=b.Item1,z=z,r=0.028575f,m=0.160f}); }
+            var sim=new EventSimulator(BuildTable(shot),p); foreach(var b in BuildBalls(shot)) sim.Balls.Add(b);
+            var cue=sim.Balls[0]; CueStrike.Apply(ref cue,new Vector3(d.Item3[0],0,d.Item3[1]),d.Item4,new Vector2(d.Item5[0],d.Item5[1]),p,0); sim.Balls[0]=cue;
+            var res=sim.RunToRest(30f);
+            foreach(var b in sim.Balls) shot.expected.Add(new ExpJson{x=b.Position.X,z=b.Position.Z,pocketed=b.Pocketed,vx=b.Velocity.X,vz=b.Velocity.Z,wx=b.AngularVelocity.X,wy=b.AngularVelocity.Y,wz=b.AngularVelocity.Z,phase=b.Phase.ToString()});
+            shot.collisionCount=sim.CollisionCount;
+            shot.energyError = sim.InitialEnergy>1e-9 ? (sim.PeakTotalEnergy-sim.InitialEnergy)/sim.InitialEnergy : 0;
+            g.shots.Add(shot);
+            Check(shot.energyError<=1e-6 && res.Reason!=TerminationReason.InvalidState, $"{d.Item1}: settled clean (err={shot.energyError:+0.000;-0.000})");
+        }
+        File.WriteAllText(outp, JsonSerializer.Serialize(g,JOPT));
+        Console.WriteLine($"genbay: wrote {outp} ({g.shots.Count} shots, table {L}x{W})");
+    }
+
     static void Props(int iters=400){
         var rng=new Random(20261026);
         // 1) ANALYTIC stop distance: a ROLLING ball (no slip) => d = v^2/(2*muR*g)
@@ -382,6 +419,45 @@ static class GoldenRunner
               if(b.Position.Z>maxZ) maxZ=b.Position.Z; } }
           Check(!outOfBounds && r.Reason!=TerminationReason.InvalidState, $"corner-jaw guard: escape={outOfBounds} maxZ={maxZ:F4} term={r.Reason} pocketed={s.Balls[0].Pocketed}");
         }
+        // T3b — S0 regression (QA 2026-11-03): corner capture circle must cover the mid-mouth
+        // chord (0.0997 m from centre at r=pocketRadius=0.06). Pre-fix (capture = r×1.0) the
+        // chord sat outside the 0.06 circle → ~40 mm hole → 2/336 primary + 194/405 grazing
+        // rail-hug escapes (bit-reproducible). 1.75r = 0.105 covers with ~5 mm margin.
+        { var t=new TableSpecData{PlayfieldSize=new Vector2(2.54f,1.27f)}; t.BuildSnookerRails(pocketR);
+          float rc=t.Pockets[0].Radius;   // Pockets[0..3] = corners (cA..cD)
+          Check(t.Pockets.Count==6 && rc>=0.1047f && rc<=0.1055f &&
+                t.Pockets[4].Radius==pocketR && t.Pockets[5].Radius==pocketR,
+                $"S0 corner capture regression: corners={rc:F4} (need ~0.105 covering chord 0.0997+5mm) sides={t.Pockets[4].Radius:F4}/{t.Pockets[5].Radius:F4}");
+        }
+        // T3c — rail-hug capture sweep: straddle each rail straight INTO a corner at rail-ride
+        // offset z=R. Pre-fix these blew past the narrow 0.06 window (dx≈0.022); post-fix the
+        // 0.105 circle spans dx≈0.090 → must be CAPTURED, never escape the playfield.
+        { var (nm,s)=Table();
+          Vector2[] ps={ new(2.00f,R), new(0.60f,R), new(0.60f,1.2414f), new(2.00f,1.2414f) };
+          Vector2[] vs={ new( 2.4f,0), new(-2.4f,0), new(-2.4f,0   ), new( 2.4f,0   ) };
+          bool allCaptured=true, anyEscape=false; var rTer=TerminationReason.Rest;
+          for(int i=0;i<4;i++){ var onemore=Table(); var onemoreS=onemore.Item2; Ball(onemoreS,0,ps[i],vs[i]);
+            var rr=onemoreS.RunToRest(6f); rTer=rr.Reason;
+            if(!onemoreS.Balls[0].Pocketed) allCaptured=false;
+            foreach(var b in onemoreS.Balls){ if(!b.Pocketed && (b.Position.X<-1e-3f||b.Position.X>2.541f||b.Position.Z<-1e-3f||b.Position.Z>1.271f)) anyEscape=true; }
+            if(rr.Reason==TerminationReason.InvalidState) anyEscape=true; }
+          Check(allCaptured && !anyEscape, $"S0 rail-hug capture sweep: captured4={allCaptured} escape={anyEscape} term={rTer}");
+        }
+        // T3d — side-pocket pass-bye (mirror of the corner rail-hug): a rail-hugging ball must
+        // NOT be swallowed by the SIDE capture circles (r=pocketRadius, centre offset 0.6r
+        // outside the rail: hug line z=R → dz to centre = 0.0646 > 0.06). It must PASS the side
+        // pocket and be captured at the far corner. Catches both opposite failure shapes vs
+        // T3c: side over-capture (radius grown — would eat fair rail-huggers) and side leak.
+        { Vector2[] ps={ new(0.30f,R), new(2.24f,R), new(0.30f,1.2414f), new(2.24f,1.2414f) };
+          Vector2[] vs={ new(2.2f,0), new(-2.2f,0), new(-2.2f,0   ), new(2.2f,0   ) };
+          bool allCaptured=true, anyEscape=false; var rTer=TerminationReason.Rest;
+          for(int i=0;i<4;i++){ var hop=Table(); var hs=hop.Item2; Ball(hs,0,ps[i],vs[i]);
+            var rr=hs.RunToRest(6f); rTer=rr.Reason;
+            if(!hs.Balls[0].Pocketed) allCaptured=false;
+            foreach(var b in hs.Balls){ if(!b.Pocketed && (b.Position.X<-1e-3f||b.Position.X>2.541f||b.Position.Z<-1e-3f||b.Position.Z>1.271f)) anyEscape=true; }
+            if(rr.Reason==TerminationReason.InvalidState) anyEscape=true; }
+          Check(allCaptured && !anyEscape, $"S0 side pass-bye sweep: captured4={allCaptured} escape={anyEscape} term={rTer}");
+        }
         // T4 — SIMULTANEOUS cluster A: colinear triple (Newton's cradle). cue(50) v=+2 →
         // a(52.0571)→b(52.1142) touching; impulse must chain: b takes (1+e)/2·2, cue stops.
         { var sh=new ShotJson{table={length=100f,width=100f},balls={
@@ -488,6 +564,7 @@ static class GoldenRunner
         if(mode=="jartest"){ JarTest(); return FAILS>0?1:0; }
         if(mode=="touchtest"){ TouchingRegression(); return FAILS>0?1:0; }
         if(mode=="genreal"){ GenReal(args.Length>1?args[1]:"golden_regression_baseline.json"); return FAILS>0?1:0; }
+        if(mode=="genbay"){ GenBay(args.Length>2?float.Parse(args[2]):2.90f, args.Length>3?float.Parse(args[3]):1.62f, args.Length>1?args[1]:"golden_bay4.json", args.Length>4?float.Parse(args[4]):0f); return FAILS>0?1:0; }
         if(mode=="gen"){ var gj=MakeSyntheticGolden(); var outp=args.Length>1?args[1]:"golden.json";
             File.WriteAllText(outp, JsonSerializer.Serialize(gj,JOPT));
             Console.WriteLine($"wrote {outp} ({gj.shots.Count} synthetic golden shots; re-baseline after an intentional physics fix)"); return 0; }

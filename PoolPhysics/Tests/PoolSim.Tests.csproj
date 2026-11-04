@@ -8,7 +8,7 @@
     <AssemblyName>PoolSim.Tests</AssemblyName>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../Sim/*.cs" />
+    <Compile Include="../../Assets/PoolPhysics/Sim/*.cs" />
     <Compile Include="CmaEs.cs" />
     <Compile Include="GoldenRunner.cs" />
   </ItemGroup>

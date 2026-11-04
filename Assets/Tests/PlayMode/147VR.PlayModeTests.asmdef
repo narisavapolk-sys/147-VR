@@ -1,5 +1,8 @@
 {
   "name": "147VR.PlayModeTests",
+  "references": [
+    "PoolPhysics"
+  ],
   "optionalUnityReferences": [
     "TestAssemblies"
   ]

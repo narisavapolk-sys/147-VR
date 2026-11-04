@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2927057e3dbafba469e0d10168a2508f, type: 3}
+  m_Name: TableSpec_Bay4
+  m_EditorClassIdentifier: PoolPhysics::PoolPhysics.Unity.TableSpec
+  playfieldSize: {x: 2.900218, y: 1.6184502}
+  origin: {x: 0, y: 0, z: 0}
+  pockets:
+  - xz: {x: 0, y: 0}
+    radius: 0.081206106
+  - xz: {x: 1.450109, y: 0}
+    radius: 0.081206106
+  - xz: {x: 2.900218, y: 0}
+    radius: 0.081206106
+  - xz: {x: 0, y: 1.6184502}
+    radius: 0.081206106
+  - xz: {x: 1.450109, y: 1.6184502}
+    radius: 0.081206106
+  - xz: {x: 2.900218, y: 1.6184502}
+    radius: 0.081206106
+  clothProfile: 0
+  napHeadingDeg: 0
+  frictionScale: 1

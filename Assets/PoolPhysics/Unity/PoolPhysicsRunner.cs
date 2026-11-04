@@ -1,6 +1,7 @@
 using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
+using SimVector3 = System.Numerics.Vector3;
+using SimVector2 = System.Numerics.Vector2;
 using PoolPhysics.Sim;
 
 namespace PoolPhysics.Unity
@@ -20,7 +21,7 @@ namespace PoolPhysics.Unity
         [SerializeField] float ballRadius = 0.028575f;
 
         PoolSimulator _sim;
-        readonly List<Vector3> _prev = new List<Vector3>();
+        readonly List<SimVector3> _prev = new List<SimVector3>();
         float _alpha;
 
         public bool AtRest => _sim != null && _sim.AllAtRest;
@@ -35,8 +36,8 @@ namespace PoolPhysics.Unity
                 var t = ballTransforms[i];
                 var b = new Ball {
                     Position = ToSim(t.position),
-                    Velocity = Vector3.Zero,
-                    AngularVelocity = Vector3.Zero,
+                    Velocity = SimVector3.Zero,
+                    AngularVelocity = SimVector3.Zero,
                     Radius = ballRadius,
                     Mass = prof.BallMass,
                     Active = true,
@@ -63,7 +64,7 @@ namespace PoolPhysics.Unity
             {
                 var b = _sim.Balls[i];
                 if (b.Pocketed) { if (ballTransforms[i]) ballTransforms[i].gameObject.SetActive(false); continue; }
-                var interp = Vector3.Lerp(_prev[i], b.Position, _alpha);
+                var interp = SimVector3.Lerp(_prev[i], b.Position, _alpha);
                 if (ballTransforms[i]) ballTransforms[i].position = ToUnity(interp);
             }
         }
@@ -73,11 +74,11 @@ namespace PoolPhysics.Unity
         {
             if (_sim == null || _sim.Balls.Count == 0) return;
             var cue = _sim.Balls[_sim.CueBallIndex];
-            CueStrike.Apply(ref cue, ToSim(dir), speed, tip, _sim.Profile, elevation);
+            CueStrike.Apply(ref cue, ToSim(dir), speed, new SimVector2(tip.x, tip.y), _sim.Profile, elevation);
             _sim.Balls[_sim.CueBallIndex] = cue;
         }
 
-        static Vector3 ToSim(Vector3 u) => new Vector3(u.x, u.y, u.z);
-        static Vector3 ToUnity(Vector3 s) => new Vector3(s.X, s.Y, s.Z);
+        static SimVector3 ToSim(Vector3 u) => new SimVector3(u.x, u.y, u.z);
+        static Vector3 ToUnity(SimVector3 s) => new Vector3(s.X, s.Y, s.Z);
     }
 }

@@ -31,8 +31,8 @@ namespace PoolPhysics.Unity
         {
             var d = new TableSpecData {
                 Name = name,
-                PlayfieldSize = playfieldSize,
-                Origin = origin,
+                PlayfieldSize = new System.Numerics.Vector2(playfieldSize.x, playfieldSize.y),
+                Origin = new System.Numerics.Vector3(origin.x, origin.y, origin.z),
                 ClothProfile = clothProfile,
                 NapHeading = napHeadingDeg * Mathf.Deg2Rad,
                 FrictionScale = frictionScale,

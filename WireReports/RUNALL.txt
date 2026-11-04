@@ -1,0 +1,8 @@
+[RunAll] 2026-10-28 23:21:32 scene=Assets/Scenes/147VR_MainScene.unity
+  - removing old HDRI object: '147VR_0271_JukeboxDome'
+  - clearing RenderSettings.skybox (PromDance_Skybox)
+v HDRI sweep done (1 object(s) removed) — new environment comes from Neon Vintage import
+  (autowire report in WireReports/autowire.log)
+[Validate] (batch copy)
+x no runner in scene (autowire failed?)
+v scene saved

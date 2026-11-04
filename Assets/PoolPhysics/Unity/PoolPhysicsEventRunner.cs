@@ -66,6 +66,69 @@ namespace PoolPhysics.Unity
 
         public bool AtRest => _sim == null || _sim.AllAtRest;
         public int CollisionCount => _sim?.CollisionCount ?? 0;
+        /// <summary>Number of balls owned by this backend (sim if built, else the wired list).
+        /// Used by M5ShotLifecycle to poll sim velocities instead of PhysX.</summary>
+        public int BallCount => _sim != null ? _sim.Balls.Count : ballTransforms.Count;
+        /// <summary>True while this backend owns motion (balls kinematic, sim stepping).</summary>
+        public bool OwnsPhysics => _owns;
+        /// <summary>Cue ball index inside the sim (0 = first entry in ballTransforms).</summary>
+        public int CueBallIndex => _sim != null ? _sim.CueBallIndex : 0;
+
+        // ---- External read API (Authority Director / Rules Bridge / VR cue). Read-only. ----
+
+        /// <summary>Scene object name of this bay, e.g. "Bay2_PhysicsRoot".</summary>
+        public string BayName => name;
+        /// <summary>Table root transform; its position is the playfield corner in world space.</summary>
+        public Transform TableRootTransform => tableTransform;
+        /// <summary>Playfield size in metres (x = width, y = length along world Z).</summary>
+        public Vector2 PlayfieldSize => tableSpec != null ? tableSpec.playfieldSize : Vector2.zero;
+        /// <summary>Nominal ball radius this backend simulates.</summary>
+        public float BallRadius => defaultBallRadius;
+        /// <summary>Wired table discipline asset (may be null before wiring).</summary>
+        public TableSpec Spec => tableSpec;
+
+        /// <summary>Ball transform at SIM index. After Build() this is the list parallel to
+        /// sim.Balls, so simulator index == returned index. Null when out of range.</summary>
+        public Transform BallTransformAt(int index)
+        {
+            if (index < 0) return null;
+            if (_sim != null) return index < _renderTargets.Count ? _renderTargets[index] : null;
+            return index < ballTransforms.Count ? ballTransforms[index] : null;
+        }
+
+        /// <summary>Pocket count from the wired TableSpec (simulator source of truth).</summary>
+        public int PocketCount => tableSpec != null ? tableSpec.pockets.Count : 0;
+
+        /// <summary>Pocket centre in WORLD space (spec stores table-local XZ).</summary>
+        public Vector3 PocketWorldPosition(int index)
+        {
+            if (tableSpec == null || index < 0 || index >= tableSpec.pockets.Count) return Vector3.zero;
+            TableSpec.PocketEntry p = tableSpec.pockets[index];
+            Vector3 local = new Vector3(p.xz.x, 0f, p.xz.y);
+            return tableTransform != null ? tableTransform.TransformPoint(local) : local;
+        }
+
+        /// <summary>Pocket capture radius from the spec.</summary>
+        public float PocketWorldRadius(int index)
+        {
+            if (tableSpec == null || index < 0 || index >= tableSpec.pockets.Count) return 0f;
+            return tableSpec.pockets[index].radius;
+        }
+
+        /// <summary>Convert a simulator position (table-local metres) to world space.</summary>
+        public Vector3 SimPositionToWorld(Vector3 simLocal) => ToUnity(new SimVector3(simLocal.x, simLocal.y, simLocal.z));
+
+        /// <summary>Cloth surface height (world Y) inferred from the cue ball centre minus its
+        /// radius. Falls back to the wired root Y when no ball is available.</summary>
+        public float SurfaceTopY
+        {
+            get
+            {
+                Transform cue = BallTransformAt(CueBallIndex);
+                if (cue != null) return cue.position.y - defaultBallRadius;
+                return tableTransform != null ? tableTransform.position.y : 0f;
+            }
+        }
 
         void OnEnable() { if (enabled_override) TakeOwnership(); }
         void OnDisable() { if (_owns) ReleaseOwnership(); }
@@ -83,7 +146,7 @@ namespace PoolPhysics.Unity
                 var t = ballTransforms[i]; if (t == null) { Debug.LogError($"[PoolPhysics] ballTransform[{i}] is null (skipped)"); continue; }
                 float r = defaultBallRadius;
                 var sc = t.GetComponent<SphereCollider>();
-                if (sc != null) { float wr = sc.radius * t.lossyScale.x; if (!Mathf.Approximately(wr, defaultBallRadius)) Debug.LogWarning($"[PoolPhysics] '{t.name}' collider r {wr:F4} != default {defaultBallRadius:F4}"); r = wr; }
+                if (sc != null) { float wr = sc.radius * t.lossyScale.x; if (Mathf.Abs(wr - defaultBallRadius) > 0.001f) { Debug.LogWarning($"[PoolPhysics] '{t.name}' collider r {wr:F4} != default {defaultBallRadius:F4}"); r = wr; } else { r = defaultBallRadius; } }
                 var p = ToSim(t.position);
                 tmp.Balls.Add(new Ball { Position = p, Radius = r, Mass = defaultBallMass, Active = true, Phase = BallPhase.Rest });
                 prevT.Add(p); currT.Add(p); bodies.Add(t.GetComponent<Rigidbody>()); rts.Add(t);
@@ -193,6 +256,56 @@ namespace PoolPhysics.Unity
             ang = new Vector3(b.AngularVelocity.X, b.AngularVelocity.Y, b.AngularVelocity.Z);
             pocketed = b.Pocketed;
             return true;
+        }
+
+        /// <summary>Put a ball back in play at a world position (re-spot) and clear its pocketed
+        /// state. Only valid while this backend owns physics — the rules code teleports the
+        /// transform, which the simulator would otherwise ignore. Interpolation is re-seeded so
+        /// the restored ball does not streak from its pocket.</summary>
+        public bool RestoreBall(int index, Vector3 worldPosition)
+        {
+            if (!_owns || _sim == null || index < 0 || index >= _sim.Balls.Count) return false;
+            var b = _sim.Balls[index];
+            b.Position = ToSim(worldPosition);
+            b.Velocity = SimVector3.Zero;
+            b.AngularVelocity = SimVector3.Zero;
+            b.Active = true;
+            b.Pocketed = false;
+            b.Phase = BallPhase.Rest;
+            _sim.Balls[index] = b;
+            if (index < _prev.Count) _prev[index] = b.Position;
+            if (index < _curr.Count) _curr[index] = b.Position;
+            var tr = index < _renderTargets.Count ? _renderTargets[index] : null;
+            if (tr != null)
+            {
+                if (!tr.gameObject.activeSelf) tr.gameObject.SetActive(true);
+                tr.position = worldPosition;
+            }
+            _dirty = false;
+            return true;
+        }
+
+        /// <summary>Mark a ball pocketed (hidden, zero motion) when an external authority — the
+        /// rules/scoring layer — considers it gone but the simulator still has it on the table.</summary>
+        public bool ParkBall(int index)
+        {
+            if (!_owns || _sim == null || index < 0 || index >= _sim.Balls.Count) return false;
+            var b = _sim.Balls[index];
+            b.Velocity = SimVector3.Zero;
+            b.AngularVelocity = SimVector3.Zero;
+            b.Pocketed = true;
+            b.Phase = BallPhase.Rest;
+            _sim.Balls[index] = b;
+            var tr = index < _renderTargets.Count ? _renderTargets[index] : null;
+            if (tr != null && tr.gameObject.activeSelf) tr.gameObject.SetActive(false);
+            return true;
+        }
+
+        /// <summary>True when the simulator considers this ball pocketed (in-play = false).</summary>
+        public bool IsBallPocketed(int index)
+        {
+            if (_sim == null || index < 0 || index >= _sim.Balls.Count) return false;
+            return _sim.Balls[index].Pocketed;
         }
 
         void Update()

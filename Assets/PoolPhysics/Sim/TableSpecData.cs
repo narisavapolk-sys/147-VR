@@ -79,7 +79,15 @@ namespace PoolPhysics.Sim
             var cD = new Vector3(x0 - pocketRadius*0.45f, 0, z1 + pocketRadius*0.45f);
             var cE = new Vector3(mx, 0, z0 - pocketRadius*0.6f);   // bottom side pocket
             var cF = new Vector3(mx, 0, z1 + pocketRadius*0.6f);   // top side pocket
-            foreach (var c in new[]{cA,cB,cC,cD,cE,cF}) Pockets.Add(new Pocket{ Center=c, Radius=pocketRadius });
+            // CORNER capture radius 1.75x (S0 fix, QA 2026-11-03): with r=pocketRadius the
+            // mid-mouth chord sits 0.0997 m from the pocket centre (outside the 0.06 capture
+            // circle), so oblique rail-hugging balls escaped the table (2/336 primary sweep,
+            // 194/405 grazing sweep, bit-reproducible). 1.75r = 0.105 covers the chord with
+            // ~5 mm margin, while a ball still rolling ON the cushion (0.1268 m from centre
+            // at the rail end) stays uncaptured. Aligns the default spec with the proven
+            // production Bay geometry (r≈0.0962, jartest T1-T3 green).
+            foreach (var c in new[]{cA,cB,cC,cD}) Pockets.Add(new Pocket{ Center=c, Radius=pocketRadius*1.75f });
+            foreach (var c in new[]{cE,cF})       Pockets.Add(new Pocket{ Center=c, Radius=pocketRadius });
 
             // bottom (-Z, inward +Z): two segments split by the side-pocket mouth
             Rails.Add(new Rail{ A=new Vector3(x0+m,0,z0), B=new Vector3(mx-m,0,z0), Inward=new Vector3(0,0, 1) });
