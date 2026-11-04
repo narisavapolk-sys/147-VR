@@ -1,0 +1,11 @@
+147VR WIP Unity Batch — Summary
+Timestamp: 20261031_193712
+LogName:   Round12b_UV2_Graphics
+Mode:      executeMethod
+Executed:  VR147.EditorTools.ToolRunner.RunCommands
+Process:   STILL_RUNNING after 3600 s (pid=7268)
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile:   C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\Round12b_UV2_Graphics_20261031_193712.log
+TestResults: 

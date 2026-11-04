@@ -5,11 +5,17 @@ Single source for Unity execution ownership between LUNA and Claude.
 ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder may open Unity, edit project files, run AssetDatabase-sensitive operations, build, or execute runtime tests.
 
 ## Current Lock
-- Holder: LUNA
+- Holder: Claude (GLM agent) — takeover per Emergency Rule
 - Status: ACTIVE
-- Domain: M5.1 clean installation, persisted-scene verification, lifecycle verification
-- Started: 2026-09-08
-- Release condition: LUNA explicitly marks RELEASED
+- Domain: Round 11 — TableKey shadows off, UV2 ensure, GI static flags, Phase 1-3 PlayMode tests, baked-GI prep tooling
+- Started: 2026-10-31
+- Release condition: record results in CURRENT_STATE/PROJECT_MEMORY + final report to owner
+
+## Emergency Takeover Record — 2026-10-31
+- Previous holder LUNA last ACTIVE 2026-09-08 (unreachable; lock stale per Emergency Rule).
+- Evidence of safe takeover: tasklist shows NO Unity.exe / UnityPackageManager.exe / AssetImportWorker0.exe;
+  grep found no Temp/UnityLockfile. Unity fully closed before any launch.
+- Inputs verified before edit: 147VR_WORKING_DIRECTIVE.md, 147VR_AI_WORK_PROTOCOL.md, 147VR_CURRENT_STATE.md, this file.
 
 ## Before Taking the Lock
 1. Read this file.

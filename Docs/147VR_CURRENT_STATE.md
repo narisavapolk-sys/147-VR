@@ -337,3 +337,51 @@ Next exact action: recover/diagnose Unity Package Manager IPC while Unity is ful
 - No valid `[M5.1 INSTALL PASS]` evidence was produced in this sequence. Scene persistence verification and lifecycle verification were NOT RUN.
 - No gameplay/source-code changes were made by this run. M5.1 remains BLOCKED by Unity/UPM bootstrap tooling, not by M5.1 implementation evidence.
 - Next action: retry only with a validated package-aware Unity/UPM launch path; do not certify M5.1 until scene YAML persistence and lifecycle runtime evidence are both obtained.
+
+## 2026-10-31 (wip project) — Round 11: shadows off, Phase 1-3 PlayMode PASS, baked-GI prep
+
+Project: `C:\Users\mongo\UnityProjects\147VR-import-wip` (Unity 6000.4.4f1, closed before and after every batch).
+Owner directive: (1) kill the 12 realtime soft table shadows, (2) run Phase 1-3 physics tests in Play mode, (3) move the look toward the Blender reference via baked GI (heavy steps need owner approval), (4) verify the Bay2 frame material fix claimed by the previous session.
+
+### Applied changes (all saved)
+- `Logs/light_variants.csv`: variant A `TableKey.shadows` soft → none. `rig-a-save` recreated the rig from CSV and saved scene+prefab.
+- Evidence 1: `Logs/lightRig_report.txt` — 12 `TableKey_*` lights (3/table R01..R04 × B01..B03) all `shadows=None`, 19 rig lights total, `[OK] scene saved`.
+- Evidence 2: `Assets/Prefabs/Lighting/PREFAB_147VR_LightRig_A.prefab` YAML — every Light block `m_Shadows: {m_Type: 0` (none), 12 `TableKey` GOs confirmed.
+- New `Assets/Editor/Lighting/147VRBakeGI.cs`: commands `uv2-ensure` (ModelImporter.generateSecondaryUV + secondaryUV unwrap params + SaveAndReimport, counts meshes still missing UV2), `gi-flags` (Contribute GI on static renderers except balls/cue/hands/cameras/XR), `lights-baked` (TableKey→Mixed so dynamic balls keep realtime direct light; room fixtures→Baked), `bake` (creates `Assets/Settings/147VR_MainScene_LightingSettings.asset`: bakedGI+AO(1.0m), Resolution 10 px/m, 512 atlases, 2 bounces, CPU Progressive via reflection-set enums, synchronous `Lightmapping.Bake()`, saves scene, report → `Logs/gi_bake_report.txt`).
+- `Assets/Editor/ToolRunner.cs`: queued commands `uv2-ensure`, `gi-flags`, `lights-baked`, `bake` wired.
+- New `Assets/Tests/PlayMode/PoolPhysicsPhaseTests.cs` (4 bay handoff/shoot/collision/NaN/explosion-guard/settle/release tests + rules-bridge type check); `Assets/Tests/PlayMode/147VR.PlayModeTests.asmdef` now references `PoolPhysics`.
+- New `Docs/AI_TEAM/Tools/Unity_WIP_Batch_Launch.ps1` (clone of the canonical launcher for this wip path; adds `-runTests` mode); `Docs/AI_TEAM/LOCK.md` emergency takeover recorded (no Unity.exe / UPM / AssetImportWorker / UnityLockfile at takeover).
+
+### Physics test run (PlayMode batch, exit code 0)
+Results XML: `Docs/AI_TEAM/UnityLogs/PlayModePhaseTests_20261031_135550_results.xml`.
+- `PoolPhysicsPhaseTests` 5/5 PASS, 0 failed (30.81 s total):
+  - Bay1 PASS 10.8 s — collisions 42, max ball speed 2.96 m/s
+  - Bay2 PASS 8.7 s — collisions 37, max speed 2.96 m/s
+  - Bay3 PASS 1.2 s — collisions 1, max speed 2.96 m/s (cue contacted exactly one ball; rack layout is sparse on this bay)
+  - Bay4 PASS 10.0 s — collisions 12, max speed 2.96 m/s
+  - `Phase3_RulesBridge_TypeIsResolvable` PASS.
+- Assertions per test: Phase1 ownership take/release, playfield/scale/balls/cue wiring; Phase2 motion + ≥1 collision + no NaN + max speed < 15 m/s on a 3.0 m/s shot (M2.1-style explosion guard); Phase3 `AllAtRest` before the 45 s timeout.
+- Scope boundary: this is a controlled Play Mode PASS for the wired bays as of this commit, NOT a Golden certification (per the never-fabricate-truth rule).
+
+### Preflight (same batch)
+`Logs/preflight_report.txt`: compile clean, 4 bays wired (22/17/16/10 balls, cue index 0, scale 1), Phase 1-3 code consistent. Only non-blocking flags: listed build target is StandaloneWindows64 (Quest build prep is a separate task) and `com.meta.xr.sdk.interaction` absent from manifest.
+
+### Bay2 frame question (owner: "ยังหายเหมือนเดิม")
+Verified the previous session's Round 8 fix is IN the scene: `Logs/material_inventory.csv` rows for `ROOT_PoolTable_02/SM_TABLE FRAME` bind `147VR_Table Mahogany` / `147VR_Table Mahogany.001` (dark reddish mahogany, baseColor ≈ (0.34, 0.14, 0.11)) and parity capture `Logs/parity/A/01_Bay2.png` shows a dark rail — the frame is not missing. The pale slab under the rail is `SM_Base Table Support` on concrete material, which matches the Blender reference and was intentionally left unchanged.
+
+### Pending (needs owner decision)
+- Bake stage NOT completed: Round 12 (14:39) crashed inside Unity's native secondary-UV unwrap
+  (`UnwrapImpl::GenerateSecondaryUVSetInternal`, exit code -1073741819 / 0xC0000005) during the
+  `naris_vintage.fbx` reimport — Unity itself AV-crashed; no project data was damaged, the editor
+  process exited by itself. Evidence: `Docs/AI_TEAM/UnityLogs/Round12_BakeGI_20261031_143911.log`
+  (crash stack at the tail, "Start importing .../naris_vintage.fbx" immediately before it) and
+  `AppData/Local/Temp/Unity/Editor/Crashes/Crash_2026-10-31_143537482/`. `gi-flags`, `rig-a-save`
+  and `bake` did NOT run; no LightingSettings assets were created; scene unchanged by this run.
+- Mitigation before restart: `naris_vintage.fbx.meta` flag reset to `generateSecondaryUV: 0`
+  (Unity persisted `1` before the crash, which would have auto-reimported and auto-crashed on the
+  next launch). Round 12b queued: `uv2-ensure` ONLY, per-file BEGIN logging added, softened unwrap
+  (hardAngle 88→65), graphics context enabled (batchmode without `-nographics`) to isolate the
+  crash trigger. If it crashes identically again, the file is deterministically unsafe for the
+  importer unwrap and the UV2 must be produced in Blender instead (owner decision, larger job).
+- 81% of the 1742 material slots still have no base map wired (previous sessions' finding) — the biggest remaining visual gap; not touched this round.
+

@@ -228,14 +228,14 @@ Create concrete Straight Golden Cases and a controlled scene adapter, then perfo
 - Verified the catalog source remains brace-balanced after the guard insertion.
 - Golden asset authoring remains intentionally blocked on measured Truth; no synthetic calibration values were introduced.
 
-## Golden Certification — 2026-08-27
+## Golden Certification ï¿½ 2026-08-27
 - Golden runtime infrastructure is code-complete for case validation, measurement capture, evaluation, reporting, and regression execution.
 - `PhysicsGoldenMeasurementBridge` is the explicit runtime handoff from `ShotMeasurementTracker` into `PhysicsGoldenRegressionRunner`; it refuses capture without a valid assigned runner/case/tracker or measurement.
 - `PhysicsGoldenRegressionRunner` rejects NaN/Infinity samples and rejects cases outside an assigned catalog.
 - Actual Golden PASS remains dependent on authored calibration assets and real runtime measurements; no synthetic Truth values are permitted.
 - Pattern: `Runtime Shot ? ShotMeasurementTracker ? GoldenMeasurementBridge ? RegressionRunner ? Evaluator ? Report`.
 
-## Calibration Runtime Audit — 2026-08-27
+## Calibration Runtime Audit ï¿½ 2026-08-27
 - `CalibrationShotController`, `ShotCalibrationRunner`, and `ShotMeasurementTracker` form a complete calibration-side measurement path in code.
 - No textual references to these three components were found in `.prefab`, `.unity`, or `.asset` files under `Assets`; they are currently tool/infrastructure code rather than confirmed scene-wired runtime objects.
 - `CalibrationShotController` correctly resets both linear and angular velocity and begins measurement from a known origin.
@@ -243,7 +243,7 @@ Create concrete Straight Golden Cases and a controlled scene adapter, then perfo
 - Do not manufacture calibration assets or wire these tools into gameplay automatically; first establish the intended calibration scene/workflow.
 - Pattern: `Calibration Controller ? Measurement Tracker ? Calibration Evaluator`; Golden bridge remains a separate explicit handoff.
 
-## Golden Certification Asset Gate — 2026-08-27
+## Golden Certification Asset Gate ï¿½ 2026-08-27
 Status: INFRASTRUCTURE VERIFIED / DATA PENDING
 - Golden Case, Catalog, Evaluator, and Regression Runner source files are structurally balanced.
 - No serialized PhysicsGoldenCase/PhysicsGoldenCatalog asset instances were found under Assets during this audit.
@@ -251,7 +251,7 @@ Status: INFRASTRUCTURE VERIFIED / DATA PENDING
 - Certification rule: never synthesize expected distance/speed values merely to populate Golden assets.
 - Next executable gate: create/import authoritative measured Truth data, then author Golden Case assets from that data.
 
-## Golden Catalog Source Hygiene — 2026-08-27
+## Golden Catalog Source Hygiene ï¿½ 2026-08-27
 Status: COMPLETE
 - Audited `PhysicsGoldenCatalog.cs` and found literal escaped CR/LF text embedded in the source around `ValidateCatalog`.
 - Normalized those literals to real line breaks without changing catalog behavior.
@@ -411,3 +411,12 @@ Next:
 - The migration method was archived at `Docs/M7_4_BACKUPS/M7_4_CreateCleanMainScene_20260903.cs` and removed from `Assets/Editor` after successful execution.
 - Do not delete `SampleScene.unity` yet. It remains the rollback source until MainScene passes runtime and visual/physics alignment validation.
 - Physics Authority and Golden Truth remain locked/unchanged.
+
+## 2026-10-31 - Round 11 (wip): shadows off / tests PASS / baked-GI prep
+
+- Full record: `Docs/147VR_CURRENT_STATE.md` Â§ "2026-10-31 (wip project) â€” Round 11".
+- Variant A lights: `TableKey.shadows` none â€” 12 lamps verified `m_Type: 0` in `PREFAB_147VR_LightRig_A.prefab`; scene+prefab saved (Rounds 9/10 material/HDR work by earlier sessions untouched).
+- PlayMode `PoolPhysicsPhaseTests` 5/5 PASS (Bay1 42 collisions, Bay2 37, Bay3 1, Bay4 12; max 2.96 m/s; no NaN/explosion; ownership release OK). XML: `Docs/AI_TEAM/UnityLogs/PlayModePhaseTests_20261031_135550_results.xml`. Controlled PASS, not Golden certified.
+- New files: `Assets/Editor/Lighting/147VRBakeGI.cs`, `Assets/Tests/PlayMode/PoolPhysicsPhaseTests.cs`, `Docs/AI_TEAM/Tools/Unity_WIP_Batch_Launch.ps1`; ToolRunner gained `uv2-ensure`/`gi-flags`/`lights-baked`/`bake`. Unity API names were verified against the editor's own XML docs; first compile round caught `generateLightmapUVs`â†’`generateSecondaryUV` and obsolete `finalGather` â€” fixed before any scene run.
+- Bake (heavy) NOT executed: awaits owner approval. Bay2 frame repro: fix present, only the concrete base slab is pale by design (matches Blender).
+

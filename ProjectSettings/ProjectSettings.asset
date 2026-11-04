@@ -829,7 +829,7 @@ PlayerSettings:
   webEnableSubmoduleStrippingCompatibility: 0
   scriptingDefineSymbols:
     Android: SENTIS_ANALYTICS_ENABLED;APP_UI_EDITOR_ONLY;ENABLE_RUNTIME_OPTIMIZER;OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING
-    Standalone: OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING;APP_UI_EDITOR_ONLY;SENTIS_ANALYTICS_ENABLED
+    Standalone: OVR_DISABLE_HAND_PINCH_BUTTON_MAPPING;APP_UI_EDITOR_ONLY
   additionalCompilerArguments: {}
   platformArchitecture: {}
   scriptingBackend:
