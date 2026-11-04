@@ -9,7 +9,9 @@ public static class _147VR_M5YoloHarness
     private const string ScenePath = "Assets/AAA/PhysicsCalibration/147VR_PhysicsCalibration.unity";
     private const string ReadyMarker = "Assets/AAA/PhysicsCalibration/.m5_straight_ready";
     private static bool booted;
+#pragma warning disable CS0414 // play-state tracker kept for future use
     private static bool playRequested;
+#pragma warning restore CS0414
     private static bool certRequested;
 
     static _147VR_M5YoloHarness()
