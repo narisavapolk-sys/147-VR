@@ -420,3 +420,10 @@ Next:
 - New files: `Assets/Editor/Lighting/147VRBakeGI.cs`, `Assets/Tests/PlayMode/PoolPhysicsPhaseTests.cs`, `Docs/AI_TEAM/Tools/Unity_WIP_Batch_Launch.ps1`; ToolRunner gained `uv2-ensure`/`gi-flags`/`lights-baked`/`bake`. Unity API names were verified against the editor's own XML docs; first compile round caught `generateLightmapUVs`→`generateSecondaryUV` and obsolete `finalGather` — fixed before any scene run.
 - Bake (heavy) NOT executed: awaits owner approval. Bay2 frame repro: fix present, only the concrete base slab is pale by design (matches Blender).
 
+## 2026-11-04 — S0/S1 close + PlayMode rerun green (Summary)
+- Full record: `Docs/147VR_CURRENT_STATE.md` — "2026-11-04 (wip project) — S0 close + S1 commits + PlayMode 5/5 post-fix";
+  detail report `WireReports/S0_CLOSE_2026-11-04.md`.
+- PoolPhysics corner capture 1.75x fix verified headless (jartest 10/10 + props 1000 + golden 0.000E+000) AND at Unity scene level (PlayMode 5/5 PASS, exit 0, compile-clean) — controlled PASS, still not Golden-certified.
+- Trunk: G1 S0+QA `6786490`, G2 Quest `bec1455`, G3 AAA/lighting tools `43cb706`, G4 state sync `e5a3db4`.
+- Owner asks: none pending — next sprint S2 (9-ball real rules headless-first → bridge swap → RulesTests extension).
+

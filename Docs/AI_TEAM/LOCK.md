@@ -5,11 +5,21 @@ Single source for Unity execution ownership between LUNA and Claude.
 ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder may open Unity, edit project files, run AssetDatabase-sensitive operations, build, or execute runtime tests.
 
 ## Current Lock
-- Holder: Claude (GLM agent) — takeover per Emergency Rule
-- Status: ACTIVE
-- Domain: Round 11 — TableKey shadows off, UV2 ensure, GI static flags, Phase 1-3 PlayMode tests, baked-GI prep tooling
-- Started: 2026-10-31
-- Release condition: record results in CURRENT_STATE/PROJECT_MEMORY + final report to owner
+- Holder: OpenCode (GLM agent) — takeover per Emergency Rule
+- Status: RELEASED (handoff complete 2026-11-04)
+- Domain: 2026-11-04 — S0 close (corner capture 1.75x, headless green 10/10) + S1 4-group commits + PlayMode Phase 1-3 rerun (PoolPhysicsPhaseTests) post-fix
+- Started: 2026-11-04
+- Release condition: record PlayMode results in WireReports + CURRENT_STATE/PROJECT_MEMORY + final report to owner
+
+## Emergency Takeover Record — 2026-11-04
+- Previous holder Claude last ACTIVE 2026-10-31 (Round 11/12 complete per logs; no blocker reported).
+- Evidence of safe takeover: Get-Process shows NO Unity.exe and NO blender.exe; RAM free 7.9/15.4 GB; Library warm (last batch 2026-10-31 exit 0).
+- S1 commits landed before this task: 6786490 (PoolPhysics S0), bec1455 (Quest gameplay), 43cb706 (AAA/lighting tools), e5a3db4 (state sync) — trunk clean except intentionally skipped Assets/_Recovery + _staging_old.
+
+## Handoff Record (release) — 2026-11-04
+- Changed files: Assets/PoolPhysics/Sim/TableSpecData.cs (S0 1.75x fix, in commit 6786490), PoolPhysics/Tests/GoldenRunner.cs (T3b/T3c/T3d regressions), Docs + WireReports updated this session, Unity_WIP_Batch_Launch.ps1 queued-cmd visibility patch.
+- Verification: headless PoolSim.Tests green 10/10 (jartest incl. new regressions; props 1000 fuzz clean; golden round-trip 0.000E+000) AND Unity PlayMode 5/5 PASS (results PlayModePhaseTests_20261104_20261104_075912) — no blockers.
+- Next action: S2 sprint (9-ball real rules, headless-first) per CURRENT_STATE 2026-11-04; next Unity touch keeps this handoff contract.
 
 ## Emergency Takeover Record — 2026-10-31
 - Previous holder LUNA last ACTIVE 2026-09-08 (unreachable; lock stale per Emergency Rule).

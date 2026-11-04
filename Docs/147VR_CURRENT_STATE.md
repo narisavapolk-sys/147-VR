@@ -383,5 +383,11 @@ Verified the previous session's Round 8 fix is IN the scene: `Logs/material_inve
   (hardAngle 88→65), graphics context enabled (batchmode without `-nographics`) to isolate the
   crash trigger. If it crashes identically again, the file is deterministically unsafe for the
   importer unwrap and the UV2 must be produced in Blender instead (owner decision, larger job).
-- 81% of the 1742 material slots still have no base map wired (previous sessions' finding) — the biggest remaining visual gap; not touched this round.
+- 81% of the 1742 material slots still have no base map wired (previous sessions' finding) - the biggest remaining visual gap; not touched this round.
+
+## 2026-11-04 (wip project) — S0 close + S1 commits + PlayMode 5/5 post-fix (OpenCode/GLM agent per AI_TEAM/LOCK.md)
+- **S0 (corner pocket capture 1.75x) verified on BOTH layers**: headless `PoolSim.Tests` green 10/10 (incl. NEW regression tests T3b geometry / T3c rail-hug sweep / T3d side pass-bye), props 1000 fuzz clean (bad=0, perm=0, det=0), golden round-trip 0.000E+000; Unity PlayMode `PoolPhysicsPhaseTests` **5/5 PASS** (44s) matching the 2026-10-31 baseline — evidence: `Docs/AI_TEAM/UnityLogs/PlayModePhaseTests_20261104_20261104_075912_results.xml`; report: `WireReports/S0_CLOSE_2026-11-04.md`.
+- **S1 trunk safety**: 4 commits landed — `6786490` PoolPhysics S0 (+QA suite/report), `bec1455` Quest gameplay, `43cb706` AAA imports/lighting/QA tooling, `e5a3db4` docs/settings/scenes sync. Leftover intentionally NOT committed: `Assets/_Recovery`, `_staging_old`. Script kept: `Docs/AI_TEAM/Tools/S1_COMMIT_4GROUPS.ps1`.
+- PlayMode batch note: launcher ran the stale queued `uv2-ensure` (from Round 12b queue) before tests — succeeded, no scene harm; launcher patched to PRINT queued `editor_cmd.txt` in every summary (visibility fix; no silent runs, no blind deletes).
+- **Next (S2, owner-approved order)**: (1) real WPA 9-ball rules for Bay3/4 — pure-C# rules evaluator over `EventSimulator.EventLog`/`DrainEvents` + unity-side `PoolPhysicsRulesBridge` swap (SnookerShotTracker already delegates non-snooker racks to the bridge, `snookerRulesEnabled=false`); extend `Assets/Editor/SnookerRulesTests.cs`. (2) BHP cue grip + real save-system. Then audio 114 SFX spatial (S3), light parity CSV loop (S4), sheen/cloth/clearcoat detail pass (S5).
 

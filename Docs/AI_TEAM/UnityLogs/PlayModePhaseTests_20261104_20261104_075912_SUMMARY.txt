@@ -1,0 +1,11 @@
+147VR WIP Unity Batch — Summary
+Timestamp: 20261104_075912
+LogName:   PlayModePhaseTests_20261104
+Mode:      runTests PlayMode
+Executed:  -testFilter 'PoolPhysicsPhaseTests'
+Process:   EXITED code=0
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile:   C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\PlayModePhaseTests_20261104_20261104_075912.log
+TestResults: C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\PlayModePhaseTests_20261104_20261104_075912_results.xml

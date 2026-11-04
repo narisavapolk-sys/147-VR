@@ -125,4 +125,18 @@ LogFile:   $LogFile
 TestResults: $TestResults
 "@
 Set-Content -Path $SummaryFile -Value $summary
+
+# 7b. Visibility for queued ToolRunner commands: if a stale/intentional editor_cmd.txt
+#     exists, ToolRunner executes it during load — surface it in the summary instead of
+#     letting it run silently (2026-11-04 finding: Round-12b queue ran in a test batch).
+#     NOTE: intentionally NOT deleted here — command queues are a legitimate handoff
+#     mechanism (write queue, then launch); deleting blindly would break that flow.
+if (Test-Path $cmdFile) {
+  $queued = (Get-Content -LiteralPath $cmdFile -Raw -ErrorAction SilentlyContinue)
+  if ($queued) {
+    $summary = $summary + "`nQueued editor_cmd.txt EXECUTED by ToolRunner: " + $queued.Trim()
+    Set-Content -Path $SummaryFile -Value $summary
+    Write-Output "QUEUED-CMD (executed during load): $($queued.Trim())"
+  }
+}
 Write-Output $summary
