@@ -49,6 +49,11 @@ public sealed class SnookerShotTracker : MonoBehaviour
     public float restThreshold = 0.01f;
     public float restTimeSeconds = 1.5f;
 
+    [Tooltip("When false the snooker foul/scoring transaction is skipped. PoolPhysicsRulesBridge " +
+            "turns this off for bays whose ball set is not a snooker rack (e.g. the 9-ball bays), " +
+            "where pot/turn logic is handled by the bridge instead.")]
+    public bool snookerRulesEnabled = true;
+
     private void Awake()
     {
         if (ballTracker == null)
@@ -222,14 +227,28 @@ public sealed class SnookerShotTracker : MonoBehaviour
         if (!_shotInProgress)
             return;
 
+        // Scratch/off-table: under simulator authority the cue ball is potted (flag set by
+        // the Pocket event) or its object is deactivated, and its Y never drops below the
+        // table plane. Keep the PhysX Y test as well so both backends resolve correctly.
         bool cueOnTable = _cueBall == null || _cueBall.transform == null ||
-                          _cueBall.transform.position.y >= offTableY;
+                          (!_cueBall.potted &&
+                           _cueBall.transform.gameObject.activeInHierarchy &&
+                           _cueBall.transform.position.y >= offTableY);
         ResolveShot(_firstBallHit, _hitAnyBall, cueOnTable);
     }
 
     private void ResolveShot(SnookerBallTracker.BallInfo firstBall, bool hitAny, bool cueOnTable)
     {
         _shotInProgress = false;
+
+        if (!snookerRulesEnabled)
+        {
+            // Non-snooker rack (e.g. the 9-ball bays): pot/turn authority is the physics rules
+            // bridge, which owns discipline-specific logic. Do not touch the snooker score state.
+            _pendingPots.Clear();
+            ShotResolved?.Invoke(firstBall, hitAny, cueOnTable);
+            return;
+        }
 
         if (scoreManager == null || turnManager == null)
             return;

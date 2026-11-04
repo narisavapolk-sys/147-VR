@@ -219,6 +219,127 @@ public sealed class SnookerBallTracker : MonoBehaviour
             ball.potted = false;
     }
 
+    // ---- Simulator (EventRunner) binding API. Legacy name-scan path above is unchanged. ----
+
+    /// <summary>Snooker value for an imported ball name. Prefers the token after the last
+    /// "_Ball_" so room-FBX names (SM_147VR_Bay1_Ball_Red_003) map like plain names.
+    /// Returns -1 for non-balls, 0 for the cue and for pool-numbered balls (no snooker value).</summary>
+    public static int PointsForSimName(string name)
+    {
+        int legacy = PointsForName(name);
+        if (legacy >= 0)
+            return legacy;
+        if (string.IsNullOrEmpty(name))
+            return -1;
+
+        int i = name.LastIndexOf("_Ball_", StringComparison.Ordinal);
+        string token = i >= 0 ? name.Substring(i + 6) : name;
+        token = token.Split('_')[0].ToLowerInvariant();
+
+        switch (token)
+        {
+            case "red": return 1;
+            case "yellow": return 2;
+            case "green": return 3;
+            case "brown": return 4;
+            case "blue": return 5;
+            case "pink": return 6;
+            case "black": return 7;
+        }
+        if (token.StartsWith("white") || token.StartsWith("cue"))
+            return 0;
+        return -1;
+    }
+
+    /// <summary>True when the name looks like a cue ball under either naming scheme.</summary>
+    public static bool IsCueBallName(string name)
+    {
+        if (string.IsNullOrEmpty(name)) return false;
+        string n = name.ToLowerInvariant();
+        return n.Contains("cue") || n.Contains("white");
+    }
+
+    /// <summary>Rebinds the tracker to the exact ball list owned by a physics backend so that
+    /// simulator index == <see cref="Balls"/> index (Pocket events can then be mapped by index).
+    /// Pockets come from the simulator spec instead of scene name-scan. Returns false if rejected.</summary>
+    public bool BindToSimulation(IReadOnlyList<Transform> simBalls, IReadOnlyList<PocketInfo> simPockets, int cueIndex = 0)
+    {
+        if (simBalls == null || simBalls.Count == 0)
+            return false;
+
+        var previousHomes = new Dictionary<Transform, Vector3>();
+        foreach (BallInfo existing in _balls)
+            if (existing != null && existing.transform != null && existing.hasHomePosition)
+                previousHomes[existing.transform] = existing.homePosition;
+
+        _balls.Clear();
+        _previousY.Clear();
+        for (int i = 0; i < simBalls.Count; i++)
+        {
+            Transform t = simBalls[i];
+            if (t == null)
+            {
+                Debug.LogError($"[BallTracker] sim ball[{i}] is null — index parity broken, re-run Pass C.");
+                continue;
+            }
+            int points = PointsForSimName(t.name);
+            bool cue = i == cueIndex || IsCueBallName(t.name);
+            var ball = new BallInfo
+            {
+                name = t.name,
+                transform = t,
+                points = cue ? 0 : (points > 0 ? points : 0)
+            };
+            ball.homePosition = previousHomes.TryGetValue(t, out Vector3 prev) ? prev : t.position;
+            ball.hasHomePosition = true;
+            _previousY[t] = t.position.y;
+            _balls.Add(ball);
+        }
+
+        if (simPockets != null)
+        {
+            _pockets.Clear();
+            _pockets.AddRange(simPockets);
+        }
+
+        _ready = _balls.Count > 0;
+        return _ready;
+    }
+
+    /// <summary>Registers a pot reported by an external authority (the event simulator) without
+    /// moving the ball — the simulator owns its transform. Fires BallPotted exactly once per ball.</summary>
+    public BallInfo ReportPot(int index, PocketInfo pocket, bool raiseEvent = true)
+    {
+        if (!_ready)
+            Refresh();
+        if (index < 0 || index >= _balls.Count)
+            return null;
+
+        BallInfo ball = _balls[index];
+        if (ball == null || ball.potted)
+            return null;
+
+        ball.potted = true;
+        if (ball.transform != null)
+            _previousY[ball.transform] = pocketMouthY + 0.01f;   // keep the Y-drop detector quiet
+
+        PocketInfo resolved = pocket ?? FindNearestPocket(ball.transform != null ? ball.transform.position : Vector3.zero);
+        if (resolved == null && _pockets.Count > 0)
+            resolved = _pockets[0];
+
+        if (logPotEvents)
+            Debug.Log($"[BallTracker] SIM pot: {ball.name} → {(resolved != null ? resolved.name : "?")} (+{ball.points}){(raiseEvent ? "" : " [event suppressed]")}");
+        if (raiseEvent)
+            BallPotted?.Invoke(ball, resolved);
+        return ball;
+    }
+
+    /// <summary>The tracked ball at the given simulator index, or null.</summary>
+    public BallInfo BallAt(int index) => index >= 0 && index < _balls.Count ? _balls[index] : null;
+
+    /// <summary>Index of the ball sharing this transform, or -1 (simulator index parity).</summary>
+    public int IndexOf(Transform t) => t == null ? -1 : _balls.FindIndex(b => b != null && b.transform == t);
+
     /// <summary>First in-play ball whose name starts with the given prefix, or null.</summary>
     public BallInfo FindBall(string namePrefix)
     {

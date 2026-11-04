@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
+using PoolPhysics.Unity;
 using VR147.AAA.Diagnostics;
+using VR147.Authority;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
 using VR147.Input;
@@ -50,6 +52,7 @@ public sealed class SnookerCueController : MonoBehaviour
     [Header("AAA Cue Pipeline")]
     [SerializeField] private VR147.AAA.Cue.CueAimProfile aimProfile;
     [SerializeField] private VR147.AAA.Cue.CuePhysicsAdapter physicsAdapter;
+    [SerializeField] private PoolPhysicsEventRunner _eventRunner;
     [SerializeField] private Vector2 english;
     private VR147.AAA.Cue.CueStrokeModel _strokeModel;
 
@@ -99,6 +102,13 @@ public sealed class SnookerCueController : MonoBehaviour
         _m5Lifecycle = GetComponent<M5ShotLifecycle>();
         if (_m5Lifecycle == null)
             _m5Lifecycle = FindObjectOfType<M5ShotLifecycle>();
+        if (_eventRunner == null)
+        {
+            // Phase 1: when the authority director is running it decides which bay owns physics,
+            // so the cue must not pin itself to whichever runner FindObjectOfType happens to return.
+            if (PoolPhysicsAuthorityDirector.Instance == null)
+                _eventRunner = FindFirstObjectByType<PoolPhysicsEventRunner>();
+        }
 
         CreateCueVisual();
 
@@ -155,7 +165,7 @@ public sealed class SnookerCueController : MonoBehaviour
             _camera = Camera.main;
         if (_camera == null)
             return;
-        Plane tablePlane = new Plane(Vector3.up, _physics.SurfaceTopY);
+        Plane tablePlane = new Plane(Vector3.up, ActiveSurfaceTopY);
         Ray ray = _camera.ScreenPointToRay(Mouse.current != null ? Mouse.current.position.ReadValue() : Vector3.zero);
         if (tablePlane.Raycast(ray, out float enter))
         {
@@ -190,7 +200,7 @@ public sealed class SnookerCueController : MonoBehaviour
         if (_camera == null)
             return;
 
-        Plane tablePlane = new Plane(Vector3.up, _physics.SurfaceTopY);
+        Plane tablePlane = new Plane(Vector3.up, ActiveSurfaceTopY);
         Ray ray = _camera.ScreenPointToRay(Mouse.current != null ? Mouse.current.position.ReadValue() : Vector3.zero);
 
         if (tablePlane.Raycast(ray, out float enter))
@@ -251,7 +261,7 @@ public sealed class SnookerCueController : MonoBehaviour
         if (dir.sqrMagnitude > 0.0001f)
             dir.Normalize();
 
-        Plane tablePlane = new Plane(Vector3.up, _physics.SurfaceTopY);
+        Plane tablePlane = new Plane(Vector3.up, ActiveSurfaceTopY);
         Vector3 ball = _cueBall.position;
         Ray aimRay = new Ray(ball + dir * 10f, -dir);
         if (tablePlane.Raycast(aimRay, out float enter))
@@ -316,26 +326,50 @@ public sealed class SnookerCueController : MonoBehaviour
             return;
         }
 
-                if (physicsAdapter == null)
-            physicsAdapter = GetComponent<VR147.AAA.Cue.CuePhysicsAdapter>();
-        if (physicsAdapter == null)
+        // Exactly ONE physics backend may act on a shot (Phase 1 handoff rule).
+        PoolPhysicsEventRunner runner = AuthorityRunner;
+        bool simAuthority = runner != null && runner.Enabled;
+
+        if (!simAuthority)
         {
-            Debug.LogError("[Cue] CuePhysicsAdapter is missing. Shot blocked to prevent dual/unowned physics authority.", this);
-            return;
+            if (physicsAdapter == null)
+                physicsAdapter = GetComponent<VR147.AAA.Cue.CuePhysicsAdapter>();
+            if (physicsAdapter == null)
+            {
+                Debug.LogError("[Cue] No physics authority: no bay backend is enabled and CuePhysicsAdapter " +
+                               "is missing. Shot blocked to prevent dual/unowned physics authority.", this);
+                return;
+            }
         }
+
         if (_m5Lifecycle != null && !_m5Lifecycle.BeginShot())
         {
             Debug.LogWarning("[Cue] M5 ShotLifecycle rejected shot: previous shot is not settled.", this);
             return;
         }
 
-        physicsAdapter.Configure(_cueBallRb);
-
         // Open M5 lifecycle before the impulse so every observation belongs to this shot.
         if (_shotTracker != null)
             _shotTracker.OnShotFired();
 
-        if (!physicsAdapter.Apply(shot, english))
+        Vector2 tip = new Vector2(Mathf.Clamp(english.x, -1f, 1f), Mathf.Clamp(english.y, -1f, 1f));
+
+        // --- EventRunner path: the simulator owns the balls, hand the strike straight to it ---
+        if (simAuthority)
+        {
+            runner.Shoot(shot.direction, shot.speed, tip, 0f);
+            Debug.Log($"[Cue] Shot → EventRunner authority ({runner.BayName}). power={shot.power01:F2} " +
+                      $"speed={shot.speed:F2} m/s dir=({shot.direction.x:F2}, {shot.direction.z:F2}) " +
+                      $"tip=({tip.x:F2}, {tip.y:F2})");
+            // CueBallCollision is deliberately not armed here: the balls are kinematic, so PhysX
+            // collision callbacks never fire and the first-contact foul comes from the simulator's
+            // BallBall events via PoolPhysicsRulesBridge.
+            return;
+        }
+
+        // --- Legacy PhysX path ---
+        physicsAdapter.Configure(_cueBallRb);
+        if (!physicsAdapter.Apply(shot, tip))
         {
             _m5Lifecycle?.ResetToIdle();
             Debug.LogWarning("[Cue] CuePhysicsAdapter rejected the shot.", this);
@@ -360,8 +394,75 @@ public sealed class SnookerCueController : MonoBehaviour
 
     // ---- Helpers ----
 
+    /// <summary>The backend that currently owns physics for the bay the player stands at.
+    /// Prefers the runtime authority director; falls back to the manually wired reference.</summary>
+    private PoolPhysicsEventRunner AuthorityRunner
+    {
+        get
+        {
+            PoolPhysicsAuthorityDirector director = PoolPhysicsAuthorityDirector.Instance;
+            if (director != null && director.Active != null)
+                return director.Active;
+            return _eventRunner;
+        }
+    }
+
+    /// <summary>Height of the cloth the cue aims across — active bay first, legacy setup second.</summary>
+    private float ActiveSurfaceTopY
+    {
+        get
+        {
+            PoolPhysicsAuthorityDirector director = PoolPhysicsAuthorityDirector.Instance;
+            if (director != null && director.TryGetActiveTable(out float topY, out _))
+                return topY;
+            return _physics != null ? _physics.SurfaceTopY : 0f;
+        }
+    }
+
+    /// <summary>Playable area of the active bay (used to clamp the aim point).</summary>
+    private Bounds ActiveTableBounds
+    {
+        get
+        {
+            PoolPhysicsAuthorityDirector director = PoolPhysicsAuthorityDirector.Instance;
+            if (director != null && director.TryGetActiveTable(out _, out Bounds playfield))
+                return playfield;
+            return _physics != null ? _physics.TableBounds : default;
+        }
+    }
+
+    private static bool BallBelongsTo(PoolPhysicsEventRunner runner, Transform ball)
+    {
+        if (runner == null || ball == null)
+            return false;
+        for (int i = 0; i < runner.BallCount; i++)
+            if (runner.BallTransformAt(i) == ball)
+                return true;
+        return false;
+    }
+
     private void FindCueBall()
     {
+        PoolPhysicsEventRunner runner = AuthorityRunner;
+
+        // --- Simulator authority: the bay's own ball list is the source of truth ---
+        if (runner != null && runner.OwnsPhysics)
+        {
+            if (_cueBall != null && BallBelongsTo(runner, _cueBall))
+            {
+                if (_cueBallRb == null)
+                    _cueBallRb = _cueBall.GetComponent<Rigidbody>();
+                return;
+            }
+            Transform bayCue = runner.BallTransformAt(runner.CueBallIndex);
+            if (bayCue != null)
+            {
+                _cueBall = bayCue;
+                _cueBallRb = bayCue.GetComponent<Rigidbody>();
+                return;
+            }
+        }
+
         if (_cueBall != null && _cueBallRb != null)
             return;
 
@@ -370,7 +471,7 @@ public sealed class SnookerCueController : MonoBehaviour
         {
             _tracker = GetComponent<SnookerBallTracker>();
             if (_tracker == null)
-                _tracker = FindObjectOfType<SnookerBallTracker>();
+                _tracker = FindFirstObjectByType<SnookerBallTracker>();
         }
         if (_tracker == null)
             return;
@@ -461,10 +562,10 @@ public sealed class SnookerCueController : MonoBehaviour
 
     private Vector3 ClampToTable(Vector3 p)
     {
-        Bounds b = _physics.TableBounds;
+        Bounds b = ActiveTableBounds;
         p.x = Mathf.Clamp(p.x, b.min.x + 0.05f, b.max.x - 0.05f);
         p.z = Mathf.Clamp(p.z, b.min.z + 0.05f, b.max.z - 0.05f);
-        p.y = _physics.SurfaceTopY;
+        p.y = ActiveSurfaceTopY;
         return p;
     }
 

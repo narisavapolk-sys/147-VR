@@ -288,6 +288,11 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
         Rigidbody rb = ballCollider.attachedRigidbody;
         if (rb == null)
             return;
+        // Physics authority handoff: while the event simulator owns the balls they are
+        // kinematic and pockets are resolved from simulator Pocket events. Teleporting a
+        // kinematic body here would fight the runner's per-frame writes.
+        if (rb.isKinematic)
+            return;
         Vector3 spot = new Vector3(pocketCentre.x, catchY, pocketCentre.z);
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
