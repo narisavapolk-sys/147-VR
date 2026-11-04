@@ -434,3 +434,10 @@ Next:
 - Watch item for S3: BallBall telemetry `ImpactSpeed` is sign-inverted in the common case (cosmetic; fix before audio volume mapping).
 - Next: Unity side `PoolPhysicsRulesBridge` → `NineBallRules.EvaluateShot`; rerun PlayMode Phase 1-3 (5/5 baseline) since the sim engine changed; then S2 #2 (BHP cue grip + save-system).
 
+## 2026-11-04 - S2 #2 close: save-system headless 40/40 + BHP control map + grip scaffold (Summary)
+- Full record: `Docs/147VR_CURRENT_STATE.md` - "S2 #2 headless-first: save-system DONE + BHP control map".
+- NEW `Assets/PoolPhysics/Sim/PoolSaveModel.cs` (pure-C# deterministic save codec, strict JSON, schema v1) + `PoolPhysics/Tests/PoolSaveTests.cs` - CLI mode `save [fuzzN]`: roundtrip / reject-matrix 34 rows / malformed-fuzz 400 never-throw / byte-identity / file-load-vs-code shot parity **maxDelta=0** = **40/40 PASS**; regression nineball 13/13, jartest 10/10, props 400 clean.
+- BHP = BLACK HOLE POOL APK (`pulled_apks/com.el.blackholepooldemo`, read-only) - button-SCHEME borrowed, no assets: tutorial strings recovered (hands-aim / hold-lock + left-hand orbit / physical stroke shot / X pickup red-white / recenter combo / laser); **exact button labels are runtime-concatenated, NOT in the APK** - evidence + Quest-Touch mapping (state-gated) in `Docs/AI_TEAM/BHP_CONTROL_MAP.md`.
+- NEW `Assets/Scripts/Quest/BhpCueGripController.cs` scaffold (XR InputDevices, events-only, UNWIRED by design). NEXT Unity session: compile + PlayMode 5/5 rerun (engine changed) + wire grip -> SnookerShotTracker/SnookerCueController; then S3 (fix ImpactSpeed sign first), S4, S5.
+- Commits: `35ee541` (S2 #2a save-system), `cc854cc` (S2 #2b BHP map + scaffold) on `feat/unity-event-physics-import`.
+
