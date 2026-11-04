@@ -427,3 +427,10 @@ Next:
 - Trunk: G1 S0+QA `6786490`, G2 Quest `bec1455`, G3 AAA/lighting tools `43cb706`, G4 state sync `e5a3db4`.
 - Owner asks: none pending — next sprint S2 (9-ball real rules headless-first → bridge swap → RulesTests extension).
 
+## 2026-11-04 — S2 #1 close: WPA 9-ball rules headless (Summary)
+- Full record: `Docs/147VR_CURRENT_STATE.md` — "S2 #1 DONE: WPA 9-ball rules headless-first".
+- NEW `Assets/PoolPhysics/Sim/NineBallRules.cs` (pure evaluator) + `PoolPhysics/Tests/NineBallTests.cs` (mode `nineball` → **13/13**: 7 scenarios + fuzz 150 + determinism) wired via csproj + `GoldenRunner.Main` dispatcher.
+- ENGINE FIX `EventSimulator.ResolveBallBall`: symmetric retry when the canonical pair order makes a closing impact look like `vn<=0` (no-impulse drop → depenetration-only shoving). Full regression battery green post-fix: jartest 10/10, props 1000 bad=0, golden strict 0.000E+000.
+- Watch item for S3: BallBall telemetry `ImpactSpeed` is sign-inverted in the common case (cosmetic; fix before audio volume mapping).
+- Next: Unity side `PoolPhysicsRulesBridge` → `NineBallRules.EvaluateShot`; rerun PlayMode Phase 1-3 (5/5 baseline) since the sim engine changed; then S2 #2 (BHP cue grip + save-system).
+

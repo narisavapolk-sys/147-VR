@@ -11,5 +11,6 @@
     <Compile Include="../../Assets/PoolPhysics/Sim/*.cs" />
     <Compile Include="CmaEs.cs" />
     <Compile Include="GoldenRunner.cs" />
+    <Compile Include="NineBallTests.cs" />
   </ItemGroup>
 </Project>

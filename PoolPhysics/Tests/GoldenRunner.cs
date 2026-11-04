@@ -555,8 +555,9 @@ static class GoldenRunner
     }
 
     static int Main(string[] args){
-        if(args.Length==0){ Console.WriteLine("usage: gen|check|fit|real|validate|eventval|genreal|touchtest|props [golden] [evals]"); return 2; }
+        if(args.Length==0){ Console.WriteLine("usage: gen|check|fit|real|validate|eventval|genreal|touchtest|props [golden] [evals]|nineball [fuzzN]|jartest|detdbg|napdbg|splitdbg"); return 2; }
         string mode=args[0];
+        if(mode=="nineball"){ NineBallTests.RunAll(args.Length>1?int.Parse(args[1]):150); return NineBallTests.Fails>0?1:0; }
         if(mode=="props"){ Props(args.Length>1?int.Parse(args[1]):400); return FAILS>0?1:0; }
         if(mode=="detdbg"){ DetDbg(args.Length>1?int.Parse(args[1]):30); return FAILS>0?1:0; }
         if(mode=="napdbg"){ NapDbg(); return FAILS>0?1:0; }

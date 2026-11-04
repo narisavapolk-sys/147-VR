@@ -432,6 +432,22 @@ namespace PoolPhysics.Sim
             if (dist < minD) { float pen=minD-dist; float im=1/a.Mass, jm=1/b.Mass, tot=im+jm; a.Position-=new Vector3(n.X,0,n.Y)*(pen*im/tot); b.Position+=new Vector3(n.X,0,n.Y)*(pen*jm/tot); }
             Vector2 va=new Vector2(a.Velocity.X,a.Velocity.Z), vb=new Vector2(b.Velocity.X,b.Velocity.Z);
             float vn=Vector2.Dot(va-vb,n);
+            // (2026-11-04 nineball S6) The caller passes the pair in canonical (ai<bi) order,
+            // which is NOT the motion order: if the cue sits at the higher (X,Z) index, a
+            // closing impact arrives as vn<=0 and was SKIPPED — no impulse at all, only the
+            // positional depenetration kept nudging the balls apart (cue shoving the object
+            // into the pocket without ever transferring momentum). The impulse law is
+            // symmetric, so retry once with the roles swapped before giving up.
+            if (vn<=0f)
+            {
+                var ta=a; a=b; b=ta;
+                d=new Vector2(b.Position.X-a.Position.X, b.Position.Z-a.Position.Z);
+                dist=d.Length(); minD=a.Radius+b.Radius;
+                n = dist>1e-7f ? d/dist : FallbackNormal(a,b);
+                if (dist < minD) { float pen=minD-dist; float im=1/a.Mass, jm=1/b.Mass, tot=im+jm; a.Position-=new Vector3(n.X,0,n.Y)*(pen*im/tot); b.Position+=new Vector3(n.X,0,n.Y)*(pen*jm/tot); }
+                va=new Vector2(a.Velocity.X,a.Velocity.Z); vb=new Vector2(b.Velocity.X,b.Velocity.Z);
+                vn=Vector2.Dot(va-vb,n);
+            }
             if (vn<=0f) { Classify(ref a); Classify(ref b); return; }
             float e=Profile.BallBallRestitution; float invMa=1/a.Mass, invMb=1/b.Mass;
             float jn=(1+e)*vn/(invMa+invMb);
