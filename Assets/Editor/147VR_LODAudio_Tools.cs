@@ -51,14 +51,14 @@ public static class _147VR_LODAudio_Tools
     [MenuItem("147VR/Audio/Create AudioMixer + apply SFX import")]
     public static void CreateMixer()
     {
-        const string mixerPath = "Assets/Audio/147VR_Mixer.mixer";
+        const string mixerPath = "Assets/Resources/Audio/147VR_Mixer.mixer";
         var mx = AssetDatabase.LoadAssetAtPath<AudioMixer>(mixerPath);
         if (mx == null)
-            Debug.LogWarning("147VR/Audio: mixer not found at " + mixerPath + ". Create it manually: Assets > Create > Audio Mixer (save as 147VR_Mixer under Assets/Audio/), then add groups Master > SFX / Crowd / Ambience.");
+            Debug.LogWarning("147VR/Audio: mixer not found at " + mixerPath + ". Create it manually: Assets > Create > Audio Mixer (save as 147VR_Mixer under Assets/Resources/Audio/), then add groups Master > SFX / Crowd / Ambience.");
         else
             Debug.Log("147VR/Audio: mixer ready at " + mixerPath + ".");
         // apply Vorbis/Streaming to SFX
-        string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/Audio/SFX" });
+        string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/Resources/Audio/SFX" });
         int n = 0;
         foreach (var g in guids)
         {

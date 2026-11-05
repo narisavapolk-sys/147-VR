@@ -21,6 +21,16 @@ namespace PoolPhysics.Unity
         [SerializeField] private AudioClip pocketClip;
         [SerializeField] private AudioClip cueHitClip;
 
+        [Header("Ambience & Stingers")]
+        [SerializeField] private AudioClip applauseClip;
+        [SerializeField] private AudioClip applauseAwardClip;
+        [SerializeField] private AudioClip cheerFrameWinClip;
+        [SerializeField] private AudioClip cheerWhistleClip;
+        [SerializeField] private AudioClip crowdGaspClip;
+        [SerializeField] private AudioClip crowdMurmurLoopClip;
+        [SerializeField] private AudioClip cueChalkingClip;
+        [SerializeField] private AudioClip winCelebrationClip;
+
         [Header("Audio Tuning")]
         [Range(0f, 2f)] [SerializeField] private float masterVolume = 1.0f;
         [SerializeField] private float minSpeedThreshold = 0.05f;
@@ -36,6 +46,7 @@ namespace PoolPhysics.Unity
         private PoolPhysicsEventRunner _runner;
         private readonly List<AudioSource> _sourcePool = new List<AudioSource>();
         private int _poolIndex = 0;
+        private AudioSource _murmurSource;
 
         private void Awake()
         {
@@ -61,6 +72,16 @@ namespace PoolPhysics.Unity
             if (jawClip == null) jawClip = Resources.Load<AudioClip>("Audio/SFX/ball_pocket_jaw");
             if (pocketClip == null) pocketClip = Resources.Load<AudioClip>("Audio/SFX/ball_potted");
             if (cueHitClip == null) cueHitClip = Resources.Load<AudioClip>("Audio/SFX/cue_stick_hit");
+
+            // Optional crowd ambience / stinger clips (Resources path assets, safe if missing)
+            if (applauseClip == null) applauseClip = Resources.Load<AudioClip>("Audio/SFX/applause_crowd");
+            if (applauseAwardClip == null) applauseAwardClip = Resources.Load<AudioClip>("Audio/SFX/crowd_applause_award");
+            if (cheerFrameWinClip == null) cheerFrameWinClip = Resources.Load<AudioClip>("Audio/SFX/crowd_cheer_frame_win");
+            if (cheerWhistleClip == null) cheerWhistleClip = Resources.Load<AudioClip>("Audio/SFX/crowd_cheer_whistle");
+            if (crowdGaspClip == null) crowdGaspClip = Resources.Load<AudioClip>("Audio/SFX/crowd_gasp");
+            if (crowdMurmurLoopClip == null) crowdMurmurLoopClip = Resources.Load<AudioClip>("Audio/SFX/crowd_murmur_loop");
+            if (cueChalkingClip == null) cueChalkingClip = Resources.Load<AudioClip>("Audio/SFX/cue_chalking");
+            if (winCelebrationClip == null) winCelebrationClip = Resources.Load<AudioClip>("Audio/SFX/fireworks_win");
         }
 
         private void OnEnable()
@@ -144,6 +165,77 @@ namespace PoolPhysics.Unity
             float amp = Mathf.Clamp01(intensity * maxHapticAmplitude);
             SendHapticToNode(XRNode.RightHand, amp, hapticDurationSec);
             SendHapticToNode(XRNode.LeftHand, amp, hapticDurationSec);
+        }
+
+        /// <summary>Plays the cue chalking one-shot at the table position. Safe no-op when the clip is missing.</summary>
+        public void PlayCueChalking()
+        {
+            if (cueChalkingClip != null) PlaySpatialClip(cueChalkingClip, transform.position, masterVolume);
+        }
+
+        /// <summary>Plays a crowd gasp one-shot at the table position.</summary>
+        public void PlayCrowdGasp()
+        {
+            if (crowdGaspClip != null) PlaySpatialClip(crowdGaspClip, transform.position, masterVolume);
+        }
+
+        /// <summary>Plays a general crowd applause one-shot at the table position.</summary>
+        public void PlayCrowdApplause(float volume = 1f)
+        {
+            if (applauseClip != null) PlaySpatialClip(applauseClip, transform.position, volume * masterVolume);
+        }
+
+        /// <summary>Plays the award-ceremony applause one-shot at the table position.</summary>
+        public void PlayAwardApplause(float volume = 1f)
+        {
+            if (applauseAwardClip != null) PlaySpatialClip(applauseAwardClip, transform.position, volume * masterVolume);
+        }
+
+        /// <summary>Plays the frame-win crowd cheer one-shot at the table position.</summary>
+        public void PlayFrameWinCheer(float volume = 1f)
+        {
+            if (cheerFrameWinClip != null) PlaySpatialClip(cheerFrameWinClip, transform.position, volume * masterVolume);
+        }
+
+        /// <summary>Plays a crowd whistle one-shot at the table position.</summary>
+        public void PlayCrowdWhistle(float volume = 1f)
+        {
+            if (cheerWhistleClip != null) PlaySpatialClip(cheerWhistleClip, transform.position, volume * masterVolume);
+        }
+
+        /// <summary>Plays the fireworks/window win celebration one-shot at the table position.</summary>
+        public void PlayWinCelebration(float volume = 1f)
+        {
+            if (winCelebrationClip != null) PlaySpatialClip(winCelebrationClip, transform.position, volume * masterVolume);
+        }
+
+        /// <summary>Starts (or re-purposes) the looping crowd murmur ambience source.</summary>
+        public void StartCrowdMurmur(float volume = 0.4f)
+        {
+            if (crowdMurmurLoopClip == null) return;
+
+            if (_murmurSource == null)
+            {
+                var go = new GameObject("CrowdMurmurLoop");
+                go.transform.SetParent(transform, false);
+                _murmurSource = go.AddComponent<AudioSource>();
+                _murmurSource.playOnAwake = false;
+                _murmurSource.loop = true;
+                _murmurSource.spatialBlend = 1.0f; // 3D Audio
+                _murmurSource.rolloffMode = AudioRolloffMode.Linear;
+                _murmurSource.minDistance = 2f;
+                _murmurSource.maxDistance = 25f;
+            }
+
+            _murmurSource.clip = crowdMurmurLoopClip;
+            _murmurSource.volume = Mathf.Clamp01(volume * masterVolume);
+            _murmurSource.Play();
+        }
+
+        /// <summary>Stops the looping crowd murmur ambience if it is playing.</summary>
+        public void StopCrowdMurmur()
+        {
+            if (_murmurSource != null && _murmurSource.isPlaying) _murmurSource.Stop();
         }
 
         private static void SendHapticToNode(XRNode node, float amplitude, float duration)

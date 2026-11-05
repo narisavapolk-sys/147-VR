@@ -137,7 +137,7 @@ public static class _147VR_ArtMaterials_Tools
     [MenuItem("147VR/Audio/Configure SFX Import (Vorbis + Streaming)")]
     public static void ConfigureSfxImport()
     {
-        string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/Audio/SFX" });
+        string[] guids = AssetDatabase.FindAssets("t:AudioClip", new[] { "Assets/Resources/Audio/SFX" });
         int n = 0;
         foreach (var g in guids)
         {
