@@ -1,0 +1,478 @@
+{
+  "shots": [
+    {
+      "name": "roll_slow",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0
+        ],
+        "speed": 1.4,
+        "tip": [
+          0,
+          0
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 2.2628052,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 0,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "roll_mid",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0
+        ],
+        "speed": 2.6,
+        "tip": [
+          0,
+          0
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 2.2222545,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 1,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "topspin",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0
+        ],
+        "speed": 2.4,
+        "tip": [
+          0,
+          0.6
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 2.206314,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 1,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "draw",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0
+        ],
+        "speed": 2.4,
+        "tip": [
+          0,
+          -0.6
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 2.3562968,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 1,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "headon_cushion",
+      "table": {
+        "length": 1,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0
+        ],
+        "speed": 3,
+        "tip": [
+          0,
+          0
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 0.03021077,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 2,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "headon_stun",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        },
+        {
+          "x": 0.85,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0
+        ],
+        "speed": 2.6,
+        "tip": [
+          0,
+          0
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 1.2550174,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        },
+        {
+          "x": 2.3932135,
+          "z": 0.635,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 2,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "cut_throw",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.635,
+          "r": 0.028575,
+          "m": 0.16
+        },
+        {
+          "x": 1.2,
+          "z": 0.72,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          1,
+          0.07
+        ],
+        "speed": 2.6,
+        "tip": [
+          0,
+          0
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 2.4885395,
+          "z": 0.15939045,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        },
+        {
+          "x": 2.4582953,
+          "z": 1.2237804,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 3,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    },
+    {
+      "name": "english_nap",
+      "table": {
+        "length": 2.54,
+        "width": 1.27,
+        "napHeading": 0.7
+      },
+      "balls": [
+        {
+          "x": 0.4,
+          "z": 0.5,
+          "r": 0.028575,
+          "m": 0.16
+        }
+      ],
+      "cue": {
+        "index": 0,
+        "dir": [
+          0.85,
+          0.53
+        ],
+        "speed": 2.4,
+        "tip": [
+          0.6,
+          0
+        ],
+        "elev": 0
+      },
+      "expected": [
+        {
+          "x": 2.4512868,
+          "z": 1.1448939,
+          "pocketed": false,
+          "vx": 0,
+          "vz": 0,
+          "wx": 0,
+          "wy": 0,
+          "wz": 0,
+          "phase": "Rest"
+        }
+      ],
+      "collisionCount": 2,
+      "energyError": 0,
+      "profile": {
+        "slidingFriction": 0.3,
+        "rollingFriction": 0.03,
+        "spinDecay": 2,
+        "ballBallRestitution": 0.8,
+        "ballBallFriction": 0.12,
+        "cushionRestitution": 0.6,
+        "cushionFriction": 0.3,
+        "napAnisotropy": 0.4,
+        "napSteer": 0
+      }
+    }
+  ]
+}
