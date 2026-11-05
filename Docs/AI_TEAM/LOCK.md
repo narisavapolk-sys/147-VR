@@ -5,12 +5,13 @@ Single source for Unity execution ownership between LUNA and Claude.
 ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder may open Unity, edit project files, run AssetDatabase-sensitive operations, build, or execute runtime tests.
 
 ## Current Lock
-- Holder: ChatGPT session (owner-authorized 147VR executor)
-- Status: TAKEN
-- Domain: 2026-11-05 — S2 #2c PoolUndoStack QA + SoloPractice game-mode gate + BHP UNDO controller bootstrap + PlayMode verification
-- Started: 2026-11-05 08:20 CET
-- Preflight: no Unity.exe/UnityHub process; 6.44 GB free / 15.44 GB total RAM; Library warm; no queued Logs/editor_cmd.txt; zero-byte Temp/UnityLockfile last touched 2026-11-04 20:06 (left untouched; no Unity process active)
-- Release condition: finish package-aware PlayMode validation, record exact results in CURRENT_STATE/PROJECT_MEMORY/WireReports, commit only sprint-scoped files, then release lock.
+- Holder: OpenCode (GLM agent) — release performed with owner authorization ("cleanup and finish S2 #2c job")
+- Status: RELEASED (handoff complete 2026-11-05)
+- Domain: 2026-11-05 - S2 #2c PoolUndoStack QA + SoloPractice game-mode gate + BHP UNDO controller bootstrap + PlayMode verification
+- Started: 2026-11-05 08:20 CET by ChatGPT session (owner-authorized)
+- Released: 2026-11-05 by OpenCode (GLM) completing the holder's final release step; the holder became unreachable mid-sprint (process evidence: no Unity.exe/UnityHub/executor processes active at takeover inspection ~13:30 CET; the sprint's Unity runs had already finished at 09:17 CET).
+- Release condition MET: package-aware PlayMode validation passed (5/5, see UnityLogs), exact results recorded in CURRENT_STATE/PROJECT_MEMORY/WireReports, and the entire sprint-scoped file set was committed as one unit before release: commit d9a63d6 "S2 #2c: Solo Practice UNDO + runtime integration" (40 files, includes the missing Unity .meta GUID files + headless undo test suite + all S2_2c evidence logs).
+- Next action after this release: consolidate the two working copies — commit canonical `147 VR` cleanup, merge `feat/unity-event-physics-import` into the canonical branch, verify in Unity on canonical, then owner decides on pushing both branches to origin.
 
 ## Emergency Takeover Record — 2026-11-04
 - Previous holder Claude last ACTIVE 2026-10-31 (Round 11/12 complete per logs; no blocker reported).
