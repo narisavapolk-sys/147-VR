@@ -1,0 +1,66 @@
+﻿{
+    "assetSet":  "147VR_CueStation",
+    "createdUtc":  "2026-11-05",
+    "rightsConfirmation":  "User confirmed on 2026-11-05 that they are authorized to use these assets in the 147 VR project.",
+    "provenance":  "Original extracted asset paths and SHA256 hashes are retained here for internal provenance and license traceability. Project-facing filenames use 147VR naming.",
+    "coordinateNotes":  [
+                            "Cue rack source bounds approximately 1.00 x 0.20 x 1.56 m with height along source Z; rotate X=-90 degrees for Unity Y-up.",
+                            "Cue source bounds approximately 1.451 x 0.028 x 0.029 m with cue length along source X; rotate local Y=-90 degrees under the rack conversion transform."
+                        ],
+    "files":  [
+                  {
+                      "projectFile":  "147VR_CueStation\\Models\\147VR_CueRack_HighPoly.obj",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\EightBallPoolVR\\Mesh\\SM_CueRack_1a.obj",
+                      "sha256":  "5EB089ACEE592F43688D99C120BB71FB70D34AFC67E9F0804E49BE1B564F708F",
+                      "bytes":  2322461
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Models\\147VR_SnookerCue_HighPoly.obj",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\Backspin\\meshes\\0090_Cue.obj",
+                      "sha256":  "A219EA91BE8C490D3C914823F9438E0194596997E1DECCA63EDE5491945BD312",
+                      "bytes":  2444121
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_CueRack_Albedo.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\EightBallPoolVR\\Texture2D\\TX_CueRack_ALB.png",
+                      "sha256":  "E24A3F53A84D9211F9693CCD601971B82996E2F862621B19B29D542F46937FD2",
+                      "bytes":  3925070
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_CueRack_Normal.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\EightBallPoolVR\\Texture2D\\TX_CueRack_NRM.png",
+                      "sha256":  "DDC1A6222D1C1E1BBE0030DC3F3874A878A85207A5A4DB2071EBE87568F28F43",
+                      "bytes":  1282745
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_Cue_Rosewood_BaseColor.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\Backspin\\textures\\0057_snookercue_cue_Mat_BaseColor.png",
+                      "sha256":  "0727B48B4797CEAE951B47DF149B07E7DFD8FC9E827F046D79E277A8FF251A2D",
+                      "bytes":  351526
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_Cue_Ash_BaseColor.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\Backspin\\textures\\0071_snookercue_cue_Mat_BaseColor_ash_d2.png",
+                      "sha256":  "EA0154FD57C9A8E9871CDE66B6EBE20E995432AB3F8A81416AA1D61EECDA934B",
+                      "bytes":  418998
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_Cue_Metallic.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\Backspin\\textures\\0090_snookercue_cue_Mat_Metallic.png",
+                      "sha256":  "C4C803FE55A50495AFF66B97C129C2493A6E01BB8BCE868BA8B6833EF0A10C18",
+                      "bytes":  48115
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_Cue_AO.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\Backspin\\textures\\0117_snookercue_cue_Mat_AO.png",
+                      "sha256":  "7C0594743467C32547FEE7837FF75515331C4BD6D8E96B153F0C7ADFFAB4CAC2",
+                      "bytes":  21239
+                  },
+                  {
+                      "projectFile":  "147VR_CueStation\\Textures\\147VR_Cue_Normal.png",
+                      "sourcePath":  "C:\\Users\\mongo\\Tools\\pulled_apks\\_export\\Backspin\\textures\\0121_snookercue_cue_Mat_Normal.png",
+                      "sha256":  "899206F71ED23DE6D3639DE73E309C263DFC235B20A0B2B1F5DE7A8A2EE60FA1",
+                      "bytes":  21240
+                  }
+              ]
+}

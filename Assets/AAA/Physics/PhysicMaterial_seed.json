@@ -1,0 +1,30 @@
+{
+  "_note": "Reference physics values extracted from 3rd-party Quest snooker/pool games (UnityPy dump of PhysicMaterial/Rigidbody). These are STARTING HYPOTHESES to seed 147VR's CushionProfile/CueImpactProfile, to be validated against the EXISTING GOLDEN regression (PhysicsGoldenRegressionRunner + PhysicsGoldenEvaluator tolerance). NOT ground truth. 147VR GOLDEN + WPBSA geometry are the authority. Do NOT auto-apply to the certified table.",
+  "wpbsa": { "playLengthM": 3.569, "playWidthM": 1.778, "ballDiaMm": 52.5, "ballMassKg": 0.16, "baulkMm": 737, "dRadiusMm": 292 },
+  "source_games": {
+    "UnlimitedSnooker": {
+      "ball": { "bounce": 0.925, "dynamicFriction": 0.01, "staticFriction": 0.01, "frictionCombine": "Min", "bounceCombine": "Max" },
+      "cloth": { "bounce": 0.4, "dynamicFriction": 25.0, "note": "Min-combine => effective ball-on-cloth friction ~0.01" },
+      "cushion": { "bounce": 0.78, "dynamicFriction": 0.35 },
+      "nearJaw": { "bounce": 0.6, "dynamicFriction": 0.125 },
+      "pocketRail": { "bounce": 0.1, "dynamicFriction": 0.25 },
+      "rigidbody": { "mass": 1.0, "linearDamping": 0.045, "angularDamping": 0.0 }
+    },
+    "Backspin": {
+      "ball": { "bounce": 0.9, "dynamicFriction": 0.0, "frictionCombine": "Average", "bounceCombine": "Average" },
+      "clothSnooker": { "dynamicFriction": 0.5, "staticFriction": 0.08 },
+      "clothPool": { "dynamicFriction": 1.0, "staticFriction": 0.2 },
+      "cushion": { "bounce": 0.0, "bounceCombine": "Max", "note": "effective bounce = ball 0.9 via Max combine" },
+      "jaw": { "bounce": 0.45 },
+      "rigidbody": { "massSnooker": 0.125, "massPool": 0.25, "linearDamping": 0.06, "angularDamping": 0.4, "collisionDetection": "ContinuousDynamic" }
+    }
+  },
+  "candidate_cushion_profile": {
+    "_maps_to": "VR147.AAA.Physics.CushionProfile",
+    "_comment": "Blend of the two games' cushion bounce + cloth friction, sanity-checked against 147VR's current defaults (0.82/0.035/0.35). Close to current => validates existing tuning. Treat as a candidate to A/B via GOLDEN.",
+    "restitution": 0.80,
+    "tangentialFriction": 0.03,
+    "spinTransfer": 0.35,
+    "minimumImpactSpeed": 0.02
+  }
+}

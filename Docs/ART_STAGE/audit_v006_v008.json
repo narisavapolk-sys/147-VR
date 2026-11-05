@@ -1,0 +1,475 @@
+{
+ "v006": {
+  "mat_count": 26,
+  "mats_with_image": 1,
+  "mats_procedural_only": 1,
+  "mats": [
+   {
+    "name": "0I_Gold_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Black",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Blue",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Brown",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Green",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Pink",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Red",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_White",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Yellow",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Brass",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Leather",
+    "img": false,
+    "proc": true
+   },
+   {
+    "name": "147VR_Pocket_Net",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Stitch",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Throat",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Throat_Dark",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "1B_Concrete_Smooth_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "4C_Leather_Black_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Black",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "cw-FABRIC-01",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Dots Stroke",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "FELT",
+    "img": true,
+    "proc": false
+   },
+   {
+    "name": "Gound Colour",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "MAT_WPBSA_Line",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "sy_dark_matte",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Table Mahogany",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Table Mahogany.001",
+    "img": false,
+    "proc": false
+   }
+  ],
+  "with_uv": 146,
+  "no_uv": 14,
+  "tris": 919324,
+  "surface": {
+   "name": "Plane",
+   "c": [
+    -2.593,
+    12.192,
+    0.0
+   ],
+   "d": [
+    43.046,
+    82.047,
+    0.0
+   ]
+  },
+  "pockets": 72,
+  "cushions": 4,
+  "balls": 28
+ },
+ "v008": {
+  "mat_count": 26,
+  "mats_with_image": 1,
+  "mats_procedural_only": 1,
+  "mats": [
+   {
+    "name": "0I_Gold_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Black",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Blue",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Brown",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Green",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Pink",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Red",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_White",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Yellow",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Brass",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Leather",
+    "img": false,
+    "proc": true
+   },
+   {
+    "name": "147VR_Pocket_Leather.001",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Net",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Stitch",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Throat",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Throat_Dark",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "1B_Concrete_Smooth_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "4C_Leather_Black_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Black",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "cw-FABRIC-01",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Dots Stroke",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "FELT",
+    "img": true,
+    "proc": false
+   },
+   {
+    "name": "Gound Colour",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "sy_dark_matte",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Table Mahogany",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Table Mahogany.001",
+    "img": false,
+    "proc": false
+   }
+  ],
+  "with_uv": 146,
+  "no_uv": 6,
+  "tris": 922744,
+  "surface": {
+   "name": "Plane",
+   "c": [
+    -2.593,
+    12.192,
+    0.0
+   ],
+   "d": [
+    43.046,
+    82.047,
+    0.0
+   ]
+  },
+  "pockets": 72,
+  "cushions": 4,
+  "balls": 28
+ },
+ "v008opt": {
+  "mat_count": 27,
+  "mats_with_image": 1,
+  "mats_procedural_only": 1,
+  "mats": [
+   {
+    "name": "0I_Gold_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Black",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Blue",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Brown",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Green",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Pink",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Red",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_White",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_BALL_Yellow",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Brass",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Leather",
+    "img": false,
+    "proc": true
+   },
+   {
+    "name": "147VR_Pocket_Leather.001",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Net",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Stitch",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Throat",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "147VR_Pocket_Throat_Dark",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "1B_Concrete_Smooth_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "4C_Leather_Black_mqm",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Black",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "cw-FABRIC-01",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Dots Stroke",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "FELT",
+    "img": true,
+    "proc": false
+   },
+   {
+    "name": "Gound Colour",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Material",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "sy_dark_matte",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Table Mahogany",
+    "img": false,
+    "proc": false
+   },
+   {
+    "name": "Table Mahogany.001",
+    "img": false,
+    "proc": false
+   }
+  ],
+  "with_uv": 147,
+  "no_uv": 6,
+  "tris": 335111,
+  "surface": {
+   "name": "Plane",
+   "c": [
+    -2.593,
+    12.192,
+    0.0
+   ],
+   "d": [
+    43.046,
+    82.047,
+    0.0
+   ]
+  },
+  "pockets": 72,
+  "cushions": 4,
+  "balls": 28
+ }
+}

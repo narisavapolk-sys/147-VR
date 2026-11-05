@@ -1,0 +1,229 @@
+COL 147VR_POCKET_ART
+  OBJ Pocket_Throat_NW | MESH | loc=(-1.808, 0.916, 0.775) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Brass_Rim_NW | MESH | loc=(-1.808, 0.916, 0.785) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Pocket_Net_NW | MESH | loc=(-1.812, 0.919, 0.735) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Throat_NE | MESH | loc=(1.809, 0.914, 0.775) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Brass_Rim_NE | MESH | loc=(1.809, 0.914, 0.785) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Pocket_Net_NE | MESH | loc=(1.813, 0.916, 0.735) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Throat_SW | MESH | loc=(-1.808, -0.912, 0.775) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Brass_Rim_SW | MESH | loc=(-1.808, -0.912, 0.785) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Pocket_Net_SW | MESH | loc=(-1.812, -0.914, 0.735) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Throat_SE | MESH | loc=(1.809, -0.912, 0.775) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Brass_Rim_SE | MESH | loc=(1.809, -0.912, 0.785) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Pocket_Net_SE | MESH | loc=(1.813, -0.914, 0.735) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Throat_W | MESH | loc=(0.001, -0.93, 0.775) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Brass_Rim_W | MESH | loc=(0.001, -0.93, 0.785) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Pocket_Net_W | MESH | loc=(0.001, -0.935, 0.735) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Throat_E | MESH | loc=(0.001, 0.932, 0.775) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Brass_Rim_E | MESH | loc=(0.001, 0.932, 0.785) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Pocket_Net_E | MESH | loc=(0.001, 0.937, 0.735) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Leather_NW | MESH | loc=(0.0, 0.0, 0.025) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NW_0 | MESH | loc=(-1.819, 0.987, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NW_1 | MESH | loc=(-1.849, 0.974, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NW_2 | MESH | loc=(-1.871, 0.949, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NW_3 | MESH | loc=(-1.879, 0.916, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NW_4 | MESH | loc=(-1.871, 0.884, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Leather_NE | MESH | loc=(0.0, 0.0, 0.025) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NE_0 | MESH | loc=(1.872, 0.881, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NE_1 | MESH | loc=(1.88, 0.914, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NE_2 | MESH | loc=(1.872, 0.946, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NE_3 | MESH | loc=(1.851, 0.972, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_NE_4 | MESH | loc=(1.82, 0.984, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Leather_SW | MESH | loc=(0.0, 0.0, 0.025) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SW_0 | MESH | loc=(-1.871, -0.879, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SW_1 | MESH | loc=(-1.879, -0.911, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SW_2 | MESH | loc=(-1.871, -0.944, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SW_3 | MESH | loc=(-1.85, -0.969, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SW_4 | MESH | loc=(-1.819, -0.982, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Leather_SE | MESH | loc=(0.0, 0.0, 0.025) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SE_0 | MESH | loc=(1.82, -0.982, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SE_1 | MESH | loc=(1.851, -0.969, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SE_2 | MESH | loc=(1.872, -0.944, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SE_3 | MESH | loc=(1.88, -0.911, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_SE_4 | MESH | loc=(1.872, -0.879, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Leather_W | MESH | loc=(0.0, 0.0, 0.025) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_W_0 | MESH | loc=(-0.057, -0.972, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_W_1 | MESH | loc=(-0.032, -0.993, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_W_2 | MESH | loc=(0.001, -1.001, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_W_3 | MESH | loc=(0.033, -0.993, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_W_4 | MESH | loc=(0.058, -0.972, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Leather_E | MESH | loc=(0.0, 0.0, 0.025) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_E_0 | MESH | loc=(0.058, 0.973, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_E_1 | MESH | loc=(0.033, 0.995, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_E_2 | MESH | loc=(0.001, 1.003, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_E_3 | MESH | loc=(-0.032, 0.995, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket_Stitch_E_4 | MESH | loc=(-0.057, 0.973, 0.833) | rot=(0.0, 0.0, 0.0) | parent=
+COL 147VR_SPATIAL_ANCHORS
+  OBJ ANCHOR_Pocket_NW | EMPTY | loc=(-1.808, 0.916, 0.79) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ ANCHOR_Pocket_NE | EMPTY | loc=(1.809, 0.914, 0.79) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ ANCHOR_Pocket_SW | EMPTY | loc=(-1.808, -0.912, 0.79) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ ANCHOR_Pocket_SE | EMPTY | loc=(1.809, -0.912, 0.79) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ ANCHOR_Pocket_W | EMPTY | loc=(0.001, -0.93, 0.79) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ ANCHOR_Pocket_E | EMPTY | loc=(0.001, 0.932, 0.79) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ ANCHOR_Playfield_Center | EMPTY | loc=(0.0, 0.0, 0.779) | rot=(0.0, 0.0, 0.0) | parent=
+COL ART_Crucible_Lighting
+  OBJ ART_Table_Area_01 | LIGHT | loc=(-3.212, -0.001, 8.04) | rot=(0.419, -0.0, -1.571) | parent=
+  OBJ ART_Table_Area_02 | LIGHT | loc=(-1.07, -0.001, 8.04) | rot=(0.147, -0.0, -1.571) | parent=
+  OBJ ART_Table_Area_03 | LIGHT | loc=(1.071, -0.001, 8.04) | rot=(0.147, 0.0, 1.571) | parent=
+  OBJ ART_Table_Area_04 | LIGHT | loc=(3.213, -0.001, 8.04) | rot=(0.419, 0.0, 1.571) | parent=
+  OBJ ART_Table_Spot_Fill | LIGHT | loc=(0.001, -0.001, 10.44) | rot=(0.0, -0.0, 0.0) | parent=
+COL Ball Catcher-1
+  OBJ Mesh | MESH | loc=(-1.889, -1.022, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Mesh Ring | MESH | loc=(-1.889, -1.022, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod 2 | MESH | loc=(-1.72, -0.989, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod Supports | MESH | loc=(-1.899, -1.022, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Ball Catcher Clamp End | MESH | loc=(-1.5, -1.022, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+  OBJ Leather Strap | MESH | loc=(-1.505, -1.024, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+COL Ball Catcher-2
+  OBJ Mesh.001 | MESH | loc=(-1.889, 1.023, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Mesh Ring.001 | MESH | loc=(-1.889, 1.023, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod 2.001 | MESH | loc=(-1.72, 1.056, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod Supports.001 | MESH | loc=(-1.899, 1.023, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Ball Catcher Clamp End.001 | MESH | loc=(-1.5, 1.023, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+  OBJ Leather Strap.001 | MESH | loc=(-1.505, 1.021, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+COL Ball Catcher-3
+  OBJ Mesh.003 | MESH | loc=(1.89, -1.022, 0.719) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Mesh Ring.003 | MESH | loc=(1.89, -1.022, 0.631) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Rod 3.003 | MESH | loc=(1.744, -1.022, 0.53) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Rod Supports.003 | MESH | loc=(1.9, -1.022, 0.622) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Ball Catcher Clamp End.003 | MESH | loc=(1.501, -1.022, 0.502) | rot=(0.0, 0.119, -3.142) | parent=
+  OBJ Leather Strap.003 | MESH | loc=(1.506, -1.02, 0.601) | rot=(0.0, -0.0, -3.142) | parent=
+COL Ball Catcher-4
+  OBJ Mesh.002 | MESH | loc=(0.001, -1.022, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Mesh Ring.002 | MESH | loc=(0.001, -1.022, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod 2.002 | MESH | loc=(0.169, -0.989, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod Supports.002 | MESH | loc=(-0.009, -1.022, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Ball Catcher Clamp End.002 | MESH | loc=(0.389, -1.022, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+  OBJ Leather Strap.002 | MESH | loc=(0.385, -1.024, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+COL Ball Catcher-5
+  OBJ Mesh.004 | MESH | loc=(1.889, 1.022, 0.719) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Mesh Ring.004 | MESH | loc=(1.889, 1.022, 0.631) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Rod 3.004 | MESH | loc=(1.743, 1.022, 0.53) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Rod Supports.004 | MESH | loc=(1.9, 1.022, 0.622) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Ball Catcher Clamp End.004 | MESH | loc=(1.501, 1.022, 0.502) | rot=(0.0, 0.119, -3.142) | parent=
+  OBJ Leather Strap.004 | MESH | loc=(1.505, 1.024, 0.601) | rot=(0.0, -0.0, -3.142) | parent=
+COL Ball Catcher-6
+  OBJ Mesh.005 | MESH | loc=(0.001, 1.022, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ Mesh Ring.005 | MESH | loc=(0.001, 1.022, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod 2.005 | MESH | loc=(0.17, 1.055, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Rod Supports.005 | MESH | loc=(-0.009, 1.022, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Ball Catcher Clamp End.005 | MESH | loc=(0.389, 1.022, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+  OBJ Leather Strap.005 | MESH | loc=(0.385, 1.02, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+COL BALL CATCHERS
+  COL Ball Catcher-1
+    OBJ Mesh | MESH | loc=(-1.889, -1.022, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+    OBJ Mesh Ring | MESH | loc=(-1.889, -1.022, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod 2 | MESH | loc=(-1.72, -0.989, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod Supports | MESH | loc=(-1.899, -1.022, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Ball Catcher Clamp End | MESH | loc=(-1.5, -1.022, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+    OBJ Leather Strap | MESH | loc=(-1.505, -1.024, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  COL Ball Catcher-2
+    OBJ Mesh.001 | MESH | loc=(-1.889, 1.023, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+    OBJ Mesh Ring.001 | MESH | loc=(-1.889, 1.023, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod 2.001 | MESH | loc=(-1.72, 1.056, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod Supports.001 | MESH | loc=(-1.899, 1.023, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Ball Catcher Clamp End.001 | MESH | loc=(-1.5, 1.023, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+    OBJ Leather Strap.001 | MESH | loc=(-1.505, 1.021, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  COL Ball Catcher-3
+    OBJ Mesh.003 | MESH | loc=(1.89, -1.022, 0.719) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Mesh Ring.003 | MESH | loc=(1.89, -1.022, 0.631) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Rod 3.003 | MESH | loc=(1.744, -1.022, 0.53) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Rod Supports.003 | MESH | loc=(1.9, -1.022, 0.622) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Ball Catcher Clamp End.003 | MESH | loc=(1.501, -1.022, 0.502) | rot=(0.0, 0.119, -3.142) | parent=
+    OBJ Leather Strap.003 | MESH | loc=(1.506, -1.02, 0.601) | rot=(0.0, -0.0, -3.142) | parent=
+  COL Ball Catcher-4
+    OBJ Mesh.002 | MESH | loc=(0.001, -1.022, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+    OBJ Mesh Ring.002 | MESH | loc=(0.001, -1.022, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod 2.002 | MESH | loc=(0.169, -0.989, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod Supports.002 | MESH | loc=(-0.009, -1.022, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Ball Catcher Clamp End.002 | MESH | loc=(0.389, -1.022, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+    OBJ Leather Strap.002 | MESH | loc=(0.385, -1.024, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  COL Ball Catcher-5
+    OBJ Mesh.004 | MESH | loc=(1.889, 1.022, 0.719) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Mesh Ring.004 | MESH | loc=(1.889, 1.022, 0.631) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Rod 3.004 | MESH | loc=(1.743, 1.022, 0.53) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Rod Supports.004 | MESH | loc=(1.9, 1.022, 0.622) | rot=(0.0, -0.0, -3.142) | parent=
+    OBJ Ball Catcher Clamp End.004 | MESH | loc=(1.501, 1.022, 0.502) | rot=(0.0, 0.119, -3.142) | parent=
+    OBJ Leather Strap.004 | MESH | loc=(1.505, 1.024, 0.601) | rot=(0.0, -0.0, -3.142) | parent=
+  COL Ball Catcher-6
+    OBJ Mesh.005 | MESH | loc=(0.001, 1.022, 0.719) | rot=(0.0, -0.0, 0.0) | parent=
+    OBJ Mesh Ring.005 | MESH | loc=(0.001, 1.022, 0.631) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod 2.005 | MESH | loc=(0.17, 1.055, 0.542) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Rod Supports.005 | MESH | loc=(-0.009, 1.022, 0.622) | rot=(0.0, 0.0, 0.0) | parent=
+    OBJ Ball Catcher Clamp End.005 | MESH | loc=(0.389, 1.022, 0.502) | rot=(0.0, 0.119, 0.0) | parent=
+    OBJ Leather Strap.005 | MESH | loc=(0.385, 1.02, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+COL BALLS
+  OBJ Blue | MESH | loc=(0.0, 0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pink | MESH | loc=(-0.859, -0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Black | MESH | loc=(-1.435, -0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Brown | MESH | loc=(1.048, 0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Yellow | MESH | loc=(1.048, 0.292, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Green | MESH | loc=(1.048, -0.292, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red | MESH | loc=(-0.912, 0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.001 | MESH | loc=(-0.957, -0.026, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.002 | MESH | loc=(-0.957, 0.026, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.004 | MESH | loc=(-1.003, 0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.005 | MESH | loc=(-1.003, 0.053, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.006 | MESH | loc=(-1.048, -0.079, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.003 | MESH | loc=(-1.003, -0.053, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.007 | MESH | loc=(-1.048, -0.026, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.008 | MESH | loc=(-1.048, 0.026, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.009 | MESH | loc=(-1.048, 0.079, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.010 | MESH | loc=(-1.094, -0.105, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.011 | MESH | loc=(-1.094, -0.053, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.012 | MESH | loc=(-1.094, 0.0, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.013 | MESH | loc=(-1.094, 0.053, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Red.014 | MESH | loc=(-1.094, 0.105, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ White_CueBall | MESH | loc=(1.048, 0.15, 0.854) | rot=(0.0, 0.0, 0.0) | parent=
+COL Base Table Supports
+  OBJ Base Table Support | MESH | loc=(0.001, -0.002, 0.505) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Side Support-003 | MESH | loc=(-0.704, -0.727, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Corner Support-004 | MESH | loc=(-1.464, -0.666, 0.601) | rot=(-0.0, 1.571, 0.0) | parent=
+  OBJ Smaller Side Support-002 | MESH | loc=(0.001, -0.734, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Side Support-004 | MESH | loc=(0.706, -0.727, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Cube.007 | MESH | loc=(-1.521, 0.012, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Corner Support-003 | MESH | loc=(-1.462, 0.692, 0.601) | rot=(1.571, 1.571, 0.0) | parent=
+  OBJ Side Support-001 | MESH | loc=(0.705, 0.751, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Smaller Side Support-001 | MESH | loc=(0.0, 0.758, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Corner Support-001 | MESH | loc=(1.474, 0.675, 0.593) | rot=(3.142, 1.571, 0.0) | parent=
+  OBJ Side Support-002 | MESH | loc=(-0.705, 0.751, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Cube.018 | MESH | loc=(1.522, 0.012, 0.601) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Corner Support-002 | MESH | loc=(1.464, -0.668, 0.601) | rot=(4.712, 1.571, 0.0) | parent=
+COL Cue-.01
+COL CUSHIONS
+  OBJ End Cushion.001 | MESH | loc=(-1.789, -0.003, 0.796) | rot=(0.0, -0.0, -6.283) | parent=
+  OBJ End Cushion.002 | MESH | loc=(1.794, -0.001, 0.796) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Side Cushion.001 | MESH | loc=(0.003, -0.0, 0.003) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Side Cushion.002 | MESH | loc=(-0.014, -0.0, 0.003) | rot=(0.0, 0.0, 0.0) | parent=
+COL EVIRO
+  OBJ Camera | CAMERA | loc=(-3.199, -2.036, 1.26) | rot=(1.306, 0.0, -1.012) | parent=
+  OBJ Plane | MESH | loc=(-2.593, 12.192, 0.0) | rot=(0.0, 0.0, 0.0) | parent=
+COL LEGS
+  OBJ NEW LEG-001 | MESH | loc=(-1.485, -0.648, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.001 | MESH | loc=(-1.485, 0.639, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.002 | MESH | loc=(-0.535, -0.648, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.003 | MESH | loc=(-0.535, 0.639, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.006 | MESH | loc=(0.415, -0.648, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.007 | MESH | loc=(0.415, 0.639, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.008 | MESH | loc=(1.364, -0.648, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ NEW LEG-001.009 | MESH | loc=(1.364, 0.639, 0.229) | rot=(1.571, -0.0, 0.0) | parent=
+  OBJ Light_Key_Overhead_1 | LIGHT | loc=(-0.95, 0.0, 1.353) | rot=(0.0, 0.0, 0.0) | parent=Group_PremiumStudioLights
+  OBJ Light_Key_Overhead_2 | LIGHT | loc=(0.0, 0.0, 1.353) | rot=(0.0, 0.0, 0.0) | parent=Group_PremiumStudioLights
+  OBJ Light_Key_Overhead_3 | LIGHT | loc=(0.95, 0.0, 1.353) | rot=(0.0, 0.0, 0.0) | parent=Group_PremiumStudioLights
+  OBJ Light_Fill_Side | LIGHT | loc=(0.0, -2.038, 1.015) | rot=(1.047, 0.0, 0.0) | parent=Group_PremiumStudioLights
+  OBJ Light_Rim_Back | LIGHT | loc=(0.0, 2.194, 1.218) | rot=(-1.222, 0.0, 0.0) | parent=Group_PremiumStudioLights
+  OBJ V006_Pocket_Throat_Lining_E | MESH | loc=(0.001, 0.932, 0.797) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ V006_Pocket_Throat_Lining_NE | MESH | loc=(1.809, 0.914, 0.797) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ V006_Pocket_Throat_Lining_NW | MESH | loc=(-1.808, 0.916, 0.797) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ V006_Pocket_Throat_Lining_SE | MESH | loc=(1.809, -0.912, 0.797) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ V006_Pocket_Throat_Lining_SW | MESH | loc=(-1.808, -0.912, 0.797) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ V006_Pocket_Throat_Lining_W | MESH | loc=(0.001, -0.93, 0.797) | rot=(0.0, -0.0, 0.0) | parent=
+  OBJ V006_Pocket_Hero_Camera | CAMERA | loc=(1.57, 0.69, 1.02) | rot=(0.959, 0.0, -0.818) | parent=
+COL MARKINGS
+COL POCKET PADS
+  OBJ Pocket Pad.001 | MESH | loc=(0.001, -0.0, 0.003) | rot=(0.0, 0.0, 0.0) | parent=
+  OBJ Pocket Pad.002 | MESH | loc=(1.809, 0.914, 0.788) | rot=(0.0, -0.0, 1.654) | parent=
+  OBJ Pocket Pad.003 | MESH | loc=(0.001, -0.93, 0.789) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Pocket Pad.004 | MESH | loc=(-1.808, -0.912, 0.788) | rot=(0.0, -0.0, -1.55) | parent=
+  OBJ Pocket Pad.005 | MESH | loc=(-1.811, 0.916, 0.787) | rot=(0.0, -0.0, -3.142) | parent=
+  OBJ Pocket Pad.006 | MESH | loc=(0.001, 0.932, 0.789) | rot=(0.0, -0.0, -6.283) | parent=

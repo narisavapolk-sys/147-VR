@@ -1,0 +1,11 @@
+147VR V008 REWIRE RESULT
+Scene=Assets/Scenes/147VR_MainScene.unity
+ActiveV008=147VR_Table_V008_OPT_VISUAL; surface=TABLE SURFACE; pocketPads=5
+REWIRED PlayerViewManager.tableRoot -> 147VR_Table_V008_OPT_VISUAL
+REWIRED SnookerBallTracker.tableRoot -> 147VR_Table_V008_OPT_VISUAL
+REWIRED SnookerPhysicsSetup.tableRoot -> 147VR_Table_V008_OPT_VISUAL
+LegacyPrefabRemoved=True
+DisabledRootBedColliderRemoved=True
+SceneSaved=True
+ActiveBallLikeRigidbodies=0
+NOTE=No PoolPhysics runner attached; legacy PhysX authority remains unchanged.

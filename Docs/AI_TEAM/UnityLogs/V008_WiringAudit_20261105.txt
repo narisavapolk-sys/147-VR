@@ -1,0 +1,15 @@
+147VR V008 WIRING AUDIT
+Unity=6000.4.4f1
+Scene=Assets/Scenes/147VR_MainScene.unity
+ActiveV008RootCount=1
+V008RootTotalCount=1
+V008 name=147VR_Table_V008_OPT_VISUAL active=True surface=True surfaceEnabled=True pocketPads=5 renderers=90 position=(0.00, 0.00, 0.00) lossyScale=(1.00, 1.00, 1.00)
+PlayerViewManagerCount=1
+  object=Quest Setup active=False tableRootProperty=True tableRootValue=147VR_Table_V008_OPT_VISUAL
+SnookerBallTrackerCount=1
+  object=Quest Setup active=False tableRootProperty=True tableRootValue=147VR_Table_V008_OPT_VISUAL
+SnookerPhysicsSetupCount=1
+  object=Quest Setup active=False tableRootProperty=True tableRootValue=147VR_Table_V008_OPT_VISUAL
+LegacyPrefabRootCount=0
+BedColliderObjectCount=0
+ActiveBallLikeRigidbodies=0

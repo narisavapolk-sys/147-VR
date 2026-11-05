@@ -1,0 +1,13 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20261105_124016
+LogName: V008PlayModeRegressionRetry_20261105
+ExecuteMethod: 
+RunTests: True
+TestPlatform: PlayMode
+TestFilter: V008MainScenePlayModeTests
+TestResults: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\V008PlayModeRegressionRetry_20261105_20261105_124016_TEST_RESULTS.xml
+Process result: EXITED code=0
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\V008PlayModeRegressionRetry_20261105_20261105_124016.log

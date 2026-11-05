@@ -1,0 +1,61 @@
+{
+  "baseline": "C:\\Users\\mongo\\UnityProjects\\147 VR\\SNOOKER   VR pool table\\Blender\\147VR_Table_WPBSA_Visual_Clean_v006_DARC_BASELINE_LOCKED.blend",
+  "baseline_sha256": "377b6d291413c4ac8c1c6e8d760faa356816621ea1c9cce7a1ac625820532a91",
+  "output": "C:\\Users\\mongo\\UnityProjects\\147 VR\\SNOOKER   VR pool table\\Blender\\147VR_Table_WPBSA_Visual_Clean_v006_DARC_LIGHTING_ART_V01.blend",
+  "output_sha256": "6ed7bd4ed823f4aa8fc169f1c2faccd2c9fdf193b4a4613d365ca51233e7792f",
+  "protected_object_count": 137,
+  "changed_protected_objects": [],
+  "locks_ok": false,
+  "art_collection_objects": [
+    [
+      "ART_Table_Area_01",
+      "LIGHT",
+      [
+        -1.07013,
+        -0.00057,
+        3.22721
+      ],
+      350.0
+    ],
+    [
+      "ART_Table_Area_02",
+      "LIGHT",
+      [
+        -0.35633,
+        -0.00057,
+        3.22721
+      ],
+      350.0
+    ],
+    [
+      "ART_Table_Area_03",
+      "LIGHT",
+      [
+        0.35747,
+        -0.00057,
+        3.22721
+      ],
+      350.0
+    ],
+    [
+      "ART_Table_Area_04",
+      "LIGHT",
+      [
+        1.07127,
+        -0.00057,
+        3.22721
+      ],
+      350.0
+    ],
+    [
+      "ART_Table_Spot_Fill",
+      "LIGHT",
+      [
+        0.00057,
+        -0.00057,
+        4.02721
+      ],
+      700.0
+    ]
+  ]
+}

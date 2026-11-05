@@ -1,0 +1,110 @@
+{
+ "Ornament_ceiling": {
+  "material": null,
+  "texture": null
+ },
+ "FOTEL_KARIPT": {
+  "material": null,
+  "texture": null
+ },
+ "lamp": {
+  "material": null,
+  "texture": null
+ },
+ "Wall_lamp_emission": {
+  "material": null,
+  "texture": null
+ },
+ "Column_corner": {
+  "material": null,
+  "texture": null
+ },
+ "90 CIGAR CLUB SOFA 7842-0003 A015-A.001": {
+  "material": null,
+  "texture": null
+ },
+ "Lamp": {
+  "material": null,
+  "texture": null
+ },
+ "Cube.003": {
+  "material": null,
+  "texture": null
+ },
+ "phonograph": {
+  "material": null,
+  "texture": null
+ },
+ "Window": {
+  "material": null,
+  "texture": null
+ },
+ "puff_kaript": {
+  "material": null,
+  "texture": null
+ },
+ "KOMOD": {
+  "material": null,
+  "texture": null
+ },
+ "wardrobe": {
+  "material": null,
+  "texture": null
+ },
+ "Cube.004": {
+  "material": null,
+  "texture": null
+ },
+ "Table_phonograph": {
+  "material": null,
+  "texture": null
+ },
+ "Cube.001": {
+  "material": null,
+  "texture": null
+ },
+ "Plane.013": {
+  "material": null,
+  "texture": null
+ },
+ "Lamp.002": {
+  "material": null,
+  "texture": null
+ },
+ "kisasztal": {
+  "material": null,
+  "texture": null
+ },
+ "asztal": {
+  "material": null,
+  "texture": null
+ },
+ "Wall_wood": {
+  "material": null,
+  "texture": null
+ },
+ "Cylinder.002": {
+  "material": null,
+  "texture": null
+ },
+ "Bedside": {
+  "material": null,
+  "texture": null
+ },
+ "Bookcase": {
+  "material": null,
+  "texture": null
+ },
+ "fotel_labak": {
+  "material": null,
+  "texture": null
+ },
+ "emission_lamp": {
+  "material": null,
+  "texture": null
+ },
+ "Carpet": {
+  "material": null,
+  "texture": null
+ }
+}

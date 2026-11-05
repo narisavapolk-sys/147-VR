@@ -1,0 +1,13 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20261105_124207
+LogName: V008ProgrammaticPlayMode_20261105
+ExecuteMethod: _147VR_TestRunnerBatch.RunV008PlayModeRegression
+RunTests: False
+TestPlatform: 
+TestFilter: 
+TestResults: 
+Process result: EXITED code=-1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\V008ProgrammaticPlayMode_20261105_20261105_124207.log

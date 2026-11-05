@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="1" result="Passed" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-05 11:40:51Z" end-time="2026-11-05 11:40:52Z" duration="0.9289846">
+  <test-suite type="TestSuite" id="1009" name="147 VR" fullname="147 VR" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 11:40:51Z" end-time="2026-11-05 11:40:52Z" duration="0.928985" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1005" name="147VR.PlayModeTests.dll" fullname="C:/Users/mongo/UnityProjects/147 VR/Library/ScriptAssemblies/147VR.PlayModeTests.dll" runstate="Runnable" testcasecount="2" result="Passed" start-time="2026-11-05 11:40:51Z" end-time="2026-11-05 11:40:52Z" duration="0.916226" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="5404" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1003" name="V008MainScenePlayModeTests" fullname="V008MainScenePlayModeTests" classname="V008MainScenePlayModeTests" runstate="Runnable" testcasecount="1" result="Passed" start-time="2026-11-05 11:40:51Z" end-time="2026-11-05 11:40:52Z" duration="0.913863" total="1" passed="1" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1004" name="V008_MainScene_Wiring_Is_RuntimeValid_AndPhysicsAuthorityIsSingular" fullname="V008MainScenePlayModeTests.V008_MainScene_Wiring_Is_RuntimeValid_AndPhysicsAuthorityIsSingular" methodname="V008_MainScene_Wiring_Is_RuntimeValid_AndPhysicsAuthorityIsSingular" classname="V008MainScenePlayModeTests" runstate="Runnable" seed="1510426387" result="Passed" start-time="2026-11-05 11:40:51Z" end-time="2026-11-05 11:40:52Z" duration="0.803404" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: V008MainScenePlayModeTests.V008_MainScene_Wiring_Is_RuntimeValid_AndPhysicsAuthorityIsSingular
+[V008 PLAYMODE] PASS | table=147VR_Table_V008_OPT_VISUAL | pocketPads=5 | surfaceMaterial=FELT | legacy=0 | simRunners=0 | activeBallBodies=0 | gameplayPhysics=BLOCKED_NO_ACTIVE_BALL_SET
+[TestRunnerTools] Test Finished: V008MainScenePlayModeTests.V008_MainScene_Wiring_Is_RuntimeValid_AndPhysicsAuthorityIsSingular, ResultState: Passed, Duration: 0.803s
+Saving results to: C:/Users/mongo/AppData/LocalLow/DefaultCompany/147 VR\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>
