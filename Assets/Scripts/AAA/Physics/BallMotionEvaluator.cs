@@ -13,10 +13,8 @@ namespace VR147.AAA.Physics
                     angularVelocity, 0f);
 
             Vector3 planarVelocity = new Vector3(velocity.x, 0f, velocity.z);
-            // Contact point is at the ball's bottom (-up * radius), so the
-            // ground-point velocity is Up x AngularVelocity.
-            Vector3 contactVelocity = Vector3.Cross(
-                Vector3.up * radius, angularVelocity);
+            Vector3 contactVelocity = Vector3.Cross(angularVelocity,
+                Vector3.up * radius);
             float slip = (planarVelocity - contactVelocity).magnitude;
 
             BallRollingState state;

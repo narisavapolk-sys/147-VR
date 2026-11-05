@@ -1,0 +1,11 @@
+147VR WIP Unity Batch — Summary
+Timestamp: 20261031_143911
+LogName:   Round12_BakeGI
+Mode:      executeMethod
+Executed:  VR147.EditorTools.ToolRunner.RunCommands
+Process:   EXITED code=-1073741819
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile:   C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\Round12_BakeGI_20261031_143911.log
+TestResults: 

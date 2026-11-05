@@ -122,7 +122,8 @@ public static class Apply147VRLightingPass
         RenderSettings.sun = key;
 
         var volumeGo = FindOrCreate("147VR Global Volume");
-        var volume = volumeGo.GetComponent<Volume>() ?? volumeGo.AddComponent<Volume>();
+        var volume = volumeGo.GetComponent<Volume>();
+        if (volume == null) volume = volumeGo.AddComponent<Volume>(); // Unity == catches fake-null
         volume.isGlobal = true;
         volume.priority = 10f;
         volume.weight = 1f;
@@ -148,7 +149,8 @@ public static class Apply147VRLightingPass
     private static void ConfigureReflectionProbe(Scene scene)
     {
         var probeGo = FindOrCreate("147VR Table Reflection Probe");
-        var probe = probeGo.GetComponent<ReflectionProbe>() ?? probeGo.AddComponent<ReflectionProbe>();
+        var probe = probeGo.GetComponent<ReflectionProbe>();
+        if (probe == null) probe = probeGo.AddComponent<ReflectionProbe>(); // Unity == catches fake-null that ?? misses
         var bounds = CalculateTableBounds();
         probe.transform.position = bounds.center + Vector3.up * 0.25f;
         probe.size = bounds.size + new Vector3(1.0f, 1.5f, 1.0f);
@@ -203,7 +205,8 @@ public static class Apply147VRLightingPass
     private static void ConfigureCharacterFill(Light key)
     {
         var fillGo = FindOrCreate("147VR Character Fill");
-        var fill = fillGo.GetComponent<Light>() ?? fillGo.AddComponent<Light>();
+        var fill = fillGo.GetComponent<Light>();
+        if (fill == null) fill = fillGo.AddComponent<Light>(); // Unity == catches fake-null
         fill.type = LightType.Directional;
         fill.transform.rotation = Quaternion.LookRotation(-key.transform.forward, Vector3.up);
         fill.color = new Color(0.72f, 0.82f, 1f);

@@ -1,0 +1,11 @@
+147VR WIP Unity Batch — Summary
+Timestamp: 20261105_083635
+LogName:   S2_2c_UNDO_PlayMode_Retry
+Mode:      runTests PlayMode
+Executed:  -testFilter 'PoolPhysicsPhaseTests'
+Process:   EXITED code=1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: True
+LogFile:   C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\S2_2c_UNDO_PlayMode_Retry_20261105_083635.log
+TestResults: C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\S2_2c_UNDO_PlayMode_Retry_results.xml

@@ -77,3 +77,34 @@ The main scene file was not edited automatically. It still contains an inactive 
 - `asset-audit` for GUID/reference-based table cleanup.
 - `adversarial-reviewer` for compatibility and dual-authority checks.
 - `blender-aaa` / `blender-pipeline` were kept available but not invoked because this pass did not edit Blender source assets.
+
+## Phase 2 completion — merge-by-content of the full WIP branch (2026-11-05, OpenCode session)
+
+The unrelated-histories constraint (empty merge-base) was confirmed, so integration was done by
+content, mirroring this audit's Phase 1 approach (no `git merge`). Staged from
+`feat/unity-event-physics-import` @ `41a0dcb3` on `integration/008-m53`:
+
+- `Assets/Scripts` WIP side: `Authority/{PoolPhysicsRulesBridge,PoolPhysicsAuthorityDirector}`,
+  `Quest/BhpCueGripController`, AAA/Quality `QuestRenderBootstrap`, and refreshed
+  Quest/AAA-Physics lifecycle sources (M5ShotLifecycle, SnookerCueController/PhysicsSetup/
+  ScoreManager/ShotTracker/TurnManager, TableSurface*, BallMotionEvaluator, M5RealStraightBatchRunner).
+- `SnookerBallTracker.cs` was manually combined: WIP body (BindToSimulation / ReorderToSimulation /
+  ReportPot / BallAt / IndexOf / PointsForSimName) + canonical `activeInHierarchy` guard restored
+  in `Refresh()` (WIP had dropped the guard; the audit rule "keep canonical guard" was applied).
+- `Assets/Editor` WIP tools: `ToolRunner` (Logs/editor_cmd.txt mechanism), `FbxAutoImportRules`,
+  `QuestQualitySetup`, `Lighting/147VRBakeGI`, `Lighting/147VRLightRigAB` (+ pre-existing
+  GUID metas kept where canonical already tracked them), refreshed `Apply147VRLightingPass`,
+  `147VR_M5YoloHarness`, `PhysicsGoldenCertificationAutomation.broken.txt`.
+- `Assets/Prefabs/Lighting` LightRig A/B prefabs, `AGENTS.md`/`CLAUDE.md` parity refresh,
+  `PoolPhysics/README.md` + `INTEGRATION_UNITY.md`, `PoolPhysics/Tests/PoolSim.Tests.csproj`
+  (canonical `Tests/.gitignore` retained for bin/obj), and WIP-only evidence
+  (`WireReports/*`, `Docs/AI_TEAM/UnityLogs` Round11/12 + S2_2c_UNDO runs).
+
+Still excluded, per this audit's original exclusions (unchanged): `Assets/PoolPhysics/Editor`
+(WIP one-shot tools + AutoWire + TableSpecGenerator), `Assets/PoolPhysics/Data` (bay TableSpec
+fixtures), `Assets/Tests/PlayMode/PoolPhysicsPhaseTests.cs` (WIP scene-architecture tests),
+all bay materials/content (`Assets/AAA/Imports/naris_vintage/Rebound/*Bay*`), the WIP
+`Assets/Scenes/SampleScene.unity`, WIP `Packages/` + `ProjectSettings/` + `Assets/Settings/`
+deltas, and WIP `Assets/Resources/DevAgentSettings.asset` modifications (canonical is authoritative
+for scenes/docs/settings). Scene wiring of the imported runtime is deferred to owner-click Editor
+menu items per project rules.

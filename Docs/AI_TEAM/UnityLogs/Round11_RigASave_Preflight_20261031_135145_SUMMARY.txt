@@ -1,0 +1,11 @@
+147VR WIP Unity Batch — Summary
+Timestamp: 20261031_135145
+LogName:   Round11_RigASave_Preflight
+Mode:      executeMethod
+Executed:  VR147.EditorTools.ToolRunner.RunCommands
+Process:   EXITED code=1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: True
+LogFile:   C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\Round11_RigASave_Preflight_20261031_135145.log
+TestResults: 
