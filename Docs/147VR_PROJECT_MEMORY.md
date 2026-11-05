@@ -228,14 +228,14 @@ Create concrete Straight Golden Cases and a controlled scene adapter, then perfo
 - Verified the catalog source remains brace-balanced after the guard insertion.
 - Golden asset authoring remains intentionally blocked on measured Truth; no synthetic calibration values were introduced.
 
-## Golden Certification — 2026-08-27
+## Golden Certification ï¿½ 2026-08-27
 - Golden runtime infrastructure is code-complete for case validation, measurement capture, evaluation, reporting, and regression execution.
 - `PhysicsGoldenMeasurementBridge` is the explicit runtime handoff from `ShotMeasurementTracker` into `PhysicsGoldenRegressionRunner`; it refuses capture without a valid assigned runner/case/tracker or measurement.
 - `PhysicsGoldenRegressionRunner` rejects NaN/Infinity samples and rejects cases outside an assigned catalog.
 - Actual Golden PASS remains dependent on authored calibration assets and real runtime measurements; no synthetic Truth values are permitted.
 - Pattern: `Runtime Shot ? ShotMeasurementTracker ? GoldenMeasurementBridge ? RegressionRunner ? Evaluator ? Report`.
 
-## Calibration Runtime Audit — 2026-08-27
+## Calibration Runtime Audit ï¿½ 2026-08-27
 - `CalibrationShotController`, `ShotCalibrationRunner`, and `ShotMeasurementTracker` form a complete calibration-side measurement path in code.
 - No textual references to these three components were found in `.prefab`, `.unity`, or `.asset` files under `Assets`; they are currently tool/infrastructure code rather than confirmed scene-wired runtime objects.
 - `CalibrationShotController` correctly resets both linear and angular velocity and begins measurement from a known origin.
@@ -243,7 +243,7 @@ Create concrete Straight Golden Cases and a controlled scene adapter, then perfo
 - Do not manufacture calibration assets or wire these tools into gameplay automatically; first establish the intended calibration scene/workflow.
 - Pattern: `Calibration Controller ? Measurement Tracker ? Calibration Evaluator`; Golden bridge remains a separate explicit handoff.
 
-## Golden Certification Asset Gate — 2026-08-27
+## Golden Certification Asset Gate ï¿½ 2026-08-27
 Status: INFRASTRUCTURE VERIFIED / DATA PENDING
 - Golden Case, Catalog, Evaluator, and Regression Runner source files are structurally balanced.
 - No serialized PhysicsGoldenCase/PhysicsGoldenCatalog asset instances were found under Assets during this audit.
@@ -251,7 +251,7 @@ Status: INFRASTRUCTURE VERIFIED / DATA PENDING
 - Certification rule: never synthesize expected distance/speed values merely to populate Golden assets.
 - Next executable gate: create/import authoritative measured Truth data, then author Golden Case assets from that data.
 
-## Golden Catalog Source Hygiene — 2026-08-27
+## Golden Catalog Source Hygiene ï¿½ 2026-08-27
 Status: COMPLETE
 - Audited `PhysicsGoldenCatalog.cs` and found literal escaped CR/LF text embedded in the source around `ValidateCatalog`.
 - Normalized those literals to real line breaks without changing catalog behavior.
@@ -506,3 +506,12 @@ Next:
 - Targeted PlayMode test V008_MainScene_SerializedWiring_IsValid passed 1/1. It reports coreSystemsActive=False because all three systems sit under inactive Quest Setup, and activeBallBodies=0. Full physics gameplay test is not yet possible.
 - Next required integration step: inspect why Quest Setup is inactive, restore/author the production ball rack and spawn set, confirm one physics authority, then run shot/rail/pocket regression.
 - No Git reset/stage/commit. Existing dirty working tree preserved; lock released.
+
+
+## 2026-11-05 - Consolidation session handoff (merge + gates + S3 audio)
+- feat/unity-event-physics-import was merged by content (unrelated histories) into integration/008-m53: 00811f3e + fix-up 3ba69a9f. Machine-checkable distinction: the five API-rich files (SnookerScoreManager, SnookerTurnManager, SnookerPhysicsSetup, AAA/Physics/TableSurfaceProfile, AAA/Physics/TableSurfaceController) are restored to canonical aa2aa6da sources; SnookerShotTracker is canonical M5 plus an additive merge of the wip needs (public snookerRulesEnabled driven by PoolPhysicsRulesBridge, pool bypass branch consuming the sequence and still firing M5ShotResolved, simulator-aware cue-on-table check potted + activeInHierarchy + Y). SnookerBallTracker is the wip sim binding API combined with the canonical activeInHierarchy guard in Refresh().
+- Unity batch lessons on this machine: `-automated` is unsafe (UnityAutoQuitter races `-quit`); headless `-runTests` PlayMode stalled twice (25/15 min); the working recipe is ToolRunner via Logs/editor_cmd.txt inside an owner-opened Unity GUI, exactly as AGENTS.md prescribes. Unity_Safe_Batch_Launch.ps1 updated accordingly and is committed.
+- Evidence chain: .NET battery 10/10 green (0 fails, 0 build warnings); Unity compile gate #3 PASSED (script compilation time 214.07s, zero "error CS", fresh Assembly-CSharp(.dll 14:16:25 / -Editor.dll 14:16:46)); UnityLogs keeps SUMMARY files as committed evidence while raw .log stays gitignored. Post-hard-reset gate #4 (follow-up holder, 16:52) re-proved the tree on HEAD 3ba69a9f + the S3 working tree: EXIT 0, zero CS errors, 22.77s warm compile, fresh assemblies 16:53:31 â€” the machine reboot cost nothing and the S3 C# edits compile clean.
+- S3 audio contract fixed: clips now live under Assets/Resources/Audio/SFX (GUID-preserving git mv) so PoolPhysicsAudioHapticsBridge's Resources.Load fallback resolves; the bridge also gained 8 optional stinger clips with a minimal public API (one-shots + murmur loop), and the two editor tools referencing Assets/Audio were retargeted. Historical Docs/ART_STAGE notes still name the old path and are left as records.
+- T28 ink-sign: fix already present in EventSimulator.cs L256 (MathF.Max(0f, vn)) + green regression - no further action.
+- Owner decision backlog: ToolRunner PlayMode V008 re-run after the merge; push-to-origin decision; duplicate venue-set choice (ClubVenue/ClubProps/MiraclePool_vintage).

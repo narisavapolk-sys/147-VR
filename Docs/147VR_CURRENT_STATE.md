@@ -488,13 +488,13 @@ the real project, system environment, firewall.
 
 ## 2026-09-23 - F7 integration line declared
 
-**Decision: Option B � `integration/008-m53` from production tree `d6fe5b9a` (ancestor `1da8ed55`).**
+**Decision: Option B � `integration/008-m53` from production tree `d6fe5b9a` (ancestor `1da8ed55`).**
 
 Reason: the production/008 tree is already the current 008 staging line and contains the corrected prop-floor fix. This minimizes the delta from the tree being prepared for production; the validated M5.3/APK history at `7cf232e` will be merged into this integration line as a controlled, reviewable merge. No rebase/rewritten history is permitted.
 
 Integration-line authority: `integration/008-m53`. Final shipping validation must run on this line. The source branches `fix/008-prop-floor-height-20260922` and `checkpoint/147vr-apk-clean-publish` remain historical/reference lines and are not interchangeable with the integration line.
 
-Next controlled step: R2 � commit `ProjectSettings/ProjectVersion.txt` alone for Unity `6000.4.12f1`, with lock dispositions recorded before first real-project open.
+Next controlled step: R2 � commit `ProjectSettings/ProjectVersion.txt` alone for Unity `6000.4.12f1`, with lock dispositions recorded before first real-project open.
 ## 2026-09-23 - R2 toolchain pin + first-open lock dispositions
 
 **R2 editor authority:** 6000.4.12f1 / changeset 3ca267ce8005. ProjectSettings/ProjectVersion.txt was changed and committed alone as db9e2738 (chore(toolchain): pin Unity 6000.4.12f1). Unity publishes this exact changeset for 6000.4.12f1. 
@@ -621,3 +621,15 @@ Additional log observations: repeated Packages directory monitor buffer overflow
 - Full evidence: Docs/AI_TEAM/UnityLogs/INTEGRATION_QA_20261105.md and V008_PlayMode_Regression_20261105.xml. Pre-edit scene backup is under Docs/AI_TEAM/UnityLogs/Backups.
 - Git branch integration/008-m53 at f6a746d5, one local commit ahead of origin. Extensive pre-existing working-tree changes preserved; no staging or commit. EditorBuildSettings.asset had a pre-existing removal of SampleScene and was not edited in this QA pass.
 - Unity_Safe_Batch_Launch.ps1 restored exactly from HEAD; temporary audit/runner scripts removed.
+
+
+## 2026-11-05 - Integration consolidation complete (merge + gates + S3 audio)
+- Branch integration/008-m53 now carries the full consolidation chain: bd009051 (audit deletions) → 0be382eb (workspace + QA) → 1d18afb3 (docs/gitignore) → aa2aa6da (blend LFS refresh) → 00811f3e (merge-by-content of feat/unity-event-physics-import, 76 files) → 3ba69a9f (API-drift unblock) → S3 audio move. Final merge shape: wip runtime with canonical M5 restores for the five API-rich files (SnookerScoreManager, SnookerTurnManager, SnookerPhysicsSetup, TableSurfaceProfile, TableSurfaceController); SnookerShotTracker = canonical M5 + additive snookerRulesEnabled/pool-bypass/simulator cue check; SnookerBallTracker = wip sim binding + canonical activeInHierarchy guard.
+- Headless .NET battery: 10/10 green (validate/eventval/nineball 150/save 300/undo 500/props 400/jartest/touchtest/golden x2 = 0 failures); dotnet build 0 warning/0 error.
+- Unity compile gate #3 PASSED after two API-drift fixes: log records "script compilation time: 214.07s", zero "error CS", fresh Library/ScriptAssemblies/Assembly-CSharp.dll 14:16:25 + -Editor.dll 14:16:46. UnityLogs SUMMARY files committed; raw .log stays gitignored per policy.
+- Machine-specific batch lessons: `-automated` races UnityAutoQuitter vs `-quit` (gate #3 hang); headless `-runTests` PlayMode stalled 2/2 (25/15 min) at Bee/Tundra rebuild + domain reload (538s). Unity_Safe_Batch_Launch.ps1 fixed: -automated removed, -RunTests/-TestPlatform/-TestResultsFile added. Verdict: on this machine PlayMode must run via ToolRunner (Logs/editor_cmd.txt) inside an owner-opened Unity GUI — matches AGENTS.md. V008MainScenePlayModeTests 1/1 evidence stands from the pre-merge run until the owner re-runs it.
+- Post-reset gate #4 (run by the follow-up holder after the owner's machine hard reset that killed the 15:43 PlayMode attempt): plain batchmode -quit on HEAD 3ba69a9f + the S3 working tree, EXIT 0, UPM IPC connected, zero "error CS", "script compilation time: 22.772341s" (warm Library), fresh Assembly-CSharp.dll / -Editor.dll 16:53:31 — this also certifies the uncommitted S3 tree (audio move + bridge additions + retargeted editor tools). Evidence: UnityLogs/ConsolidationCompile4_PostReset_20261105_165256_SUMMARY.txt.
+- T28 ink-sign: the fix is already present in the sim (EventSimulator.cs L256 `MathF.Max(0f, vn)` per the plan formula) and the headless regression is green. Documentation only; no code change.
+- S3 audio: 13 SFX clips + metas moved GUID-preserving from Assets/Audio/SFX to Assets/Resources/Audio/SFX so PoolPhysicsAudioHapticsBridge's Resources.Load("Audio/SFX/...") fallback actually resolves. The bridge gained the eight optional stingers (applause, award, frame-win cheer, whistle, gasp, murmur loop, cue chalking, fireworks win) as SerializeFields + Resources fallback + a minimal public API (PlayCueChalking/PlayCrowdGasp/PlayCrowdApplause/PlayAwardApplause/PlayFrameWinCheer/PlayCrowdWhistle/PlayWinCelebration/Start+StopCrowdMurmur). Editor tools 147VR_ArtMaterials_Tools.cs and 147VR_LODAudio_Tools.cs retargeted to the new path. Bridge compile is covered by the owner's next Unity session.
+- Lock LOCK.md: consolidation session RELEASED with this evidence set.
+- Pending owner decisions: run ToolRunner PlayMode V008 after opening Unity; push-to-origin decision (still local-only); the duplicate venue-set choice (Assets/AAA/ClubVenue vs ClubProps vs MiraclePool_vintage placement).

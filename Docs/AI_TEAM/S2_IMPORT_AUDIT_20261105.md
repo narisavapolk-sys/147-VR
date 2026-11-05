@@ -108,3 +108,42 @@ all bay materials/content (`Assets/AAA/Imports/naris_vintage/Rebound/*Bay*`), th
 deltas, and WIP `Assets/Resources/DevAgentSettings.asset` modifications (canonical is authoritative
 for scenes/docs/settings). Scene wiring of the imported runtime is deferred to owner-click Editor
 menu items per project rules.
+
+
+## Addendum 2 - compile unblock + PlayMode handover + audio move (2026-11-05, same session)
+
+- The merge (00811f3e) hit API drift against canonical-only callers in two directions, resolved in
+  fix-up commit 3ba69a9f: Gate #1 - wip Quest manager sources had dropped canonical M5 APIs used by
+  TransactionApplier/ObservationBuilder/ClothResponseMatrixRunner, so the five API-rich files were
+  restored to canonical aa2aa6da sources (Fix A). Gate #2 - the imported wip editor tools referenced
+  helpers that were not imported (MaterialPass, _147VR.QA, MainSceneEnvBuilder), and canonical-only
+  M5 editor QA referenced SnookerShotTracker M5ShotResolved/LastResolvedSequence that the wip variant
+  had replaced, so the three wip editor files were imported and SnookerShotTracker was restored to
+  canonical M5 and then additive-merged with the wip requirements: public bool snookerRulesEnabled
+  (set by PoolPhysicsRulesBridge), a pool bypass branch in ResolveShot that consumes the sequence and
+  still fires M5ShotResolved/ShotResolved without snooker scoring, and a simulator-aware cue-on-table
+  check (potted flag + activeInHierarchy + Y) (Fix B).
+- Gate #3 COMPILE PASSED: "script compilation time: 214.07s", zero "error CS", fresh
+  Library/ScriptAssemblies/Assembly-CSharp.dll 14:16:25 + -Editor.dll 14:16:46. Evidence SUMMARYs are
+  committed under Docs/AI_TEAM/UnityLogs; raw .log output is gitignored by policy.
+- Both headless PlayMode attempts stalled on this machine (Bee/Tundra rebuild + 538s domain reload;
+  25/15 min) and are recorded as machine-level BLOCKED, not test failures. PlayMode V008
+  certification is therefore handed to the owner-executor path: ToolRunner (Logs/editor_cmd.txt)
+  inside an owner-opened Unity GUI, per AGENTS.md. The Unity_Safe_Batch_Launch.ps1 launcher was fixed
+  in the same commit (-automated removed; -RunTests/-TestPlatform/-TestResultsFile added).
+- T28 (ink/signet on potted balls): fix is already present in EventSimulator.cs L256
+  (`MathF.Max(0f, vn)`, matching the plan formula) and the headless regression is green - no code
+  change required.
+- S3 audio: 13 clips + metas + SFX.meta moved GUID-preserving from Assets/Audio/SFX to
+  Assets/Resources/Audio/SFX (plus a fresh GUID for the new Resources/Audio folder meta) so the
+  bridge's Resources.Load("Audio/SFX/...") fallback resolves; PoolPhysicsAudioHapticsBridge gained
+  the eight remaining stinger clips (SerializeField + Resources fallback) and a minimal public API;
+  147VR_ArtMaterials_Tools.cs and 147VR_LODAudio_Tools.cs FindAssets/mixer references were retargeted.
+  Historical Docs/ART_STAGE/RESUME_CHECKLIST.md and STATUS_LOG.md entries still name the old path and
+  are left untouched as historical records.
+- Post-reset gate #4: the owner's machine hard reset (which killed the 15:43 headless PlayMode attempt)
+  was followed by a recovery holder running a plain batchmode gate on HEAD 3ba69a9f + the S3 working
+  tree: EXIT 0, UPM IPC connected, zero "error CS", "script compilation time: 22.772341s" (warm
+  Library), fresh Assembly-CSharp.dll/-Editor.dll 16:53:31 — so the moved audio tree, the bridge
+  additions and the retargeted editor tools are certificate-compiled. Evidence:
+  ConsolidationCompile4_PostReset_20261105_165256_SUMMARY.txt.
