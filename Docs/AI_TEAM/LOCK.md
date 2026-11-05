@@ -5,12 +5,13 @@ Single source for Unity execution ownership between LUNA and Claude.
 ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder may open Unity, edit project files, run AssetDatabase-sensitive operations, build, or execute runtime tests.
 
 ## Current Lock
-- Holder: NONE
-- Status: RELEASED
-- Last Holder: LUNA
-- Last Domain: Unity Integration QA (2026-11-05)
-- Released: 2026-11-05
-- Next executor must record a fresh takeover before Unity-sensitive work.
+- Holder: OpenCode (GLM agent), owner-authorized session ("run headless compile gate fresh after the hard reset")
+- Status: RELEASED (compile gate #4 passed; see Takeover record at end of file)
+- Domain: 2026-11-05 consolidation — post-hard-reset compile gate #4 (re-verify the 00811f3e merge state still compiles clean on the canonical checkout)
+- Started: 2026-11-05 ~17:0x CET
+- Preflight (record): no Unity/UnityPackageManager/Blender/Unity.Hub process; RAM 11.97 GB free / 15.44 GB total (above 5-6 GB rule); Library warm (LastWrite 2026-11-05 15:44); stale Library/EditorInstance.json from the killed Consolidation2 instance (pid 10984) — removed as takeover hygiene; assemblies intact (Assembly-CSharp.dll / -Editor.dll 15:43:36 from the killed run's partial import — note: NOT the 14:16 gate-#3 timestamps).
+- Plan: Unity_Safe_Batch_Launch.ps1 in plain compile-gate mode (no -executeMethod, no -runTests), LogName ConsolidationCompile4_PostReset, TimeoutSec 900; then record SUMMARY evidence + release lock.
+- Release condition: Unity exits 0 (or processes manifest as benign timeout after successful import) + zero "error CS" + summary recorded + this file updated.
 
 ## Before Taking the Lock
 1. Read this file.
@@ -198,3 +199,32 @@ If the holder becomes unreachable, do not assume the lock is stale. Inspect actu
 - Targeted PlayMode test V008_MainScene_SerializedWiring_IsValid passed 1/1. Runtime systems remain disabled under Quest Setup and active ball bodies are zero; full shot/rail/pocket regression is blocked pending activation and ball-spawn work.
 - Temporary QA editor scripts removed. Durable PlayMode test and QA evidence retained. Unity and UnityPackageManager are no longer running.
 - Unity_Safe_Batch_Launch.ps1 restored exactly from HEAD. No Git reset, checkout, stash, stage, or commit. Lock RELEASED.
+
+
+### Release 2026-11-05 (integration consolidation) — RELEASED
+- Holder: OpenCode (GLM agent) under owner authorization "merge the import branch, verify in Unity, start S3". Preflight was recorded in the take-over block above.
+- Completed: import-wip housekeeping on the wip repo (d9a63d6 workspace import + 41a0dcb LOCK RELEASED); canonical tidy chain bd009051 → 0be382eb → 1d18afb3 → aa2aa6da; merge-by-content 00811f3e (76 files, +7677/−554); API-drift fix-up 3ba69a9f (Fix A: canonical restores of SnookerScoreManager, SnookerTurnManager, SnookerPhysicsSetup, TableSurfaceProfile, TableSurfaceController; Fix B: import of 147VRMaterialPass, PhysicsAuthorityPreflight, 147VRMainSceneEnv + canonical-M5 SnookerShotTracker with an additive wip merge — snookerRulesEnabled, pool bypass branch, simulator-aware cue-on-table check; SnookerBallTracker kept the combined wip-binding + canonical-guard form).
+- Verification: headless .NET battery 10/10 green (validate/eventval/nineball 150/save 300/undo 500/props 400/jartest/touchtest + both golden baselines; dotnet build 0 warning/0 error). Unity compile gate #3 PASSED: "script compilation time: 214.07s", zero "error CS", fresh Assembly-CSharp.dll 14:16:25 / Assembly-CSharp-Editor.dll 14:16:46.
+- PlayMode: two headless `-runTests` attempts stalled on this machine (25/15 min; Bee/Tundra rebuild + 538s domain reload) — classified machine-level BLOCKED, with committed SUMMARY evidence. Per AGENTS.md the PlayMode V008 regression must be run by the OWNER via ToolRunner (Logs/editor_cmd.txt) inside an owner-opened Unity GUI; the launcher (Unity_Safe_Batch_Launch.ps1) was fixed (−`-automated`, +`-RunTests/-TestPlatform/-TestResultsFile`) and committed. The pre-merge V008 1/1 evidence remains the last recorded pass.
+- S3 audio: 13 clips + metas moved GUID-preserving into Assets/Resources/Audio/SFX so PoolPhysicsAudioHapticsBridge's Resources.Load fallback resolves; bridge gained 8 optional stinger clips + minimal public API; two editor tools retargeted. C# edits will be compiled by the owner's next Unity session; no scene was opened or edited by the agent.
+- T28 ink-sign: fix verified already present in EventSimulator.cs L256 (MathF.Max(0f, vn)) + green regression — docs only.
+- Docs updated: 147VR_CURRENT_STATE.md, 147VR_PROJECT_MEMORY.md, S2_IMPORT_AUDIT_20261105.md (Addendum 2), LOCK.md (this release).
+- Owner items left open: ToolRunner PlayMode V008 re-run; push-to-origin decision (work is local-only); the duplicate venue-set choice (Assets/AAA/ClubVenue vs ClubProps vs MiraclePool_vintage).
+- No golden/truth values changed, no scenes edited by the agent, no Unity GUI opened by the agent (headless gates only), Unity and UnityPackageManager are not running. Lock RELEASED.
+
+## Takeover 2026-11-05 (post-hard-reset compile gate re-run)
+- Holder: OpenCode (GLM agent), new session after the machine was hard reset by the owner. Prior session ("merge the import branch...") was killed mid-run with the reset and is unreachable.
+- Emergency Rule applied: actual process inspection at takeover (Get-Process) showed NO Unity, UnityPackageManager, Blender, or Unity.Hub process; no live Unity session could conflict. Stale `Library/EditorInstance.json` left by the killed Consolidation2 instance (pid 10984) was verified process-less and removed before launch.
+- Snooker-vr-pro skill consulted (project rules); script `Unity_Safe_Batch_Launch.ps1` read in full before running (read-before-run rule).
+- Intended task: compile-gate #4 on the post-merge state (HEAD 3ba69a9f) to confirm the reset killed nothing under the hood — plain `-batchmode -nographics -quit`, no executeMethod, no runTests, TimeoutSec 900, LogName `ConsolidationCompile4_PostReset`.
+- Scope boundary: verification only. No scene/prefab/physics edits, no Git branch ops. Evidence dates back only to the 14:16 gate-#3 commit; note the 15:43 killed run left assemblies at 15:43:36 (partial import of the same committed sources).
+- Release condition: record gate result SUMMARY in UnityLogs, update this file, mark RELEASED. PlayMode regression via ToolRunner/owner-opened Unity remains the next step after this gate.
+
+### Release 2026-11-05 (post-hard-reset compile gate #4) — RELEASED
+- Result: COMPILE GATE PASSED, clean self-exit. Evidence `Docs/AI_TEAM/UnityLogs/ConsolidationCompile4_PostReset_20261105_165256_SUMMARY.txt` (log gitignored by policy): Unity EXITED code=0 ("Exiting batchmode successfully now!" + return code 0 at end of log), UPM IPC connected, 0 "error CS" occurrences.
+- Compile evidence: `[ScriptCompilation] Requested script compilation` at L256, "script compilation time: 22.772341s" at L4946 (fast incremental, warm Library), fresh Assembly-CSharp.dll / Assembly-CSharp-Editor.dll at 16:53:31 (replacing the 15:43:36 partial-import stamps left by the killed run).
+- This also retro-validates the removed `-automated` change: the launcher finished cleanly instead of the UnityAutoQuitter hang pattern seen in ConsolidationCompile3/Consolidation(2).
+- Machine state after reset was verified in takeover preflight: no conflicting processes, RAM 11.97/15.44 GB free.
+- Changed/committed files: Docs/AI_TEAM/LOCK.md (takeover + release), UnityLogs Summary (log file gitignored by .gitignore:24).
+- Blockers/next action: post-merge canonical PlayMode regression evidence still missing (headless -runTests non-viable on this machine, 2/2 stalls). Next: run V008MainScenePlayModeTests through ToolRunner (Logs/editor_cmd.txt) inside an owner-opened Unity 6000.4.4f1 session, then update 147VR_CURRENT_STATE.md and release lock.
+- Lock now RELEASED.
