@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<test-run id="2" testcasecount="5" result="Passed" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0" engine-version="3.5.0.0" clr-version="4.0.30319.42000" start-time="2026-11-05 07:39:28Z" end-time="2026-11-05 07:40:13Z" duration="44.8479911">
+  <test-suite type="TestSuite" id="1013" name="147 VR" fullname="147 VR" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-05 07:39:28Z" end-time="2026-11-05 07:40:13Z" duration="44.847991" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+    <properties>
+      <property name="platform" value="PlayMode" />
+    </properties>
+    <test-suite type="Assembly" id="1009" name="147VR.PlayModeTests.dll" fullname="C:/Users/mongo/UnityProjects/147VR-import-wip/Library/ScriptAssemblies/147VR.PlayModeTests.dll" runstate="Runnable" testcasecount="6" result="Passed" start-time="2026-11-05 07:39:28Z" end-time="2026-11-05 07:40:13Z" duration="44.835178" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+      <properties>
+        <property name="_PID" value="14412" />
+        <property name="_APPDOMAIN" value="Unity Child Domain" />
+        <property name="platform" value="PlayMode" />
+        <property name="EditorOnly" value="False" />
+      </properties>
+      <test-suite type="TestFixture" id="1001" name="PoolPhysicsPhaseTests" fullname="PoolPhysicsPhaseTests" classname="PoolPhysicsPhaseTests" runstate="Runnable" testcasecount="5" result="Passed" start-time="2026-11-05 07:39:28Z" end-time="2026-11-05 07:40:13Z" duration="44.832487" total="5" passed="5" failed="0" inconclusive="0" skipped="0" asserts="0">
+        <properties />
+        <test-case id="1002" name="Phase123_Bay1_Handoff_Shot_Settle" fullname="PoolPhysicsPhaseTests.Phase123_Bay1_Handoff_Shot_Settle" methodname="Phase123_Bay1_Handoff_Shot_Settle" classname="PoolPhysicsPhaseTests" runstate="Runnable" seed="763251468" result="Passed" start-time="2026-11-05 07:39:28Z" end-time="2026-11-05 07:39:53Z" duration="24.836433" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: PoolPhysicsPhaseTests.Phase123_Bay1_Handoff_Shot_Settle
+The GameObject 'Light_Fill_Side' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Key_Overhead_1' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Key_Overhead_2' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Key_Overhead_3' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+The GameObject 'Light_Rim_Back' is an area light type, but the mode is not set to baked. URP only supports baked area lights, not realtime or mixed ones.
+[PHASE123] Bay1_PhysicsRoot: shot ok — collisions=42 maxSpeed=2.96 m/s
+[TestRunnerTools] Test Finished: PoolPhysicsPhaseTests.Phase123_Bay1_Handoff_Shot_Settle, ResultState: Passed, Duration: 24.836s
+]]></output>
+        </test-case>
+        <test-case id="1003" name="Phase123_Bay2_Handoff_Shot_Settle" fullname="PoolPhysicsPhaseTests.Phase123_Bay2_Handoff_Shot_Settle" methodname="Phase123_Bay2_Handoff_Shot_Settle" classname="PoolPhysicsPhaseTests" runstate="Runnable" seed="2139921321" result="Passed" start-time="2026-11-05 07:39:53Z" end-time="2026-11-05 07:40:01Z" duration="8.699212" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: PoolPhysicsPhaseTests.Phase123_Bay2_Handoff_Shot_Settle
+[PHASE123] Bay2_PhysicsRoot: shot ok — collisions=37 maxSpeed=2.96 m/s
+[TestRunnerTools] Test Finished: PoolPhysicsPhaseTests.Phase123_Bay2_Handoff_Shot_Settle, ResultState: Passed, Duration: 8.699s
+]]></output>
+        </test-case>
+        <test-case id="1004" name="Phase123_Bay3_Handoff_Shot_Settle" fullname="PoolPhysicsPhaseTests.Phase123_Bay3_Handoff_Shot_Settle" methodname="Phase123_Bay3_Handoff_Shot_Settle" classname="PoolPhysicsPhaseTests" runstate="Runnable" seed="644918812" result="Passed" start-time="2026-11-05 07:40:01Z" end-time="2026-11-05 07:40:03Z" duration="1.237321" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: PoolPhysicsPhaseTests.Phase123_Bay3_Handoff_Shot_Settle
+[PHASE123] Bay3_PhysicsRoot: shot ok — collisions=1 maxSpeed=2.96 m/s
+[TestRunnerTools] Test Finished: PoolPhysicsPhaseTests.Phase123_Bay3_Handoff_Shot_Settle, ResultState: Passed, Duration: 1.237s
+]]></output>
+        </test-case>
+        <test-case id="1005" name="Phase123_Bay4_Handoff_Shot_Settle" fullname="PoolPhysicsPhaseTests.Phase123_Bay4_Handoff_Shot_Settle" methodname="Phase123_Bay4_Handoff_Shot_Settle" classname="PoolPhysicsPhaseTests" runstate="Runnable" seed="1696327910" result="Passed" start-time="2026-11-05 07:40:03Z" end-time="2026-11-05 07:40:13Z" duration="9.997244" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: PoolPhysicsPhaseTests.Phase123_Bay4_Handoff_Shot_Settle
+[PHASE123] Bay4_PhysicsRoot: shot ok — collisions=12 maxSpeed=2.96 m/s
+[TestRunnerTools] Test Finished: PoolPhysicsPhaseTests.Phase123_Bay4_Handoff_Shot_Settle, ResultState: Passed, Duration: 9.997s
+]]></output>
+        </test-case>
+        <test-case id="1006" name="Phase3_RulesBridge_AndUndoController_AreBootstrapped" fullname="PoolPhysicsPhaseTests.Phase3_RulesBridge_AndUndoController_AreBootstrapped" methodname="Phase3_RulesBridge_AndUndoController_AreBootstrapped" classname="PoolPhysicsPhaseTests" runstate="Runnable" seed="1267368893" result="Passed" start-time="2026-11-05 07:40:13Z" end-time="2026-11-05 07:40:13Z" duration="0.026882" asserts="0">
+          <properties>
+            <property name="_JOINTYPE" value="UnityCombinatorial" />
+            <property name="retryIteration" value="0" />
+            <property name="repeatIteration" value="0" />
+          </properties>
+          <output><![CDATA[[TestRunnerTools] Test Started: PoolPhysicsPhaseTests.Phase3_RulesBridge_AndUndoController_AreBootstrapped
+[RulesBridge] Missing rules objects (ballTracker=False, shotTracker=False, turnManager=False) — sim events will still drive physics, but not scoring.
+[TestRunnerTools] Test Finished: PoolPhysicsPhaseTests.Phase3_RulesBridge_AndUndoController_AreBootstrapped, ResultState: Passed, Duration: 0.027s
+Saving results to: C:/Users/mongo/AppData/LocalLow/DefaultCompany/147 VR\TestResults.xml
+]]></output>
+        </test-case>
+      </test-suite>
+    </test-suite>
+  </test-suite>
+</test-run>

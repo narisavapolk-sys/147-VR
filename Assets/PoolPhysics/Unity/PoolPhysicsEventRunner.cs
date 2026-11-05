@@ -51,6 +51,9 @@ namespace PoolPhysics.Unity
         /// <summary>Sim gameplay events drained after each fixed step — wire audio/haptics here.
         /// Fired on the main thread; subscribers should be cheap (queue, don't block).</summary>
         public event Action<EventSimulator.PoolEventSim> SimEvent;
+        /// <summary>Fires before CueStrike applies the shot impulse, while the table is still at rest.
+        /// RulesBridge uses this as the authoritative pre-shot snapshot boundary.</summary>
+        public event Action ShotStarted;
         /// <summary>Edge-triggered when the table reaches rest after a shot (hand-off point for
         /// scoring/respawn logic).</summary>
         public event Action ShotFinished;
@@ -71,7 +74,7 @@ namespace PoolPhysics.Unity
         public int BallCount => _sim != null ? _sim.Balls.Count : ballTransforms.Count;
         /// <summary>True while this backend owns motion (balls kinematic, sim stepping).</summary>
         public bool OwnsPhysics => _owns;
-        /// <summary>Cue ball index inside the sim (0 = first entry in ballTransforms).</summary>
+        /// <summary>Current cue-ball index after canonical sorting; parallel Unity arrays share this order.</summary>
         public int CueBallIndex => _sim != null ? _sim.CueBallIndex : 0;
 
         // ---- External read API (Authority Director / Rules Bridge / VR cue). Read-only. ----
@@ -155,6 +158,7 @@ namespace PoolPhysics.Unity
             tmp.RecordEvents = recordEvents;
             _sim = tmp; _prev.Clear(); _prev.AddRange(prevT); _curr.Clear(); _curr.AddRange(currT);
             _bodies.Clear(); _bodies.AddRange(bodies); _renderTargets.Clear(); _renderTargets.AddRange(rts);
+            ApplySimPermutation(_sim.BeginShotWithPermutation());
             _dirty = false;
         }
 
@@ -174,7 +178,51 @@ namespace PoolPhysics.Unity
                 rb.isKinematic = true;
             }
             foreach (var d in legacyDrivers) if (d != null) d.enabled = false;
-            _sim.BeginShot(); _owns = true; enabled_override = true;
+            ApplySimPermutation(_sim.BeginShotWithPermutation());
+            _owns = true; enabled_override = true;
+        }
+
+        /// <summary>Apply EventSimulator's new-index -> old-index permutation to every
+        /// Unity-side array that is parallel to sim.Balls. This preserves object identity
+        /// after canonical sorting (including cue-ball index remapping).</summary>
+        void ApplySimPermutation(int[] newToOld)
+        {
+            if (newToOld == null || newToOld.Length == 0) return;
+            int count = newToOld.Length;
+            if (_bodies.Count != count || _renderTargets.Count != count ||
+                _prev.Count != count || _curr.Count != count)
+            {
+                Debug.LogError($"[PoolPhysics] cannot apply ball permutation: sim={count}, bodies={_bodies.Count}, transforms={_renderTargets.Count}, prev={_prev.Count}, curr={_curr.Count}");
+                return;
+            }
+
+            bool identity = true;
+            for (int i = 0; i < count; i++)
+                if (newToOld[i] != i) { identity = false; break; }
+            if (identity) return;
+
+            var bodies = new Rigidbody[count];
+            var targets = new Transform[count];
+            var previous = new SimVector3[count];
+            var current = new SimVector3[count];
+            for (int i = 0; i < count; i++)
+            {
+                int oldIndex = newToOld[i];
+                if (oldIndex < 0 || oldIndex >= count)
+                {
+                    Debug.LogError($"[PoolPhysics] invalid ball permutation entry {oldIndex} at {i}");
+                    return;
+                }
+                bodies[i] = _bodies[oldIndex];
+                targets[i] = _renderTargets[oldIndex];
+                previous[i] = _prev[oldIndex];
+                current[i] = _curr[oldIndex];
+            }
+
+            _bodies.Clear(); _bodies.AddRange(bodies);
+            _renderTargets.Clear(); _renderTargets.AddRange(targets);
+            _prev.Clear(); _prev.AddRange(previous);
+            _curr.Clear(); _curr.AddRange(current);
         }
 
         void ReleaseOwnership()
@@ -209,10 +257,12 @@ namespace PoolPhysics.Unity
             if (!_owns) return;                       // single backend: legacy path handles the shot when we don't own it
             if (_dirty || _sim == null) Build();
             if (_sim == null) return;
+            ApplySimPermutation(_sim.BeginShotWithPermutation());
+            ShotStarted?.Invoke();              // snapshot boundary: after canonical reorder, before impulse
             var cue = _sim.Balls[_sim.CueBallIndex];
             CueStrike.Apply(ref cue, ToSimDir(worldDir), speed, new SimVector2(tip.x, tip.y), _sim.Profile, elevation);
             _sim.Balls[_sim.CueBallIndex] = cue;
-            _sim.BeginShot();
+            _sim.ResetShotTelemetry();            // energy baseline includes the cue impulse, as before
             _shotActive = true; _wasAtRest = false;
         }
 

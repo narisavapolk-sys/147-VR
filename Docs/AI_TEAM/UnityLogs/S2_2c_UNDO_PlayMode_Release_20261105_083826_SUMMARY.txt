@@ -1,0 +1,11 @@
+147VR WIP Unity Batch — Summary
+Timestamp: 20261105_083826
+LogName:   S2_2c_UNDO_PlayMode_Release
+Mode:      runTests PlayMode
+Executed:  -testFilter 'PoolPhysicsPhaseTests'
+Process:   EXITED code=0
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile:   C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\S2_2c_UNDO_PlayMode_Release_20261105_083826.log
+TestResults: C:\Users\mongo\UnityProjects\147VR-import-wip\Docs\AI_TEAM\UnityLogs\S2_2c_UNDO_PlayMode_Release_results.xml

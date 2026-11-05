@@ -441,3 +441,14 @@ Next:
 - NEW `Assets/Scripts/Quest/BhpCueGripController.cs` scaffold (XR InputDevices, events-only, UNWIRED by design). NEXT Unity session: compile + PlayMode 5/5 rerun (engine changed) + wire grip -> SnookerShotTracker/SnookerCueController; then S3 (fix ImpactSpeed sign first), S4, S5.
 - Commits: `35ee541` (S2 #2a save-system), `cc854cc` (S2 #2b BHP map + scaffold) on `feat/unity-event-physics-import`.
 
+
+
+## 2026-11-05 — S2 #2c Solo Practice UNDO closed
+
+- Report: `WireReports/S2_2c_UNDO_2026-11-05.md`; current state: `Docs/147VR_CURRENT_STATE.md`.
+- Keep the sim↔Unity index contract intact: `EventSimulator.BeginShotWithPermutation()` returns new-index→old-index; `PoolPhysicsEventRunner` must apply the same permutation to `_bodies`, `_renderTargets`, `_prev`, and `_curr`. Do not remove this mapping fix or change one side independently.
+- Runner `ShotStarted` is the authoritative pre-CueStrike snapshot boundary. `PoolPhysicsRulesBridge` refreshes the number map and tracker order there. `SnookerBallTracker.ReorderToSimulation` must preserve BallInfo identity, potted flags, and home positions.
+- UNDO gate: default `Match`; only `SoloPractice` can capture/undo, and only with a valid 22-ball map, active physics ownership, table at rest, closed shot, and a snapshot. BHP LEFT X while Walking emits `OnUndoRequested`; the bridge owns the gate. StagedOnBall LEFT X remains pickup/drop.
+- Verified headless `undo 500` (U1–U11), save/nineball fuzz, event/physics regressions, and golden baseline/Bay4 checks; all exit 0. Unity 6.0.4f1 PlayMode 5/5; end-to-end test restored 22/22 balls.
+- Scope boundary: this was committed only in `147VR-import-wip` / `feat/unity-event-physics-import`; do not assume the canonical `147 VR` directory received these changes. No scene or prefab was saved.
+- Next separate task: restore/wire SnookerBallTracker + SnookerShotTracker + SnookerTurnManager in MainScene and connect Stage transitions; then verify fixed timestep 0.02 s and MSAA 0 against Quest hardware. S4 Unity/Blender light parity remains later scope.

@@ -47,7 +47,7 @@ namespace PoolPhysics.Sim
     /// </summary>
     public static class NineBallRules
     {
-        public static int LowestRemaining(IReadOnlySet<int> numbersRemaining)
+        public static int LowestRemaining(HashSet<int> numbersRemaining)
         {
             int lo = int.MaxValue;
             foreach (int n in numbersRemaining) if (n < lo) lo = n;
@@ -65,7 +65,7 @@ namespace PoolPhysics.Sim
         /// </summary>
         public static NineBallVerdict EvaluateShot(IReadOnlyList<EventSimulator.PoolEventSim> events,
                                                    int cueIndex, IReadOnlyList<int> numberBySimIndex,
-                                                   IReadOnlySet<int> numbersRemaining,
+                                                   HashSet<int> numbersRemaining,
                                                    bool cueEscapedTable, bool isBreakShot)
         {
             var v = new NineBallVerdict();

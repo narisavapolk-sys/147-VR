@@ -70,21 +70,28 @@ namespace VR147.Authority
             if (existing != null)
             {
                 existing.Announce();
-                if (existing.GetComponent<PoolPhysicsRulesBridge>() == null)
-                    existing.gameObject.AddComponent<PoolPhysicsRulesBridge>();
+                existing.EnsureCompanions();
                 return;
             }
 
             GameObject go = new GameObject("PoolPhysics Authority Director");
             go.AddComponent<PoolPhysicsAuthorityDirector>();
-            go.AddComponent<PoolPhysicsRulesBridge>();   // Phase 3 rides on the same host object
         }
 
         void Awake()
         {
             Instance = this;
+            EnsureCompanions();
+        }
+
+        void EnsureCompanions()
+        {
+            // Runtime-created host: add the rules bridge and Quest input producer before Start()
+            // so the bridge can subscribe to OnUndoRequested on its first frame.
             if (FindFirstObjectByType<PoolPhysicsRulesBridge>() == null)
                 gameObject.AddComponent<PoolPhysicsRulesBridge>();
+            if (FindFirstObjectByType<global::BhpCueGripController>() == null)
+                gameObject.AddComponent<global::BhpCueGripController>();
         }
 
         void OnDestroy()

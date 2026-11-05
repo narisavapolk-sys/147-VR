@@ -140,13 +140,85 @@ public class PoolPhysicsPhaseTests
     [UnityTest] public IEnumerator Phase123_Bay3_Handoff_Shot_Settle() { yield return RunBay("Bay3_PhysicsRoot"); }
     [UnityTest] public IEnumerator Phase123_Bay4_Handoff_Shot_Settle() { yield return RunBay("Bay4_PhysicsRoot"); }
 
-    /// <summary>Phase 3 guard: the rules/scoring bridge type must exist and be reachable
-    /// (Pass C/D wiring); it does not run in the editor test session, but its assembly
-    /// reference must resolve for the production path to compile.</summary>
-    [Test]
-    public void Phase3_RulesBridge_TypeIsResolvable()
+    /// <summary>Phase 3 runtime integration: the authority bootstrap must create the rules
+    /// bridge AND the Quest controller producer, and the bridge must subscribe to its UNDO event.</summary>
+    [UnityTest]
+    public IEnumerator Phase3_RulesBridge_AndUndoController_AreBootstrapped()
     {
-        var t = Type.GetType("VR147.Authority.PoolPhysicsRulesBridge, Assembly-CSharp", throwOnError: false);
-        Assert.That(t, Is.Not.Null, "PoolPhysicsRulesBridge (Phase 3) type missing from Assembly-CSharp.");
+        yield return LoadMainScene();
+
+        var directorType = Type.GetType("VR147.Authority.PoolPhysicsAuthorityDirector, Assembly-CSharp", throwOnError: false);
+        var bridgeType = Type.GetType("VR147.Authority.PoolPhysicsRulesBridge, Assembly-CSharp", throwOnError: false);
+        var controllerType = Type.GetType("BhpCueGripController, Assembly-CSharp", throwOnError: false);
+        Assert.That(directorType, Is.Not.Null, "PoolPhysicsAuthorityDirector type missing from Assembly-CSharp.");
+        Assert.That(bridgeType, Is.Not.Null, "PoolPhysicsRulesBridge type missing from Assembly-CSharp.");
+        Assert.That(controllerType, Is.Not.Null, "BhpCueGripController type missing from Assembly-CSharp.");
+
+        var bootstrap = directorType.GetMethod("Bootstrap",
+            System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic);
+        Assert.That(bootstrap, Is.Not.Null, "PoolPhysicsAuthorityDirector.Bootstrap is missing.");
+        bootstrap.Invoke(null, null);
+
+        var director = Resources.FindObjectsOfTypeAll(directorType)
+            .OfType<Behaviour>().FirstOrDefault(c => c.gameObject.scene.IsValid());
+        Assert.That(director, Is.Not.Null, "Runtime bootstrap did not create/reuse the authority director.");
+
+        GameObject testHost = director.gameObject;
+        var bridge = testHost.GetComponent(bridgeType);
+        var controller = testHost.GetComponent(controllerType);
+        Assert.That(bridge, Is.Not.Null, "Authority bootstrap did not create PoolPhysicsRulesBridge.");
+        Assert.That(controller, Is.Not.Null, "Authority bootstrap did not create BhpCueGripController.");
+
+        yield return null; // let RulesBridge.Start subscribe to the controller event
+
+        bool undoInputBound = (bool)bridgeType.GetProperty("UndoInputBound").GetValue(bridge);
+        bool shotStartBound = (bool)bridgeType.GetProperty("ShotStartBound").GetValue(bridge);
+        bool undoMapValid = (bool)bridgeType.GetProperty("UndoMapValid").GetValue(bridge);
+        string boundBay = bridgeType.GetProperty("BoundBay").GetValue(bridge).ToString();
+        string gameMode = bridgeType.GetProperty("CurrentGameMode").GetValue(bridge).ToString();
+        bool undoAvailable = (bool)bridgeType.GetProperty("UndoAvailable").GetValue(bridge);
+        Assert.That(undoInputBound, Is.True, "RulesBridge did not subscribe to the controller's UNDO event.");
+        Assert.That(shotStartBound, Is.True, "RulesBridge did not subscribe to the runner's pre-impulse ShotStarted event.");
+        Assert.That(boundBay, Is.Not.EqualTo("<none>"), "Authority director did not bind an active physics bay.");
+        Assert.That(undoMapValid, Is.True, "Snooker 22-ball UNDO number map failed validation for the active bay.");
+        Assert.That(gameMode, Is.EqualTo("Match"),
+            "Game mode must default to Match; SoloPractice must be explicitly selected.");
+        Assert.That(undoAvailable, Is.False,
+            "UNDO must remain unavailable in Match even when the controller is present.");
+
+        var gameModeType = Type.GetType("PoolPhysics.Sim.PoolGameMode, PoolPhysics", throwOnError: false);
+        Assert.That(gameModeType, Is.Not.Null, "PoolGameMode enum missing from PoolPhysics assembly.");
+        var trySetGameMode = bridgeType.GetMethod("TrySetGameMode");
+        object soloPractice = Enum.Parse(gameModeType, "SoloPractice");
+        bool enteredPractice = (bool)trySetGameMode.Invoke(bridge, new[] { soloPractice });
+        Assert.That(enteredPractice, Is.True, "RulesBridge rejected SoloPractice at a settled boundary.");
+        Assert.That(bridgeType.GetProperty("CurrentGameMode").GetValue(bridge).ToString(), Is.EqualTo("SoloPractice"));
+        Assert.That((bool)bridgeType.GetProperty("UndoAvailable").GetValue(bridge), Is.False,
+            "SoloPractice alone must not enable UNDO without a valid snapshot and physics authority.");
+
+        var activeRunner = directorType.GetProperty("Active").GetValue(director);
+        Assert.That(activeRunner, Is.Not.Null, "Authority director has no active runner for the UNDO integration shot.");
+        var shoot = activeRunner.GetType().GetMethod("Shoot");
+        shoot.Invoke(activeRunner, new object[] { Vector3.forward, 0f, Vector2.zero, 0f });
+
+        yield return new WaitForFixedUpdate();
+        yield return null;
+        yield return null; // let RulesBridge.LateUpdate close the shot and publish the undo entry
+
+        bool undoReadyAfterShot = (bool)bridgeType.GetProperty("UndoAvailable").GetValue(bridge);
+        Assert.That(undoReadyAfterShot, Is.True,
+            "A settled SoloPractice shot must produce one valid pre-shot snapshot.");
+
+        bool undoApplied = (bool)bridgeType.GetMethod("RequestUndo").Invoke(bridge, null);
+        Assert.That(undoApplied, Is.True, "RulesBridge failed to restore the captured pre-shot state.");
+        Assert.That((bool)bridgeType.GetProperty("UndoAvailable").GetValue(bridge), Is.False,
+            "Undoing the only snapshot must leave the history empty.");
+
+        object match = Enum.Parse(gameModeType, "Match");
+        bool returnedToMatch = (bool)trySetGameMode.Invoke(bridge, new[] { match });
+        Assert.That(returnedToMatch, Is.True, "RulesBridge rejected Match at a settled boundary.");
+
+        UnityEngine.Object.Destroy(testHost);
+        yield return null;
     }
 }

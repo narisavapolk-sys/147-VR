@@ -5,11 +5,12 @@ Single source for Unity execution ownership between LUNA and Claude.
 ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder may open Unity, edit project files, run AssetDatabase-sensitive operations, build, or execute runtime tests.
 
 ## Current Lock
-- Holder: OpenCode (GLM agent) — takeover per Emergency Rule
-- Status: RELEASED (handoff complete 2026-11-04)
-- Domain: 2026-11-04 — S0 close (corner capture 1.75x, headless green 10/10) + S1 4-group commits + PlayMode Phase 1-3 rerun (PoolPhysicsPhaseTests) post-fix
-- Started: 2026-11-04
-- Release condition: record PlayMode results in WireReports + CURRENT_STATE/PROJECT_MEMORY + final report to owner
+- Holder: ChatGPT session (owner-authorized 147VR executor)
+- Status: TAKEN
+- Domain: 2026-11-05 — S2 #2c PoolUndoStack QA + SoloPractice game-mode gate + BHP UNDO controller bootstrap + PlayMode verification
+- Started: 2026-11-05 08:20 CET
+- Preflight: no Unity.exe/UnityHub process; 6.44 GB free / 15.44 GB total RAM; Library warm; no queued Logs/editor_cmd.txt; zero-byte Temp/UnityLockfile last touched 2026-11-04 20:06 (left untouched; no Unity process active)
+- Release condition: finish package-aware PlayMode validation, record exact results in CURRENT_STATE/PROJECT_MEMORY/WireReports, commit only sprint-scoped files, then release lock.
 
 ## Emergency Takeover Record — 2026-11-04
 - Previous holder Claude last ACTIVE 2026-10-31 (Round 11/12 complete per logs; no blocker reported).

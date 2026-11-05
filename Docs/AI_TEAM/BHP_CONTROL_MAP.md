@@ -41,7 +41,7 @@ sentences at runtime from the active device config (touch controllers vs hand tr
 | LINE UP / LOCK aim | hold button + left-hand left/right orbit | **HOLD Left Grip = fine-aim lock**; left-hand left/right rotates the lock; release = locked line | Left Grip = Sprint → re-gated: Sprint active only while **not** staged (walking), fine-aim lock only while staged |
 | SHOOT | physical stroke (back-and-forth) | **HOLD Right Grip = grip the cue**; pull back → push forward; forward-pass peak velocity along the cue axis = strike power | replaces Trigger-hold-charge as PRIMARY path; **Right Trigger charge stays as accessibility fallback** |
 | Cancel/reset | (BHP: whiff the stroke) | **Right Trigger while staged** = cancel/reset charge (frees Right Grip for the cue) | Right Grip cancel moves to the new stroke grip; resolved by the staged/walking gate |
-| PICK UP / PLACE cue ball | press button to lift; press again to drop; red/white validity | **Left X (primary)** toggles lift/drop when ball-in-hand rules allow; ghost cue **red = invalid / white = valid** | X currently unused; rules gate = `PoolPhysicsRulesBridge` verdict state (S2 #1) |
+| PICK UP / PLACE cue ball + UNDO | press button to lift/drop; red/white validity | **Left X (primary), state-gated:** Walking = UNDO last shot; StagedOnBall + ball-in-hand = lift/drop; ghost cue **red = invalid / white = valid** | UNDO is gated by `PoolPhysicsRulesBridge` to SoloPractice + valid snapshot + active physics authority + table at rest. MainScene currently has no SnookerShotTracker, so Stage remains Walking until that consumer is wired. |
 | Movement | L-stick + bend-forward teleport | unchanged (Left stick move); bend-forward teleport **DEFERRED** (comfort review, needs owner approval) | — |
 | RECENTER | combo | **Left Grip + Right Grip (both pressed)** = recenter | uses the reserved-combo slot pattern |
 | LASER UI | hold button → laser; trigger click | **HOLD Y (left secondary)** = laser; Right Trigger click (world-UI/tablet) while **not** staged | state-gate disambiguates from staged-cancel on the same trigger |
@@ -55,6 +55,8 @@ sentences at runtime from the active device config (touch controllers vs hand tr
 `Assets/Scripts/Quest/BhpCueGripController.cs` — thin MonoBehaviour, reads the same XR API as `SnookerCueController`
 (`InputDevices.GetDeviceAtXRNode` + `CommonUsages`), publishes semantic events for the tracker to consume.
 
-**Not yet wired (deliberate):** connection to `SnookerShotTracker`/`SnookerCueController` happens in the NEXT Unity session
-(lock + compile + PlayMode rerun 5/5), so this scaffold net-compiles today and integration lands as one reviewed change
-later. No scene edits shipped unattended (project rule: MenuItem/click flow stays with เจ้าของ).
+**Runtime wiring status (2026-11-05):**
+- `PoolPhysicsAuthorityDirector` runtime bootstrap creates the controller + `PoolPhysicsRulesBridge`; the bridge subscribes to `OnUndoRequested`.
+- PlayMode verifies Match denies UNDO, SoloPractice captures a pre-shot 22-ball Snooker state, and RequestUndo restores all 22 balls.
+- LEFT X is state-gated: Walking = UNDO; StagedOnBall + ball-in-hand = pickup/drop. The bridge, not the controller, owns the SoloPractice/rest/authority gate.
+- Remaining semantic events (cue grip/stroke/fine aim/laser/recenter/pickup) are still isolated. MainScene currently has no `SnookerShotTracker`, `SnookerBallTracker`, or `SnookerTurnManager`, so scoring and Stage→StagedOnBall integration remain a separate task. No scene assets were edited in this sprint.

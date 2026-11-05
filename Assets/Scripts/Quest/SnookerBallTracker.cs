@@ -306,6 +306,41 @@ public sealed class SnookerBallTracker : MonoBehaviour
         return _ready;
     }
 
+    /// <summary>Reorders existing BallInfo objects to match a simulator's canonical index order.
+    /// Unlike BindToSimulation this preserves potted flags, home spots, and object identity.</summary>
+    public bool ReorderToSimulation(IReadOnlyList<Transform> simBalls, int cueIndex)
+    {
+        if (simBalls == null || simBalls.Count == 0 || simBalls.Count != _balls.Count ||
+            cueIndex < 0 || cueIndex >= simBalls.Count)
+            return false;
+
+        var byTransform = new Dictionary<Transform, BallInfo>(_balls.Count);
+        for (int i = 0; i < _balls.Count; i++)
+        {
+            BallInfo info = _balls[i];
+            if (info == null || info.transform == null || byTransform.ContainsKey(info.transform))
+                return false;
+            byTransform.Add(info.transform, info);
+        }
+
+        var ordered = new List<BallInfo>(simBalls.Count);
+        for (int i = 0; i < simBalls.Count; i++)
+        {
+            Transform t = simBalls[i];
+            if (t == null || !byTransform.TryGetValue(t, out BallInfo info))
+                return false;
+
+            int points = PointsForSimName(t.name);
+            info.points = i == cueIndex ? 0 : (points > 0 ? points : 0);
+            ordered.Add(info);
+        }
+
+        _balls.Clear();
+        _balls.AddRange(ordered);
+        _ready = _balls.Count > 0;
+        return _ready;
+    }
+
     /// <summary>Registers a pot reported by an external authority (the event simulator) without
     /// moving the ball — the simulator owns its transform. Fires BallPotted exactly once per ball.</summary>
     public BallInfo ReportPot(int index, PocketInfo pocket, bool raiseEvent = true)

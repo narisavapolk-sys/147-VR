@@ -14,22 +14,27 @@ using UnityEngine.XR;
 ///                  the forward-pass peak velocity along the cue axis powers the shot
 ///                  (Right Trigger charge remains the accessibility fallback elsewhere)
 ///   * PICK UP    — press LEFT X (primary) to lift/replace the cue ball when rules allow
+///   * UNDO       — press LEFT X (primary) while WALKING: restore the pre-shot state
+///                  (staged X stays pickup/drop; RulesBridge owns SoloPractice/authority/rest gating)
+///   * GRIP LEN.  — HOLD LEFT TRIGGER + slide the left hand forward/back along the player
+///                  axis: the hand CONTACT POINT slides along the shaft (toward tip =
+///                  shorter, toward butt = longer), stepping with haptic-sized increments
 ///   * RECENTER   — LEFT GRIP + RIGHT GRIP pressed together
-///   * LASER      — HOLD LEFT Y (secondary) for the laser pointer (not staged)
+///   * LASER      — HOLD LEFT Y (secondary) for the laser pointer (walking only)
 ///
 /// It is STATE-GATED: buttons mean different things depending on Stage
 /// (Walking vs StagedOnBall), exactly per the mapping doc.
 ///
-/// This class only reads raw Quest Touch features and publishes semantic events —
-/// it does not move the cue or call the physics bridge yet (deliberate: wiring
-/// into SnookerShotTracker/SnookerCueController is one reviewed change in the next
-/// Unity session). Input style mirrors SnookerCueController (XR InputDevices).
+/// This class only reads raw Quest Touch features and publishes semantic events.
+/// PoolPhysicsRulesBridge consumes OnUndoRequested; the remaining cue/aim semantic events
+/// stay isolated until their SnookerCueController/Tracker consumers are explicitly integrated.
+/// Input style mirrors SnookerCueController (XR InputDevices).
 /// </summary>
 public sealed class BhpCueGripController : MonoBehaviour
 {
     public enum Stage { Walking, StagedOnBall }
 
-    // ---- semantic events (consumers wire in the next Unity session) ----
+    // ---- semantic events (UNDO is wired to RulesBridge; remaining consumers are staged separately) ----
     /// <summary>Right Grip pressed while staged: cue is now in-hand; stroke tracking starts.</summary>
     public event Action OnCueGripped;
     /// <summary>Right Grip released while staged without firing.</summary>
@@ -46,6 +51,18 @@ public sealed class BhpCueGripController : MonoBehaviour
     public event Action OnRecenterCombo;
     /// <summary>Laser pointer toggled on/off (holding Y while walking).</summary>
     public event Action<bool> OnLaserActive;
+    /// <summary>LEFT X pressed while Walking: request pre-shot restore; RulesBridge gates SoloPractice, authority, and balls-at-rest.</summary>
+    public event Action OnUndoRequested;
+    /// <summary>Left Trigger held + left-hand slide past one step. arg true = toward BUTT (longer), false = toward TIP (shorter).</summary>
+    public event Action<bool> OnGripLengthStep;
+    /// <summary>Grip contact-point parameter changed (0 = tip-adjacent, 1 = near-butt), already clamped.</summary>
+    public event Action<float> OnGripLengthChanged;
+
+    [Header("Cue grip length (per-player preference)")]
+    /// <summary>Hand contact point along the shaft: 0 = tip-adjacent, 1 = near-butt. Persisted by the settings layer.</summary>
+    [Range(0f, 1f)] public float GripLength01 = 0.35f;
+    [Range(0.01f, 0.10f)] public float GRIP_STEP_M = 0.03f;    // hand slide per adjustment step
+    [Range(0.2f, 1.2f)] public float GRIP_RANGE_M = 0.6f;      // full slide span mapped to GripLength01 0..1
 
     [Header("BHP scheme toggles")]
     public Stage stage = Stage.Walking;           // SnookerShotTracker sets this per shot
@@ -55,7 +72,7 @@ public sealed class BhpCueGripController : MonoBehaviour
     public bool STAGE_ENABLED = true;             // master switch while the mapping is under playtest
 
     // ---- live semantic state (queryable; some consumers poll instead of events) ----
-    public bool CueGripped => _rightGripHeld;
+    public bool CueGripped => _rightGrip;
     public bool FineAimLocked => _fineAimHeld;
     public bool LaserActive => _laserHeld;
     /// <summary>Signed fine-aim rotation request accumulated this frame (radians, world-Y).</summary>
@@ -63,7 +80,7 @@ public sealed class BhpCueGripController : MonoBehaviour
     /// <summary>This frame's forward-pass stroke sample in m/s (0 when not stroking).</summary>
     public float StrokeForwardSpeed { get; private set; }
 
-    XRDevice _left, _right;
+    InputDevice _left, _right;
     bool _leftGrip, _rightGrip, _fineAimHeld, _laserHeld;
     bool _prevLeftGrip, _prevRightGrip, _prevLaser, _prevLeftPrimary;
     bool _leftPrimary;
@@ -71,6 +88,8 @@ public sealed class BhpCueGripController : MonoBehaviour
     Vector3 _fineAimAnchor;
     Vector3 _prevRightPos;
     bool _hasRightPos;
+    bool _prevLeftTrigger, _hasGripAnchor;
+    Vector3 _gripAnchor;
 
     void Update()
     {
@@ -82,6 +101,7 @@ public sealed class BhpCueGripController : MonoBehaviour
         bool lp = Feature(_left, CommonUsages.primaryButton);          // X
         bool ls = Feature(_left, CommonUsages.secondaryButton);        // Y
         bool rt = Feature(_right, CommonUsages.triggerButton);
+        bool lt = Feature(_left, CommonUsages.triggerButton);          // grip-length slide modifier
 
         _leftGrip = lg;
         _rightGrip = rg;
@@ -97,8 +117,17 @@ public sealed class BhpCueGripController : MonoBehaviour
         // ---- LASER (walking only): hold Y ----
         if (laserHeld != _prevLaser) { OnLaserActive?.Invoke(laserHeld); _prevLaser = laserHeld; }
 
-        // ---- LEFT X: pickup/drop toggle (staged + ball-in-hand semantics live in the tracker) ----
-        if (stage == Stage.StagedOnBall && lp && !_prevLeftPrimary)
+        // ---- GRIP LENGTH: HOLD Left Trigger + left-hand forward/back slide (any stage) ----
+        if (lt && !_prevLeftTrigger) { _gripAnchor = LeftPos(); _hasGripAnchor = true; }
+        if (!lt) _hasGripAnchor = false;
+        if (lt) TickGripLength();
+
+        // ---- LEFT X: stage-dependent meta action ----
+        if (stage == Stage.Walking)
+        {
+            if (lp && !_prevLeftPrimary) OnUndoRequested?.Invoke();   // UNDO last shot
+        }
+        else if (lp && !_prevLeftPrimary)                              // pickup/drop toggle
         {
             _leftPrimaryLiftState = !_leftPrimaryLiftState;
             OnCueBallLiftToggle?.Invoke(_leftPrimaryLiftState);
@@ -126,6 +155,42 @@ public sealed class BhpCueGripController : MonoBehaviour
 
         _prevLeftGrip = lg;
         _prevRightGrip = rg;
+        _prevLeftTrigger = lt;
+    }
+
+    /// <summary>Clamped setter for tablet/settings UI; fires OnGripLengthChanged on change.</summary>
+    public void SetGripLength01(float v)
+    {
+        float c = Mathf.Clamp01(v);
+        if (Mathf.Approximately(c, GripLength01)) return;
+        GripLength01 = c;
+        OnGripLengthChanged?.Invoke(c);
+    }
+
+    // left-hand forward/back slide (player frame) = contact point toward tip / butt
+    void TickGripLength()
+    {
+        Vector3 pos = LeftPos();
+        if (!_hasGripAnchor) { _gripAnchor = pos; _hasGripAnchor = true; return; }
+        Vector3 d = pos - _gripAnchor;
+        d.y = 0f;
+        if (d.sqrMagnitude < GRIP_STEP_M * GRIP_STEP_M) return;
+
+        Transform head = ResolveHead();
+        if (head == null) return;
+        Vector3 fwd = head.forward; fwd.y = 0f; fwd.Normalize();
+
+        float along = Vector3.Dot(d, fwd);            // + = pushing forward (toward tip)
+        int steps = Mathf.Min(4, (int)(Math.Abs(along) / GRIP_STEP_M));
+        if (steps <= 0) return;
+        bool towardButt = along < 0f;                 // pulling back = lengthen (toward butt)
+        float step01 = GRIP_STEP_M / GRIP_RANGE_M;
+        _gripAnchor = pos;                            // re-anchor on any step burst
+        for (int i = 0; i < steps; i++)
+        {
+            SetGripLength01(GripLength01 + (towardButt ? step01 : -step01));
+            OnGripLengthStep?.Invoke(towardButt);
+        }
     }
 
     // left-hand left/right slide (world XZ) rotated into the head frame = orbit request
@@ -185,7 +250,7 @@ public sealed class BhpCueGripController : MonoBehaviour
         return _left.isValid && _right.isValid;
     }
 
-    static bool Feature(XRDevice d, InputFeatureUsage<bool> usage)
+    static bool Feature(InputDevice d, InputFeatureUsage<bool> usage)
         => d.isValid && d.TryGetFeatureValue(usage, out bool v) && v;
 
     Vector3 LeftPos()

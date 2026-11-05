@@ -13,5 +13,6 @@
     <Compile Include="GoldenRunner.cs" />
     <Compile Include="NineBallTests.cs" />
     <Compile Include="PoolSaveTests.cs" />
+    <Compile Include="PoolUndoTests.cs" />
   </ItemGroup>
 </Project>

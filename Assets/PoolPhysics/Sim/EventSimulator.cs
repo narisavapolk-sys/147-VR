@@ -72,21 +72,57 @@ namespace PoolPhysics.Sim
         /// <summary>
         /// Reset per-shot telemetry and CANONICALIZE ball order by initial (X,Z).
         /// Sorting by physical position (not input list order) makes the whole
-        /// event loop permutation-invariant; CueBallIndex is remapped to follow
-        /// the cue ball by its position.
+        /// event loop permutation-invariant; CueBallIndex is remapped by identity.
         /// </summary>
-        public void BeginShot()
+        public void ResetShotTelemetry()
         {
-            CollisionCount=0; InitialEnergy=TotalEnergy(); PeakTotalEnergy=InitialEnergy; _zeroTime=0;
+            CollisionCount = 0;
+            InitialEnergy = TotalEnergy();
+            PeakTotalEnergy = InitialEnergy;
+            _zeroTime = 0;
             EventLog.Clear();
             if (Trace) TraceLog.Clear();
-            if (Balls.Count>1)
+        }
+
+        public void BeginShot() => BeginShotWithPermutation();
+
+        /// <summary>
+        /// Reset per-shot telemetry and canonicalize ball order by initial (X,Z).
+        /// Returns newIndex -> oldIndex so Unity adapters can reorder their parallel
+        /// Transform/Rigidbody/interpolation arrays and keep sim indices stable.
+        /// CueBallIndex is remapped by identity, never by nearest-position guessing.
+        /// </summary>
+        public int[] BeginShotWithPermutation()
+        {
+            ResetShotTelemetry();
+            int count = Balls.Count;
+            var newToOld = new int[count];
+            for (int i = 0; i < count; i++) newToOld[i] = i;
+
+            if (count > 1)
             {
-                var cuePos = (CueBallIndex>=0 && CueBallIndex<Balls.Count) ? Balls[CueBallIndex].Position : Vector3.Zero;
-                bool hasCue = CueBallIndex>=0 && CueBallIndex<Balls.Count;
-                Balls.Sort((p,q)=>{ int c=p.Position.X.CompareTo(q.Position.X); if(Math.Abs(c)!=0&&p.Position.X!=q.Position.X) return c; return p.Position.Z.CompareTo(q.Position.Z); });
-                if (hasCue) { int best=0; float bd=float.MaxValue; for(int i=0;i<Balls.Count;i++){ float dd=(Balls[i].Position-cuePos).LengthSquared(); if(dd<bd){bd=dd;best=i;} } CueBallIndex=best; }
+                int oldCueIndex = CueBallIndex;
+                Array.Sort(newToOld, (a, b) =>
+                {
+                    Vector3 pa = Balls[a].Position;
+                    Vector3 pb = Balls[b].Position;
+                    int c = pa.X.CompareTo(pb.X);
+                    if (c != 0) return c;
+                    c = pa.Z.CompareTo(pb.Z);
+                    return c != 0 ? c : a.CompareTo(b);
+                });
+
+                var sorted = new Ball[count];
+                for (int i = 0; i < count; i++) sorted[i] = Balls[newToOld[i]];
+                Balls.Clear();
+                for (int i = 0; i < count; i++) Balls.Add(sorted[i]);
+
+                if (oldCueIndex >= 0 && oldCueIndex < count)
+                    for (int i = 0; i < count; i++)
+                        if (newToOld[i] == oldCueIndex) { CueBallIndex = i; break; }
             }
+
+            return newToOld;
         }
 
         public bool Trace;                             // per-iteration debug log (detdbg)

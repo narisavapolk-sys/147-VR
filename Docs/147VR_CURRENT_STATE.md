@@ -408,3 +408,16 @@ Verified the previous session's Round 8 fix is IN the scene: `Logs/material_inve
 - **`Assets/Scripts/Quest/BhpCueGripController.cs`** (NEW, thin scaffold, house XR style = `InputDevices.GetDeviceAtXRNode` + `CommonUsages` like SnookerCueController): Stage walking/staged gating, semantic events (OnCueGripped / OnStrokeFired(power01) / OnFineAimLock / OnFineAimReleased / OnCueBallLiftToggle / OnRecenterCombo / OnLaserActive / OnCueReleased). Deliberately UNWIRED - integration into `SnookerShotTracker`/`SnookerCueController` is one reviewed change in the next Unity session (already compiles headless-clean by construction).
 - **Next Unity session (owner opens once)**: compile + rerun `PoolPhysicsPhaseTests` PlayMode (5/5 baseline - engine changed in S2 #1) + wire `BhpCueGripController` -> tracker per the map. Then S3 audio (114 SFX; fix BallBall `ImpactSpeed` sign first), S4 light parity CSV loop, S5 detail pass.
 
+
+
+## 2026-11-05 — S2 #2c DONE: Solo Practice UNDO + runtime integration
+
+- Full report: `WireReports/S2_2c_UNDO_2026-11-05.md`.
+- `PoolUndoStack` + `PoolUndoPolicy`: canonical bounded history, corruption diagnostics, Clear-on-mode-change, and a headless SoloPractice gate. Match remains the default; snapshot/undo requires valid Snooker map + physics ownership + resting table + closed shot.
+- `PoolPhysicsEventRunner.ShotStarted` now fires before CueStrike. `EventSimulator.BeginShotWithPermutation` returns the exact new-index→old-index map; the Unity runner applies it to Transform/Rigidbody/interpolation arrays. This fixes the sim-index/object-index drift that previously made the 22-ball Snooker undo map invalid.
+- `SnookerBallTracker.ReorderToSimulation` preserves existing BallInfo, potted state, and home positions when the sim order changes. The bridge refreshes its index map at the pre-impulse boundary.
+- Runtime bootstrap creates `PoolPhysicsRulesBridge` + `BhpCueGripController`; LEFT X while Walking raises UNDO, and the bridge gates it to SoloPractice. LEFT X while StagedOnBall remains the ball-in-hand pickup/drop action. Remaining cue/stroke/aim consumers are still separate scope.
+- Headless build: 0 warnings / 0 errors. Full regression commands all exit 0: `undo 500` (U1–U11), `save 300`, `nineball 150`, `validate`, `eventval`, `touchtest`, `props 400`, `jartest`, `check golden_regression_baseline.json`, `check golden_bay4.json`.
+- Unity 6.0.4f1: `PoolPhysicsPhaseTests` PlayMode **5/5 PASS**, process exit 0, no C# compile errors. End-to-end SoloPractice test captured and restored **22/22 Snooker balls**; Match denied UNDO; history empty after restore.
+- No scene/prefab edits and no CueStrike changes. This work was performed only in `C:\\Users\\mongo\\UnityProjects\\147VR-import-wip` on `feat/unity-event-physics-import`; canonical `C:\\Users\\mongo\\UnityProjects\\147 VR` was not modified.
+- Follow-up: MainScene still lacks `SnookerBallTracker`, `SnookerShotTracker`, and `SnookerTurnManager`, so scoring and Stage→StagedOnBall remain unintegrated. Project config also reports Fixed Timestep 0.02 s and QualitySettings MSAA 0; review in a separate Quest performance pass.
