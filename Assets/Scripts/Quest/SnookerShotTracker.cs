@@ -44,6 +44,10 @@ public sealed class SnookerShotTracker : MonoBehaviour
     private bool _waitingForRest;
     private bool _potOccurredDuringShot; // true if any ball was potted during this shot
 
+    // M5 exactly-once consumption. Holds the highest ShotSequence already consumed
+    // from the settled boundary. -1 means no shot has been resolved yet.
+    private int _lastResolvedSequence = -1;
+
     [Header("Rest detection")]
     [Tooltip("All balls must stay below this speed for this long before the shot is resolved.")]
     public float restThreshold = 0.01f;
@@ -191,7 +195,7 @@ public sealed class SnookerShotTracker : MonoBehaviour
         }
         else if (!_hitAnyBall)
         {
-            // No ball was hit ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â wait for the cue ball to stop, then resolve as miss.
+            // No ball was hit -> wait for the cue ball to stop, then resolve as miss.
             bool ballAtRest = true; // if no rigidbody, treat as immediately at rest
             if (_cueBallRb != null)
                 ballAtRest = _cueBallRb.linearVelocity.magnitude < restThreshold;
@@ -214,6 +218,22 @@ public sealed class SnookerShotTracker : MonoBehaviour
 
     private void OnPhysicsSettledFromContract(int shotSequence)
     {
+        // Exactly-once consumption of the M5 settled boundary.
+        //
+        // _shotInProgress is a state flag, not an identity: it answers "is a shot
+        // running" but never "which shot". A settled event for shot N that arrives
+        // after shot N+1 has already begun would therefore pass that check and
+        // resolve the wrong shot using the wrong pending pots.
+        //
+        // ShotSequence is monotonic and only incremented in M5ShotLifecycle.BeginShot,
+        // so comparing against the highest sequence already resolved is sufficient.
+        if (shotSequence <= _lastResolvedSequence)
+        {
+            Debug.Log($"[ShotTracker] M5 stale/duplicate settled ignored seq={shotSequence} lastResolved={_lastResolvedSequence}");
+            return;
+        }
+
+        _lastResolvedSequence = shotSequence;
         OnPhysicsSettled();
     }
 
@@ -260,7 +280,7 @@ public sealed class SnookerShotTracker : MonoBehaviour
         {
             int penalty = Mathf.Max(scoreManager.foulPenalty, scoreManager.BallOnValue(), firstBall.points);
             scoreManager.AddScorePublic(opponent, penalty);
-            Debug.Log($"[ShotTracker] M5 Rules: wrong ball first ({firstBall.name}) ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â Player {opponent} +{penalty}");
+            Debug.Log($"[ShotTracker] M5 Rules: wrong ball first ({firstBall.name}) -> Player {opponent} +{penalty}");
             turnManager.NextTurn();
             ShotResolved?.Invoke(firstBall, hitAny, cueOnTable);
             return;
@@ -328,6 +348,9 @@ public sealed class SnookerShotTracker : MonoBehaviour
     public bool ShotInProgress => _shotInProgress;
     public SnookerBallTracker.BallInfo FirstBallHit => _firstBallHit;
     public bool HitAnyBall => _hitAnyBall;
+
+    /// <summary>Highest M5 ShotSequence already consumed from the settled boundary.</summary>
+    public int LastResolvedSequence => _lastResolvedSequence;
 
     /// <summary>
     /// Force-resolve the current shot immediately (for editor tests where Time.deltaTime is 0).
