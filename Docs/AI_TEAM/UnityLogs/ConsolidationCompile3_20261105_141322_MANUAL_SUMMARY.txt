@@ -1,0 +1,23 @@
+147VR Unity Safe Batch Launch - Manual Summary (written by OpenCode session)
+Timestamp: 20261105_141322
+LogName: ConsolidationCompile3
+ExecuteMethod: (none - plain headless compile gate on commit 00811f3e + fix-up staging)
+
+NOTE: the launcher's automated SUMMARY for this run was never written because the
+launcher process was interrupted by an AI-server restart mid-poll. This manual
+summary records the outcome from the log.
+
+Result: COMPILE GATE PASSED
+- The full Unity log is ConsolidationCompile3_20261105_141322.log
+  (*.log files are gitignored per .gitignore:24; kept locally, this summary is the git evidence).
+- Compilation: requested at log L257 (AssetDatabase observed script changes),
+  "script compilation time: 214.066935s" at L896, followed by full asset import
+  of the merged trees (Assets/PoolPhysics, Assets/Scripts, Assets/Editor/Art,
+  Assets/Editor/Lighting, Assets/Prefabs/Lighting, Assets/Scripts/Authority).
+- "error CS" occurrences in the log: 0.
+- Evidence of successful assembly rebuild: Library/ScriptAssemblies/Assembly-CSharp.dll
+  LastWriteTime 2026-11-05 14:16:25 and Library/ScriptAssemblies/Assembly-CSharp-Editor.dll
+  LastWriteTime 2026-11-05 14:16:46, produced this run (compile of the merge fix-up state).
+- The Unity process did not exit after import (a UnityAutoQuitter child from -automated
+  raced -quit; the process was later force-terminated by the session). This hang is
+  what motivated removing -automated from Unity_Safe_Batch_Launch.ps1 (same commit).

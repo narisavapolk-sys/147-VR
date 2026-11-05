@@ -20,6 +20,9 @@ param(
   [Parameter(Mandatory=$true)][string]$LogName,
   [string]$ExecuteMethod,
   [bool]$Quit = $true,
+  [bool]$RunTests = $false,
+  [string]$TestPlatform = "PlayMode",
+  [string]$TestResultsFile,
   [int]$TimeoutSec = 300,
   [switch]$Force
 )
@@ -65,11 +68,21 @@ if (-not $env:NO_PROXY)      { $env:NO_PROXY = "localhost,127.0.0.1" }
 # Start-Process receives one command-line string here so paths containing spaces are
 # explicitly quoted. Passing an unquoted ArgumentList array can make Unity parse
 # `147` / `VR` or `Docs` / `AI_TEAM` as separate arguments and fall back to Editor.log.
-$argList = '-batchmode -nographics -automated' +
+# 2026-11-05 (OpenCode): `-automated` removed - its UnityAutoQuitter child races `-quit`
+# and left a batch run stuck ~20 min after a successful import (see ConsolidationCompile3
+# log). Plain `-batchmode -nographics -quit` exits cleanly as observed in gates #1/#2.
+# With -RunTests (Unity Test Framework CLI), -quit is omitted by design: UTF exits by
+# itself when the test run/report completes (exit 0 = passed, 2 = failed tests).
+$argList = '-batchmode -nographics' +
   ' -projectPath "' + $ProjectPath + '"' +
   ' -logFile "' + $LogFile + '"'
+if ($RunTests) {
+  $Quit = $false
+  $argList += ' -runTests -testPlatform "' + $TestPlatform + '"'
+  if ($TestResultsFile) { $argList += ' -testResults "' + $TestResultsFile + '"' }
+}
+elseif ($Quit) { $argList += ' -quit' }
 if ($ExecuteMethod) { $argList += ' -executeMethod "' + $ExecuteMethod + '"' }
-if ($Quit) { $argList += ' -quit' }
 
 Write-Output "LAUNCHING: `"$UnityExe`" $argList"
 $proc = Start-Process -FilePath $UnityExe -ArgumentList $argList -PassThru -WindowStyle Hidden

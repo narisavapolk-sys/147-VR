@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20261105_144045
+LogName: V008PlayMode_Consolidation
+ExecuteMethod: 
+Process result: STILL_RUNNING after 1500 s (pid=10108)
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\V008PlayMode_Consolidation_20261105_144045.log

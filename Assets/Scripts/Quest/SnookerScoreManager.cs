@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using M5Rules;
 using UnityEngine;
 
 /// <summary>
@@ -51,6 +52,55 @@ public sealed class SnookerScoreManager : MonoBehaviour
     [Tooltip("Index into ColourOrder while ballOn == ColoursInOrder.")]
     public int colourIndex;
     public bool frameOver;
+
+    public M5Colour NominatedColour { get; private set; } = M5Colour.None;
+    public bool TryNominateColour(M5Colour colour)
+    {
+        if (ballOn != BallOn.Colour || !ShotObservation.IsColour(colour)) return false;
+        NominatedColour = colour;
+        return true;
+    }
+    public void ClearNomination() { NominatedColour = M5Colour.None; }
+
+    [System.Serializable]
+    public struct M5TransactionState
+    {
+        public int Player1, Player2, Reds, ColourIndex;
+        public BallOn BallOn; public bool FrameOver; public M5Colour Nomination;
+        public bool Recovery; public int RecoveryBallId, RecoveryPenalty;
+    }
+    public M5TransactionState CaptureM5TransactionState() => new M5TransactionState
+    {
+        Player1=player1Score, Player2=player2Score, Reds=redsRemaining, ColourIndex=colourIndex,
+        BallOn=ballOn, FrameOver=frameOver, Nomination=NominatedColour, Recovery=m5FinalBlackRecoveryCandidate,
+        RecoveryBallId=m5FinalBlackRecoveryBallId, RecoveryPenalty=m5FinalBlackRecoveryPenalty
+    };
+    public void RestoreM5TransactionState(M5TransactionState s)
+    {
+        player1Score=s.Player1; player2Score=s.Player2; redsRemaining=s.Reds; colourIndex=s.ColourIndex;
+        ballOn=s.BallOn; frameOver=s.FrameOver; NominatedColour=s.Nomination; m5FinalBlackRecoveryCandidate=s.Recovery;
+        m5FinalBlackRecoveryBallId=s.RecoveryBallId; m5FinalBlackRecoveryPenalty=s.RecoveryPenalty;
+    }
+    public bool m5FinalBlackRecoveryCandidate { get; private set; }
+    public int m5FinalBlackRecoveryBallId { get; private set; }
+    public int m5FinalBlackRecoveryPenalty { get; private set; }
+    public void StoreM5FinalBlackRecovery(ShotDecision d)
+    {
+        m5FinalBlackRecoveryCandidate=d.FinalBlackRecoveryCandidate;
+        m5FinalBlackRecoveryBallId=d.FinalBlackRecoveryBall.HasValue ? d.FinalBlackRecoveryBall.Value.BallId : 0;
+        m5FinalBlackRecoveryPenalty=d.FinalBlackRecoveryPenalty;
+    }
+    public void ApplyM5Decision(ShotDecision d, int striker)
+    {
+        int opponent=striker==1 ? 2 : 1;
+        if (d.OpponentPoints>0) { if (opponent==1) player1Score+=d.OpponentPoints; else player2Score+=d.OpponentPoints; }
+        if (d.StrikerPoints>0) { if (striker==1) player1Score+=d.StrikerPoints; else player2Score+=d.StrikerPoints; }
+        redsRemaining=d.NextRedsRemaining; frameOver=d.FrameEndCandidate;
+        if (d.NextBallOn.HasValue) { switch (d.NextBallOn.Value)
+        { case M5BallOn.Red: ballOn=BallOn.Red; colourIndex=0; break; case M5BallOn.NominatedColour: ballOn=BallOn.Colour; colourIndex=0; break; case M5BallOn.ColoursInOrder: ballOn=BallOn.ColoursInOrder; colourIndex=Mathf.Clamp((int)d.NextColourIndex - 2, 0, ColourOrder.Length - 1); break; } }
+        NominatedColour=M5Colour.None;
+    }
+    public void EmitM5TransactionCommitted() { ScoresChanged?.Invoke(); }
 
     private void Awake()
     {
@@ -199,6 +249,27 @@ public sealed class SnookerScoreManager : MonoBehaviour
     {
         AddScore(player, points);
     }
+    /// <summary>Re-spots the cue ball after an off-table/cue-ball foul.</summary>
+    public void RespotM5Ball(SnookerBallTracker.BallInfo ball)
+    {
+        Respot(ball);
+    }
+
+    public void RespotCueBall()
+    {
+        if (ballTracker == null)
+            return;
+        foreach (SnookerBallTracker.BallInfo ball in ballTracker.Balls)
+        {
+            if (ball?.transform != null && ball.points == 0 &&
+                ball.name.StartsWith("White_CueBall", System.StringComparison.Ordinal))
+            {
+                Respot(ball);
+                return;
+            }
+        }
+    }
+
 
     /// <summary>Check if the first ball hit is legal for the current ball-on.</summary>
     public bool IsLegalFirstHit(SnookerBallTracker.BallInfo ball)
@@ -301,6 +372,10 @@ public sealed class SnookerScoreManager : MonoBehaviour
         colourIndex = 0;
         frameOver = false;
         redsRemaining = 15;
+        NominatedColour = M5Colour.None;
+        m5FinalBlackRecoveryCandidate = false;
+        m5FinalBlackRecoveryBallId = 0;
+        m5FinalBlackRecoveryPenalty = 0;
 
         if (ballTracker != null)
         {

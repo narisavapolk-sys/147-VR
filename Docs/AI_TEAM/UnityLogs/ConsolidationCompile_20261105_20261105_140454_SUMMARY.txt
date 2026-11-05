@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20261105_140454
+LogName: ConsolidationCompile_20261105
+ExecuteMethod: 
+Process result: EXITED code=1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: True
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\ConsolidationCompile_20261105_20261105_140454.log

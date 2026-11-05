@@ -51,7 +51,7 @@ public sealed class SnookerTurnManager : MonoBehaviour
         _m5Lifecycle = GetComponent<M5ShotLifecycle>();
         if (_m5Lifecycle == null)
             _m5Lifecycle = FindObjectOfType<M5ShotLifecycle>();
-        if (_m5Lifecycle != null && advanceMode == AdvanceMode.Timer)
+        if (_m5Lifecycle != null && advanceMode != AdvanceMode.Manual)
         {
             advanceMode = AdvanceMode.Manual;
             Debug.Log("[M5] Turn timer disabled: M5 ShotLifecycle owns shot completion.");
@@ -65,9 +65,39 @@ public sealed class SnookerTurnManager : MonoBehaviour
         BroadcastTurn();
     }
 
+    [Serializable]
+    public struct M5TransactionState
+    {
+        public int CurrentPlayer; public float TurnTimer; public bool StrikerContinues;
+        public bool ShotInProgress; public float RestTimer;
+    }
+
+    public M5TransactionState CaptureM5TransactionState() => new M5TransactionState
+    { CurrentPlayer=currentPlayer, TurnTimer=_turnTimer, StrikerContinues=_strikerContinues, ShotInProgress=_shotInProgress, RestTimer=_restTimer };
+
+    public void RestoreM5TransactionState(M5TransactionState state)
+    {
+        currentPlayer=state.CurrentPlayer; _turnTimer=state.TurnTimer; _strikerContinues=state.StrikerContinues;
+        _shotInProgress=state.ShotInProgress; _restTimer=state.RestTimer;
+    }
+
+    public void ApplyM5Decision(bool frameEnd, bool strikerContinues)
+    {
+        _turnTimer=0f; _restTimer=0f; _shotInProgress=false; _strikerContinues=strikerContinues;
+        if (!frameEnd && !strikerContinues) currentPlayer = currentPlayer == 1 ? 2 : 1;
+    }
+
+    public void EmitM5TransactionCommitted()
+    {
+        if (_strikerContinues) TurnChanged?.Invoke(currentPlayer);
+        else BroadcastTurn();
+        _strikerContinues=false;
+    }
+
     private void Update()
     {
-        if (nextTurnKey != KeyCode.None && Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+        if (_m5Lifecycle != null && (_m5Lifecycle.CurrentState == M5ShotLifecycle.State.Active || _m5Lifecycle.CurrentState == M5ShotLifecycle.State.Settling)) return;
+        if (nextTurnKey != KeyCode.None && Keyboard.current != null && Input.GetKeyDown(nextTurnKey))
         {
             NextTurn();
             return;
