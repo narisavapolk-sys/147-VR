@@ -584,3 +584,40 @@ Additional log observations: repeated Packages directory monitor buffer overflow
 - Evidence: Artifacts/M5_3/WO010_UPM_SESSION_20260923.txt; Unity log SHA256 F805667B6F2C90034ECF18E398EA2CC5A14172507742D0067DD345D908D05E7B.
 - No source/core/rules changes were made by the UPM session. No Unity/UPM process remains.
 - STOP for this work window: do not retry UPM or reopen the architecture; next work must proceed only after a new explicit Coach authorization/work order.
+
+
+## 2026-11-05 — Owner-approved scene de-duplication (reversible)
+- Preflight: no Unity Editor, UnityPackageManager, or Blender process was running. Blender MCP TCP port 9876 had no listener. No Blender scene was opened or modified.
+- Recycle Bin moves completed (recoverable): Assets/Scenes/147VR_MainScene_V008_TEST.unity + .meta; Assets/Scenes/147VR_ClubRoom.unity + .meta.
+- Kept Assets/Scenes/147VR_MainScene.unity: the 2026-11-05 S2 import audit identifies it as the canonical integration scene with V008/physics references, and ProjectSettings/EditorBuildSettings.asset still uses it as build index 0. It was not moved.
+- Kept PoolTable_8Ball.unity and PoolTable_9Ball.unity; Build Settings still contains all three valid entries (MainScene, 8Ball, 9Ball). Build Settings was not modified.
+- Blender authority: C:\Users\mongo\OneDrive\Desktop\147VR_147NEON_VINTAGE_ArtPass_AAA naris.blend exists (224,585,562 bytes). Its adjacent .blend1 recovery backup was preserved. The separate extracted WPBSA table .blend and versioned table/lighting .blend files under the Unity project's Blender source folder are asset/source work, not duplicate full-room scenes, and were preserved.
+- Git was not reset, staged, committed, or cleaned. The pre-existing dirty tree at f6a746d5 contains numerous edits/deletions/untracked files, including the V008_TEST scene before its reversible move.
+- Validation: moved files no longer exist under Assets/Scenes; canonical MainScene exists; Build Settings still points to MainScene, 8Ball, and 9Ball. No Unity compile/PlayMode test was run.
+- Next: resume integration QA from Docs/AI_TEAM/S2_IMPORT_AUDIT_20261105.md: open canonical MainScene under the single-executor lock, validate V008 table wiring, resolve ball-rack/spawn readiness, then author a real TableSpec and adapt event runner only without introducing a second physics authority.
+
+
+## 2026-11-05 — Supplemental Blender legacy-scene cleanup
+- A scoped inventory of OneDrive Desktop found 14 additional 147VR/Crucible full-room or blockout scene revisions. All 14 were moved to Windows Recycle Bin (recoverable), not permanently deleted:
+  - Crucible_Arena_v03.blend, Crucible_Arena_v04.blend, Crucible_Arena_v05.blend, Crucible_Arena_v06.blend, Crucible_Arena_v07_AAA.blend
+  - Crucible_Blockout.blend, Crucible_Blockout_v02.blend
+  - 147VR_Aristocrat_PRODUCTION_REVIEW.blend
+  - 147VR_008_CRUCIBLE_FINAL_MERGED.blend
+  - 147VR_008_CRUCIBLE_FURNITURE_V2_CLEAN_TABLE_RED_RUG.blend
+  - 147VR_008_CRUCIBLE_ORIGINAL008_PROMDANCE_CINEMATIC_FURNITURE_V2.blend
+  - 147VR_008_CRUCIBLE_ORIGINAL008_PROMDANCE_CINEMATIC_FURNITURE_V2_NO_TABLE.blend
+  - 147VR_008_CRUCIBLE_ORIGINAL008_PROMDANCE_CINEMATIC_FURNITURE_V3_NO_TABLE.blend
+  - 147VR_008_CRUCIBLE_ORIGINAL008_PROMDANCE_CINEMATIC_FURNITURE_V4_NO_TABLE.blend
+- Verified all 14 names appear in Recycle Bin; no matching legacy candidates remain in their source locations.
+- Preserved authoritative room file 147VR_147NEON_VINTAGE_ArtPass_AAA naris.blend (224,585,562 bytes), its .blend1 recovery backup, and the extracted WPBSA table asset blend. Other cue/component/source assets and unrelated Blender projects were not swept.
+- No Blender GUI or MCP session was started; this was file-level, recoverable scene de-duplication only.
+
+## 2026-11-05 - Unity Integration QA
+- Unity 6000.4.4f1 batch compile passed with UPM IPC connected and zero error CS compiler messages. Editor Utility compile errors did not reproduce; no utility source patch was necessary. Warnings are listed in Docs/AI_TEAM/UnityLogs/INTEGRATION_QA_20261105.md.
+- Backed up Assets/Scenes/147VR_MainScene.unity before editing. Rewired PlayerViewManager, SnookerBallTracker, and SnookerPhysicsSetup tableRoot references to active 147VR_Table_V008_OPT_VISUAL.
+- Removed inactive Prefab_WPBSA_12Foot_Snooker legacy instance and the separate disabled orphan Bed_Collider marker. No additional physics runner was attached.
+- Added Assets/Tests/PlayMode/V008MainScenePlayModeTests.cs. PlayMode result: 1 passed, 0 failed, 0.88s. V008 surface material FELT, 5 pocket pads, all serialized tableRoot references correct, no legacy prefab/Bed_Collider/PoolPhysics runner.
+- Runtime readiness is still BLOCKED: all three gameplay components are hosted on inactive Quest Setup; active ball-like Rigidbody count is zero. Do not enable Quest Setup or introduce another physics authority until the intended boot flow and ball rack/spawn set are reviewed.
+- Full evidence: Docs/AI_TEAM/UnityLogs/INTEGRATION_QA_20261105.md and V008_PlayMode_Regression_20261105.xml. Pre-edit scene backup is under Docs/AI_TEAM/UnityLogs/Backups.
+- Git branch integration/008-m53 at f6a746d5, one local commit ahead of origin. Extensive pre-existing working-tree changes preserved; no staging or commit. EditorBuildSettings.asset had a pre-existing removal of SampleScene and was not edited in this QA pass.
+- Unity_Safe_Batch_Launch.ps1 restored exactly from HEAD; temporary audit/runner scripts removed.

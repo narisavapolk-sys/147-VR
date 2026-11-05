@@ -122,3 +122,10 @@ Docs/ART_STAGE/blend_archive/
 Docs/ART_STAGE/export/
 Docs/ART_STAGE/bake/
 Docs/ART_STAGE/147VR_Table_WPBSA_Visual_Clean_v006_DARC_LIGHTING_ART_V04/
+
+# Consolidation 2026-11-05 (OpenCode): raw reference kit + Blender session derivatives, local only
+/Reference/
+SNOOKER   VR pool table/Blender/147VR_Table_WPBSA_Visual_Clean_v006_DARC_*.blend
+SNOOKER   VR pool table/Blender/147VR_Table_WPBSA_Visual_Clean_v006_PRE_D_FIX.blend
+SNOOKER   VR pool table/Blender/Untitled.blend
+SNOOKER   VR pool table/Blender/LIGHTING_CHECK*.png

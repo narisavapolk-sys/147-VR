@@ -486,3 +486,23 @@ Next:
 - Evidence: Artifacts/M5_3/WO010_UPM_SESSION_20260923.txt; Unity log SHA256 F805667B6F2C90034ECF18E398EA2CC5A14172507742D0067DD345D908D05E7B.
 - No source/core/rules changes were made by the UPM session. No Unity/UPM process remains.
 - STOP for this work window: do not retry UPM or reopen the architecture; next work must proceed only after a new explicit Coach authorization/work order.
+
+
+## 2026-11-05 — Scene cleanup handoff
+- Owner-approved, reversible cleanup moved Unity scenes 147VR_MainScene_V008_TEST.unity and 147VR_ClubRoom.unity plus their .meta files to Recycle Bin.
+- Canonical 147VR_MainScene.unity was deliberately retained after the current S2 audit confirmed active V008/physics references and Build Settings index 0. 8Ball/9Ball scenes and all Build Settings entries remain intact.
+- Main Blender room file 147VR_147NEON_VINTAGE_ArtPass_AAA naris.blend was confirmed present (224,585,562 bytes); adjacent .blend1 backup retained. No Blender/MCP process was active, so no scene edits were attempted.
+- No Git staging, reset, commit, compile, or PlayMode validation occurred. Working tree remains pre-existing dirty.
+
+
+## 2026-11-05 — Blender scene de-duplication
+- Moved 14 legacy 147VR/Crucible full-room and blockout .blend scene files to Windows Recycle Bin; verified all 14 are present there.
+- Kept the authoritative 147VR_147NEON_VINTAGE_ArtPass_AAA naris.blend, its .blend1 backup, and extracted WPBSA table asset. Did not sweep cue/component assets or unrelated projects.
+- No Blender process/MCP session was started and no scene contents were edited.
+
+## 2026-11-05 - Unity Integration QA handoff
+- Canonical Unity scene is Assets/Scenes/147VR_MainScene.unity. The active V008 visual root is 147VR_Table_V008_OPT_VISUAL; PlayerViewManager, SnookerBallTracker, and SnookerPhysicsSetup serialized tableRoot references now point to it.
+- Inactive legacy WPBSA table prefab and orphan disabled Bed_Collider marker were removed from MainScene after external-reference checks. A pre-edit scene backup is retained.
+- Targeted PlayMode test V008_MainScene_SerializedWiring_IsValid passed 1/1. It reports coreSystemsActive=False because all three systems sit under inactive Quest Setup, and activeBallBodies=0. Full physics gameplay test is not yet possible.
+- Next required integration step: inspect why Quest Setup is inactive, restore/author the production ball rack and spawn set, confirm one physics authority, then run shot/rail/pocket regression.
+- No Git reset/stage/commit. Existing dirty working tree preserved; lock released.
