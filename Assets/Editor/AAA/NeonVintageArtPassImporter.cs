@@ -52,6 +52,24 @@ namespace _147VR.EditorTools
             AssetDatabase.SaveAssets();
         }
 
+        [MenuItem("147VR/AAA/NeonVintage/3) Fix PostProcess + Ambient only")]
+        public static void MenuFixPost()
+        {
+            if (!LoadManifest()) return;
+            var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
+            foreach (var go in active.GetRootGameObjects())
+            {
+                if (go.name != SceneRootName) continue;
+                SetupPostProcess(go.transform);
+                SetupAmbient();
+                AssetDatabase.SaveAssets();
+                Selection.activeGameObject = go;
+                Debug.Log("[NeonVintage] postprocess(ACES+bloom .asset) + ambient refreshed");
+                return;
+            }
+            EditorUtility.DisplayDialog("NeonVintage", "ยังไม่มี root 147VR_AAA_NeonVintage ในฉาก — รันข้อ 2 ก่อน", "ปิด");
+        }
+
         // ---------- loading ----------
         static bool LoadManifest()
         {
