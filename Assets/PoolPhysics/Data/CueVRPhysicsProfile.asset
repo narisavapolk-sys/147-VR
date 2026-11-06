@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c4c46331ad22d4e95582f2d00a1fa4, type: 3}
+  m_Name: CueVRPhysicsProfile
+  m_EditorClassIdentifier: PoolPhysics::PoolPhysics.Unity.CueVRPhysicsProfile
+  substep: 0.0005
+  maxSubstepsPerFrame: 2000
+  gravity: 9.806
+  poolBallRadius: 0.028575
+  snookerBallRadius: 0.02625
+  ballMass: 0.16
+  slidingFriction: 0.2
+  rollingFriction: 0.01
+  spinDecay: 1.4726
+  restSpeedEpsilon: 0.002
+  ballBallRestitution: 0.95
+  ballBallFriction: 0.06
+  cushionRestitution: 0.75
+  cushionFriction: 0.2
+  cushionSpinLoss: 0.85
+  cushionThrowCoeff: 0
+  cushionGear: 0
+  napAnisotropy: 0.15
+  napSteer: 0
+  spinGainTangential: 0.8
+  spinGainVertical: 0.4

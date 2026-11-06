@@ -249,7 +249,7 @@ namespace VR147.EditorTools
                 settings.albedoBoost = 1.0f;
                 settings.lightmapResolution = 10;            // pixels/metre — Quest-friendly
                 settings.lightmapMaxSize = 512;              // small atlases, 15.4 GB machine
-                settings.bounces = 2;
+                settings.maxBounces = 2;
                 settings.minBounces = 1;
                 settings.maxBounces = 2;
                 settings.directSampleCount = 16;             // CPU-friendly but noise-free enough

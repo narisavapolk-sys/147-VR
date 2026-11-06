@@ -173,7 +173,7 @@ namespace PoolPhysics.Unity
                 var rb = _bodies[i]; if (rb == null) continue;
                 // snapshot PhysX state INTO the sim (velocity/angular are DIRECTIONS, not points), then go kinematic
                 var b = _sim.Balls[i];
-                b.Position = ToSim(rb.position); b.Velocity = ToSimDir(rb.velocity); b.AngularVelocity = ToSimDir(rb.angularVelocity);
+                b.Position = ToSim(rb.position); b.Velocity = ToSimDir(rb.linearVelocity); b.AngularVelocity = ToSimDir(rb.angularVelocity);
                 b.Active = rb.gameObject.activeInHierarchy; _sim.Balls[i] = b;
                 rb.isKinematic = true;
             }
@@ -238,13 +238,13 @@ namespace PoolPhysics.Unity
                     // ball fell during sim ownership: hand it back PARKED and HIDDEN with zero
                     // momentum so the legacy path / respawn code sees a consistent pocketed state.
                     rb.position = ToUnity(b.Position);
-                    rb.velocity = Vector3.zero; rb.angularVelocity = Vector3.zero;
+                    rb.linearVelocity = Vector3.zero; rb.angularVelocity = Vector3.zero;
                     if (rb.gameObject.activeSelf) rb.gameObject.SetActive(false);
                 }
                 else
                 {
                     if (!rb.gameObject.activeSelf) rb.gameObject.SetActive(true);
-                    rb.position = ToUnity(b.Position); rb.velocity = ToUnityDir(b.Velocity); rb.angularVelocity = ToUnityDir(b.AngularVelocity);
+                    rb.position = ToUnity(b.Position); rb.linearVelocity = ToUnityDir(b.Velocity); rb.angularVelocity = ToUnityDir(b.AngularVelocity);
                 }
             }
             foreach (var d in legacyDrivers) if (d != null) d.enabled = true;

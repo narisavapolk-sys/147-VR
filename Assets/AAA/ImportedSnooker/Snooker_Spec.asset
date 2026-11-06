@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 49d6f22067d43454abb43408ac711f8b, type: 3}
+  m_Name: Snooker_Spec
+  m_EditorClassIdentifier: Assembly-CSharp::CueWarp.Gameplay.Tables.TableSpecs
+  type: 4
+  tableName: WPBSA 12-Foot Snooker
+  playAreaLength: 3.569
+  playAreaWidth: 1.778
+  tableHeight: 0.75
+  ballDiameterMm: 52.5
+  cushionHeight: 0.033
+  cushionRestitution: 0.7
+  cushionFriction: 0.2
+  cushionProfile: L-Shape
+  clothDynamicFriction: 0.22
+  clothStaticFriction: 0.32999998
+  isHeatedSlate: 0
+  hasPockets: 1
+  cornerPocketWidth: 0.08
+  sidePocketWidth: 0.08
+  pocketCutStyle: Rounded

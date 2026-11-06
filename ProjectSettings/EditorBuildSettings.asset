@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/147VR_MainScene_WipRoom.unity
+    guid: e40237f62054426fac34fa47f96070f9
+  - enabled: 1
     path: Assets/Scenes/147VR_MainScene.unity
     guid: a3c6e3b644f4a5848b0f2ad4b5d99d4b
   - enabled: 1
