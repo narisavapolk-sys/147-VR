@@ -365,6 +365,9 @@ namespace _147VR.EditorTools
             if (artpassRoot.Find("147VR_AAA_PostProcess") != null) return;
             var pgo = new GameObject("147VR_AAA_PostProcess");
             pgo.transform.SetParent(artpassRoot, false);
+            // Unity 6: .profile ห้าม CreateAsset ใช้ .asset แทน + save ก่อนค่อยผูกกับ Volume
+            const string ppPath = Root + "/ArtpassPost.asset";
+            AssetDatabase.DeleteAsset(Root + "/ArtpassPost.profile");
             var prof = ScriptableObject.CreateInstance<VolumeProfile>();
             try
             {
@@ -375,9 +378,9 @@ namespace _147VR.EditorTools
                 bl.threshold.Override(1.0f);
             }
             catch (System.Exception e) { Debug.LogWarning("[NeonVintage] post setup: " + e.Message); }
-            AssetDatabase.CreateAsset(prof, Root + "/ArtpassPost.profile");
+            AssetDatabase.CreateAsset(prof, ppPath);
             var vol = pgo.AddComponent<Volume>();
-            vol.sharedProfile = prof;
+            vol.sharedProfile = AssetDatabase.LoadAssetAtPath<VolumeProfile>(ppPath);
             vol.isGlobal = true;
         }
 
