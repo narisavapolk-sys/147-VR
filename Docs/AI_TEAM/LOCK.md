@@ -228,3 +228,9 @@ If the holder becomes unreachable, do not assume the lock is stale. Inspect actu
 - Changed/committed files: Docs/AI_TEAM/LOCK.md (takeover + release), UnityLogs Summary (log file gitignored by .gitignore:24).
 - Blockers/next action: post-merge canonical PlayMode regression evidence still missing (headless -runTests non-viable on this machine, 2/2 stalls). Next: run V008MainScenePlayModeTests through ToolRunner (Logs/editor_cmd.txt) inside an owner-opened Unity 6000.4.4f1 session, then update 147VR_CURRENT_STATE.md and release lock.
 - Lock now RELEASED.
+
+## Handoff queued 2026-11-06 (owner Unity session - PlayMode regression runbook)
+- Owner-approved plan (2026-11-05/06 session chain): the remaining post-merge PlayMode regression is delivered by the OWNER opening Unity (single instance 6000.4.4f1) and running `V008MainScenePlayModeTests` from the built-in Test Runner (Window > General > Test Runner, PlayMode tab, filter `V008MainScenePlayModeTests`). No new editor code is added for this run (zero compile risk; ToolRunner has no test command and headless -runTests is non-viable on this machine, 2/2 stalls - see Consolidation/(2) summaries).
+- Evidence chain goal: parse the test outcome from Unity's Editor.log (precedent: V008ProgrammaticPlayMode log recorded `[TestRunnerTools] Test Started`), then write SUMMARY + update 147VR_CURRENT_STATE.md to close the consolidation chain.
+- Machine state when queued: working tree clean at b57d6dfc (S3 audio committed by the QwenWork consolidation session b57d6dfc + handoff docs 1792f9b3); S3 code compiled clean in gate #4 (all three files written 16:50, assemblies rebuilt 16:53:31, 0 "error CS"). Push to origin of the 10-commit consolidation chain queued; LFS upload in progress at handoff time.
+- Owner holds the executor role while Unity is open; no AI session edits project files during that session.
