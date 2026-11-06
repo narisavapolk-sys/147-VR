@@ -237,7 +237,6 @@ namespace _147VR.EditorTools
                 var ecol = new Color(Sc(md.emissionColor, 0, 0f), Sc(md.emissionColor, 1, 0f), Sc(md.emissionColor, 2, 0f), 1f);
                 m.SetColor("_EmissionColor", ecol * es);
                 m.EnableKeyword("_EMISSION");
-                m.globalIlluminationEnabled = true;
             }
 
             if (md.alpha < 0.999f)
@@ -245,7 +244,7 @@ namespace _147VR.EditorTools
                 m.SetFloat("_Surface", 1f);
                 m.SetFloat("_Blend", 0f);
                 m.EnableKeyword("_SURFACE_TYPE_TRANSPARENT");
-                m.SetOverrideQueue(3000f);
+                m.renderQueue = 3000;
             }
         }
 
@@ -258,9 +257,8 @@ namespace _147VR.EditorTools
             var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
             if (!active.isLoaded) { EditorUtility.DisplayDialog("NeonVintage", "ไม่มีฉากที่เปิดอยู่", "ปิด"); return; }
 
-            Transform artpassRoot = null;
-            foreach (var tr in active.GetRootGameObjects())
-                if (tr.name == SceneRootName) { artpassRoot = tr; break; }
+            GameObject artGo = active.GetRootGameObjects().FirstOrDefault(g => g.name == SceneRootName);
+            Transform artpassRoot = artGo != null ? artGo.transform : null;
 
             bool existing = artpassRoot != null;
             if (existing)
