@@ -278,3 +278,4 @@ If the holder becomes unreachable, do not assume the lock is stale. Inspect actu
 - Safety: no reset/clean/stash/checkout; do not alter Physics Authority, XR anchors, player spawns, Build Settings, or other scenes. Preserve dirty `147VR_MainScene.unity` and existing edits.
 - Preflight: Unity/UPM/Hub/Blender process check returned none; free RAM 9.84 GB / 15.44 GB. Branch `integration/008-m53`, HEAD `50c3e74a61d50680d69279176f4ecf2032613e84`, ahead of origin by 5. Build Settings index 0 already points to WipRoom GUID `e40237f62054426fac34fa47f96070f9`.
 - Lock remains active until backup, commit, WipRoom scene audit, documentation, and postflight checks are complete.
+Using skills: `3d-spatial`, `unity-developer`, `graphics-rendering`, `asset-audit` — ตรวจ WipRoom hierarchy, prefab overlap, lighting/visual assets และ VR safety ก่อนแก้ staging path.

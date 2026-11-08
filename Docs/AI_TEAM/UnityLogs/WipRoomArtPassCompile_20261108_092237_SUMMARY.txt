@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20261108_092237
+LogName: WipRoomArtPassCompile
+ExecuteMethod: VR147.EditorTools.ToolRunner.RunCommands
+Process result: EXITED code=0
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: False
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\WipRoomArtPassCompile_20261108_092237.log

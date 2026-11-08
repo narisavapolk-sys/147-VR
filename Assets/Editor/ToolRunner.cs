@@ -128,6 +128,7 @@ namespace VR147.EditorTools
                         case "bake":           BakeGI.BatchBake(); break;
                         case "aaa-audit":      _147VR.EditorTools.NeonVintageAudit.Run(); break;
                         case "aaa-prepare-assets": _147VR.EditorTools.NeonVintageArtPassImporter.MenuPrepareAssets(); break;
+                        case "wiproom-visual-audit": _147VR.EditorTools.WipRoomVisualAudit.Run(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
