@@ -1,24 +1,24 @@
 {
  "source": "C:\\Users\\mongo\\OneDrive\\Desktop\\147VR_147NEON_VINTAGE_ArtPass_AAA naris.blend",
- "budget": 300000.0,
+ "budget": 155000.0,
  "fbx": [
   {
    "name": "147 VR.fbx",
    "collection": "147 VR",
    "objects": 24,
-   "tris_after": 8908
+   "tris_after": 4277
   },
   {
    "name": "147 VR \u0e1c\u0e49\u0e32\u0e21\u0e48\u0e32\u0e19 welcome.fbx",
    "collection": "147 VR \u0e1c\u0e49\u0e32\u0e21\u0e48\u0e32\u0e19 welcome",
    "objects": 75,
-   "tris_after": 5479
+   "tris_after": 3629
   },
   {
    "name": "147VR_AAA_Curtains.fbx",
    "collection": "147VR_AAA_Curtains",
    "objects": 9,
-   "tris_after": 401
+   "tris_after": 194
   },
   {
    "name": "147VR_AAA_Exterior.fbx",
@@ -30,55 +30,55 @@
    "name": "147VR_AAA_FlagRod.fbx",
    "collection": "147VR_AAA_FlagRod",
    "objects": 1,
-   "tris_after": 18
+   "tris_after": 8
   },
   {
    "name": "147VR_AAA_Flags.fbx",
    "collection": "147VR_AAA_Flags",
    "objects": 26,
-   "tris_after": 4169
+   "tris_after": 2042
   },
   {
    "name": "147VR_AAA_Frieze.fbx",
    "collection": "147VR_AAA_Frieze",
    "objects": 4,
-   "tris_after": 214
+   "tris_after": 158
   },
   {
    "name": "147VR_AAA_Mirror.fbx",
    "collection": "147VR_AAA_Mirror",
    "objects": 36,
-   "tris_after": 2512
+   "tris_after": 1232
   },
   {
    "name": "147VR_AAA_StageValance.fbx",
    "collection": "147VR_AAA_StageValance",
    "objects": 2,
-   "tris_after": 264
+   "tris_after": 129
   },
   {
    "name": "147VR_AAA_Upgrade_Props.fbx",
    "collection": "147VR_AAA_Upgrade_Props",
    "objects": 40,
-   "tris_after": 1078
+   "tris_after": 516
   },
   {
    "name": "147VR_Ceiling_Lighting.fbx",
    "collection": "147VR_Ceiling_Lighting",
    "objects": 4,
-   "tris_after": 1980
+   "tris_after": 432
   },
   {
    "name": "147VR_Ceiling_Lighting _ AAA Shafts & Dust.fbx",
    "collection": "147VR_Ceiling_Lighting | AAA Shafts & Dust",
    "objects": 13,
-   "tris_after": 864
+   "tris_after": 744
   },
   {
    "name": "147VR_Club_Furnishings.fbx",
    "collection": "147VR_Club_Furnishings",
    "objects": 25,
-   "tris_after": 7177
+   "tris_after": 4787
   },
   {
    "name": "147VR_Faint_Air_Dust.fbx",
@@ -96,13 +96,13 @@
    "name": "147VR_Imported_Props_And_Maxell.fbx",
    "collection": "147VR_Imported_Props_And_Maxell",
    "objects": 42,
-   "tris_after": 20702
+   "tris_after": 11924
   },
   {
    "name": "147VR_Jukebox_Prototype.fbx",
    "collection": "147VR_Jukebox_Prototype",
    "objects": 44,
-   "tris_after": 1411
+   "tris_after": 690
   },
   {
    "name": "147VR_LiveMusic_Props.fbx",
@@ -114,31 +114,31 @@
    "name": "147VR_LiveStage.fbx",
    "collection": "147VR_LiveStage",
    "objects": 72,
-   "tris_after": 2130
+   "tris_after": 994
   },
   {
    "name": "147VR_NewBulbs.fbx",
    "collection": "147VR_NewBulbs",
    "objects": 12,
-   "tris_after": 8820
+   "tris_after": 4320
   },
   {
    "name": "147VR_PartyBalloons.fbx",
    "collection": "147VR_PartyBalloons",
    "objects": 288,
-   "tris_after": 81302
+   "tris_after": 39589
   },
   {
    "name": "147VR_Stage_Neon_Landmark.fbx",
    "collection": "147VR_Stage_Neon_Landmark",
    "objects": 5,
-   "tris_after": 364
+   "tris_after": 178
   },
   {
    "name": "147VR_Stage_Truss.fbx",
    "collection": "147VR_Stage_Truss",
    "objects": 14,
-   "tris_after": 1336
+   "tris_after": 620
   },
   {
    "name": "147VR_Wall_Dress.fbx",
@@ -150,25 +150,25 @@
    "name": "147vr_StageCurtain_OpenGathered.fbx",
    "collection": "147vr_StageCurtain_OpenGathered",
    "objects": 1,
-   "tris_after": 88
+   "tris_after": 42
   },
   {
    "name": "AAA_147VR_Bar_Transfer.fbx",
    "collection": "AAA_147VR_Bar_Transfer",
    "objects": 65,
-   "tris_after": 18037
+   "tris_after": 8764
   },
   {
    "name": "AAA_Architectural_Finish.fbx",
    "collection": "AAA_Architectural_Finish",
    "objects": 117,
-   "tris_after": 2593
+   "tris_after": 1275
   },
   {
    "name": "AAA_Lounge_Furniture.fbx",
    "collection": "AAA_Lounge_Furniture",
    "objects": 7,
-   "tris_after": 3716
+   "tris_after": 1695
   },
   {
    "name": "AAA_Warm_Ambience.fbx",
@@ -180,19 +180,19 @@
    "name": "Collection.fbx",
    "collection": "Collection",
    "objects": 1,
-   "tris_after": 585
+   "tris_after": 240
   },
   {
    "name": "Dynamic.fbx",
    "collection": "Dynamic",
    "objects": 59,
-   "tris_after": 20589
+   "tris_after": 9568
   },
   {
    "name": "Static_Baked.fbx",
    "collection": "Static_Baked",
    "objects": 653,
-   "tris_after": 145539
+   "tris_after": 76874
   }
  ],
  "textures": [
@@ -12995,40 +12995,40 @@
    "147 VR \u0e1c\u0e49\u0e32\u0e21\u0e48\u0e32\u0e19 welcome | \u0e2a\u0e33\u0e40\u0e19\u0e32 02"
   ],
   "post_tris_per_collection": {
-   "147 VR": 8908,
-   "147 VR \u0e1c\u0e49\u0e32\u0e21\u0e48\u0e32\u0e19 welcome": 5479,
-   "147VR_AAA_Curtains": 401,
+   "147 VR": 4277,
+   "147 VR \u0e1c\u0e49\u0e32\u0e21\u0e48\u0e32\u0e19 welcome": 3629,
+   "147VR_AAA_Curtains": 194,
    "147VR_AAA_Exterior": 44,
-   "147VR_AAA_FlagRod": 18,
-   "147VR_AAA_Flags": 4169,
-   "147VR_AAA_Frieze": 214,
-   "147VR_AAA_Mirror": 2512,
-   "147VR_AAA_StageValance": 264,
-   "147VR_AAA_Upgrade_Props": 1078,
-   "147VR_Ceiling_Lighting": 1980,
-   "147VR_Ceiling_Lighting | AAA Shafts & Dust": 864,
-   "147VR_Club_Furnishings": 7177,
+   "147VR_AAA_FlagRod": 8,
+   "147VR_AAA_Flags": 2042,
+   "147VR_AAA_Frieze": 158,
+   "147VR_AAA_Mirror": 1232,
+   "147VR_AAA_StageValance": 129,
+   "147VR_AAA_Upgrade_Props": 516,
+   "147VR_Ceiling_Lighting": 432,
+   "147VR_Ceiling_Lighting | AAA Shafts & Dust": 744,
+   "147VR_Club_Furnishings": 4787,
    "147VR_Faint_Air_Dust": 72,
    "147VR_Gallery_Row": 168,
-   "147VR_Imported_Props_And_Maxell": 20702,
-   "147VR_Jukebox_Prototype": 1411,
+   "147VR_Imported_Props_And_Maxell": 11924,
+   "147VR_Jukebox_Prototype": 690,
    "147VR_LiveMusic_Props": 46,
-   "147VR_LiveStage": 2130,
-   "147VR_NewBulbs": 8820,
-   "147VR_PartyBalloons": 81302,
-   "147VR_Stage_Neon_Landmark": 364,
-   "147VR_Stage_Truss": 1336,
+   "147VR_LiveStage": 994,
+   "147VR_NewBulbs": 4320,
+   "147VR_PartyBalloons": 39589,
+   "147VR_Stage_Neon_Landmark": 178,
+   "147VR_Stage_Truss": 620,
    "147VR_Wall_Dress": 10,
-   "147vr_StageCurtain_OpenGathered": 88,
-   "AAA_147VR_Bar_Transfer": 18037,
-   "AAA_Architectural_Finish": 2593,
-   "AAA_Lounge_Furniture": 3716,
+   "147vr_StageCurtain_OpenGathered": 42,
+   "AAA_147VR_Bar_Transfer": 8764,
+   "AAA_Architectural_Finish": 1275,
+   "AAA_Lounge_Furniture": 1695,
    "AAA_Warm_Ambience": 4,
-   "Collection": 585,
-   "Dynamic": 20589,
-   "Static_Baked": 145539
+   "Collection": 240,
+   "Dynamic": 9568,
+   "Static_Baked": 76874
   },
-  "post_total": 300934,
+  "post_total": 156761,
   "iterations": 6,
   "fbx_ok": 32,
   "fbx_failed": 0,

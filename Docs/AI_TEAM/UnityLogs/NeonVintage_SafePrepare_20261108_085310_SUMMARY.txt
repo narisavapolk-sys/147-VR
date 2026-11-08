@@ -1,0 +1,9 @@
+147VR Unity Safe Batch Launch - Summary
+Timestamp: 20261108_085310
+LogName: NeonVintage_SafePrepare
+ExecuteMethod: VR147.EditorTools.ToolRunner.RunCommands
+Process result: EXITED code=1
+UPM IPC connected: True
+UPM IPC failed (still): False
+Compile errors (CS) found: True
+LogFile: C:\Users\mongo\UnityProjects\147 VR\Docs\AI_TEAM\UnityLogs\NeonVintage_SafePrepare_20261108_085310.log

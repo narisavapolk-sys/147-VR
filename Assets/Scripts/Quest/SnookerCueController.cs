@@ -40,6 +40,13 @@ public sealed class SnookerCueController : MonoBehaviour
     [Tooltip("Charge rate per second (0..1).")]
     public float chargeRate = 1.2f;
 
+    [Header("Cue grip span (S2 #2 — BHP GRIP LEN, visual only)")]
+    [Tooltip("Live hand-contact point: 0 = toward the TIP (drawn cue shorter), 1 = toward the BUTT (drawn cue full length). Driven by BhpCueGripController / tablet slider; visual only — tip-to-ball geometry and the strike are untouched.")]
+    [Range(0f, 1f)]
+    public float CueGripSpan01 = 0.35f;
+    [Tooltip("Drawn cue length at span 0 (m). The default mirrors the BHP controller's 0.6 m hand-slide range on a 1.4 m cue.")]
+    public float CueGripSpanMinLength = 0.8f;
+
     [Header("Input")]
     public bool useXRIfAvailable = true;
 
@@ -65,6 +72,9 @@ public sealed class SnookerCueController : MonoBehaviour
     private Rigidbody _cueBallRb;
 
     private Transform _cueVisual;
+    private Transform _cueShaftTf;
+    private Transform _cueTipTf;
+    private BhpCueGripController _linkedGrip;
     private Vector3 _aimPoint;
     private bool _hasAim;
     private float _charge;
@@ -112,6 +122,18 @@ public sealed class SnookerCueController : MonoBehaviour
 
         CreateCueVisual();
 
+        // S2 #2 — LINK the cue visual to the BHP GRIP LEN publisher: the controller owns the
+        // value and its persistence; this consumer re-draws the cue from OnGripLengthChanged.
+        // Subscribed by FindFirstObjectByType so no scene object is required for the link.
+        _linkedGrip = FindFirstObjectByType<BhpCueGripController>();
+        if (_linkedGrip != null)
+        {
+            SetCueGripSpan01(_linkedGrip.GripLength01);        // sync to the persisted per-player value
+            _linkedGrip.OnGripLengthChanged += SetCueGripSpan01;
+            _linkedGrip.OnGripLengthStep += OnGripLengthStepHaptic;
+            Debug.Log($"[Cue] Cue grip span linked to BhpCueGripController (span {CueGripSpan01:P0}).");
+        }
+
         _xrActive = useXRIfAvailable && XRDevicePresent();
         if (_xrActive)
             Debug.Log($"[Cue] XR controller detected â€” cue follows {(dominantHand != null ? dominantHand.Current.ToString().ToLowerInvariant() : "right")} hand.");
@@ -144,6 +166,31 @@ public sealed class SnookerCueController : MonoBehaviour
             UpdateDesktop();
 
         UpdateCueVisual();
+    }
+
+    private void OnDestroy()
+    {
+        if (_linkedGrip != null)
+        {
+            _linkedGrip.OnGripLengthChanged -= SetCueGripSpan01;
+            _linkedGrip.OnGripLengthStep -= OnGripLengthStepHaptic;
+        }
+    }
+
+    /// <summary>BHP GRIP LEN consumer: 0 = contact point toward the TIP (short drawn cue),
+    /// 1 = toward the BUTT (full drawn cue). Visual only — see the field tooltip.</summary>
+    public void SetCueGripSpan01(float span01)
+    {
+        CueGripSpan01 = Mathf.Clamp01(span01);
+    }
+
+    // One short left-hand pulse per GRIP-LEN step so the slide is FELT, not only seen
+    // (BHP CONTROL_MAP: "stepping with haptic-sized increments").
+    private void OnGripLengthStepHaptic(bool towardButt)
+    {
+        XRDevice hand = InputDevices.GetDeviceAtXRNode(XRNode.LeftHand);
+        if (hand.isValid)
+            hand.SendHapticImpulse(0u, 0.35f, 0.05f);
     }
 
     private void ResolveSemanticInput()
@@ -500,12 +547,14 @@ public sealed class SnookerCueController : MonoBehaviour
         _cueVisual = new GameObject("Cue Stick (runtime)").transform;
         _cueVisual.SetParent(transform, false);
 
-        // Shaft: a long thin cylinder.
+        // Shaft: a long thin cylinder, root-anchored — the DRAWN length (grip span) is applied
+        // in UpdateCueVisual so the shaft always ends flush at the tip sphere.
         GameObject shaft = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
         shaft.name = "Cue Shaft";
         shaft.transform.SetParent(_cueVisual, false);
         shaft.transform.localScale = new Vector3(cueRadius * 2f, cueLength * 0.5f, cueRadius * 2f);
         shaft.transform.localRotation = Quaternion.Euler(90f, 0f, 0f); // lie along Z
+        _cueShaftTf = shaft.transform;
         Collider col = shaft.GetComponent<Collider>();
         if (col != null)
             Object.Destroy(col);
@@ -516,12 +565,13 @@ public sealed class SnookerCueController : MonoBehaviour
                 color = new Color(0.55f, 0.38f, 0.2f)
             };
 
-        // Tip: small sphere at the front.
+        // Tip: small sphere capping the ball-side end of the shaft.
         GameObject tip = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         tip.name = "Cue Tip";
         tip.transform.SetParent(_cueVisual, false);
         tip.transform.localScale = Vector3.one * (cueRadius * 2.4f);
         tip.transform.localPosition = new Vector3(0f, 0f, cueLength * 0.5f);
+        _cueTipTf = tip.transform;
         Collider tipCol = tip.GetComponent<Collider>();
         if (tipCol != null)
             Object.Destroy(tipCol);
@@ -548,7 +598,19 @@ public sealed class SnookerCueController : MonoBehaviour
         Vector3 tipPos = from + dir * (tipGap + pull);
         tipPos.y = _cueBall.position.y;
 
-        _cueVisual.position = tipPos + dir * (cueLength * 0.5f - tipGap - pull);
+        // BHP GRIP LEN (S2 #2): the tip sphere stays anchored at the ball-side end of the
+        // DRAWN cue; the span only extends/retracts the shaft behind the hands, so tip-to-ball
+        // geometry, pull-space and the strike are all untouched at every span setting.
+        float drawnLength = Mathf.Lerp(Mathf.Min(CueGripSpanMinLength, cueLength), cueLength, CueGripSpan01);
+        _cueVisual.position = tipPos - dir * (drawnLength * 0.5f);
+        if (_cueTipTf != null)
+            _cueTipTf.localPosition = new Vector3(0f, 0f, drawnLength * 0.5f);
+        if (_cueShaftTf != null)
+        {
+            Vector3 shaftScale = _cueShaftTf.localScale;
+            shaftScale.y = drawnLength * 0.5f;
+            _cueShaftTf.localScale = shaftScale;
+        }
         _cueVisual.rotation = Quaternion.LookRotation(dir, Vector3.up);
 
         // Visual feedback: colour shifts toward red as power grows.

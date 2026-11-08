@@ -58,8 +58,14 @@ public sealed class BhpCueGripController : MonoBehaviour
     /// <summary>Grip contact-point parameter changed (0 = tip-adjacent, 1 = near-butt), already clamped.</summary>
     public event Action<float> OnGripLengthChanged;
 
+    // ---- persistence (shared with TabletOptionsMenu's CUE GRIP LENGTH slider) ----
+    /// <summary>PlayerPrefs key for the per-player hand contact point. The controller loads it at
+    /// boot and writes it on every change, so the preference survives sessions even when the
+    /// tablet menu is absent from the scene.</summary>
+    public const string PrefsKeyGripLength01 = "Tablet.CueGripLength01";
+
     [Header("Cue grip length (per-player preference)")]
-    /// <summary>Hand contact point along the shaft: 0 = tip-adjacent, 1 = near-butt. Persisted by the settings layer.</summary>
+    /// <summary>Hand contact point along the shaft: 0 = tip-adjacent, 1 = near-butt. Persisted via PrefsKeyGripLength01.</summary>
     [Range(0f, 1f)] public float GripLength01 = 0.35f;
     [Range(0.01f, 0.10f)] public float GRIP_STEP_M = 0.03f;    // hand slide per adjustment step
     [Range(0.2f, 1.2f)] public float GRIP_RANGE_M = 0.6f;      // full slide span mapped to GripLength01 0..1
@@ -90,6 +96,14 @@ public sealed class BhpCueGripController : MonoBehaviour
     bool _hasRightPos;
     bool _prevLeftTrigger, _hasGripAnchor;
     Vector3 _gripAnchor;
+
+    void Start()
+    {
+        // per-player preference: the contact point resumes where the player left it last session.
+        // Reloaded through SetGripLength01 so any already-subscribed consumer (e.g. the cue
+        // visual) receives the corrected value as a normal event.
+        SetGripLength01(PlayerPrefs.GetFloat(PrefsKeyGripLength01, GripLength01));
+    }
 
     void Update()
     {
@@ -158,12 +172,14 @@ public sealed class BhpCueGripController : MonoBehaviour
         _prevLeftTrigger = lt;
     }
 
-    /// <summary>Clamped setter for tablet/settings UI; fires OnGripLengthChanged on change.</summary>
+    /// <summary>Clamped setter for tablet/settings UI; persists the per-player preference and
+    /// fires OnGripLengthChanged on change (consumers re-position the cue from this event).</summary>
     public void SetGripLength01(float v)
     {
         float c = Mathf.Clamp01(v);
         if (Mathf.Approximately(c, GripLength01)) return;
         GripLength01 = c;
+        PlayerPrefs.SetFloat(PrefsKeyGripLength01, c);
         OnGripLengthChanged?.Invoke(c);
     }
 

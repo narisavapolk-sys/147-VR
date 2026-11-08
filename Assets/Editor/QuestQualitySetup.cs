@@ -6,9 +6,10 @@ namespace _147VR.Quality
 {
     /// <summary>
     /// Creates the 3-tier Quest render setup (STAGING tool — run menu once, review assets):
-    ///   Assets/AAA/Settings/Quality/Resources/URP_Quest_Low.asset      no MSAA, no shadows, renderScale 0.85
-    ///   Assets/AAA/Settings/Quality/Resources/URP_Quest_Medium.asset   MSAA 2x, main-light shadow only
+    ///   Assets/AAA/Settings/Quality/Resources/URP_Quest_Low.asset      MSAA 4x (floor), no shadows, renderScale 0.85
+    ///   Assets/AAA/Settings/Quality/Resources/URP_Quest_Medium.asset   MSAA 4x, main-light shadow only
     ///   Assets/AAA/Settings/Quality/Resources/URP_Quest_High.asset     MSAA 4x, single 1024 shadow, HDR off (VR+MSAA)
+    /// MSAA never drops below 4x: aliased cue tips betray VR at any tier.
     /// The runtime QuestRenderBootstrap picks a tier (PlayerPrefs "vr_quality" 0/1/2) and applies it
     /// plus foveation — no per-scene wiring needed.
     /// NOTE: written against URP 17 (Unity 6000.x) public properties; if a setter name moved in the
@@ -22,8 +23,8 @@ namespace _147VR.Quality
         public static void Create()
         {
             EnsureDir();
-            Build(Dir + "/URP_Quest_Low.asset",    msaa: 1, shadows: false, shadowRes: 512,  scale: 0.85f);
-            Build(Dir + "/URP_Quest_Medium.asset", msaa: 2, shadows: true,  shadowRes: 1024, scale: 1.0f);
+            Build(Dir + "/URP_Quest_Low.asset",    msaa: 4, shadows: false, shadowRes: 512,  scale: 0.85f);
+            Build(Dir + "/URP_Quest_Medium.asset", msaa: 4, shadows: true,  shadowRes: 1024, scale: 1.0f);
             Build(Dir + "/URP_Quest_High.asset",   msaa: 4, shadows: true,  shadowRes: 1024, scale: 1.0f);
             AssetDatabase.SaveAssets();
             Debug.Log("[Quality] 3 URP tiers created under " + Dir + " — runtime selector reads PlayerPrefs 'vr_quality' (0/1/2).");
@@ -67,14 +68,14 @@ namespace _147VR.Quality
 
         static void EnsureDir()
         {
-            if (AssetDatabase.IsValidFolder("Assets/AAA/Settings"))
-            {
-                if (!AssetDatabase.IsValidFolder("Assets/AAA/Settings/Quality"))
-                    AssetDatabase.CreateFolder("Assets/AAA/Settings", "Quality");
-                if (!AssetDatabase.IsValidFolder(Dir))
-                    AssetDatabase.CreateFolder("Assets/AAA/Settings/Quality", "Resources");
-            }
-            else Debug.LogError("[Quality] Create Assets/AAA/Settings first (or edit Dir).");
+            if (!AssetDatabase.IsValidFolder("Assets/AAA"))
+                AssetDatabase.CreateFolder("Assets", "AAA");
+            if (!AssetDatabase.IsValidFolder("Assets/AAA/Settings"))
+                AssetDatabase.CreateFolder("Assets/AAA", "Settings");
+            if (!AssetDatabase.IsValidFolder("Assets/AAA/Settings/Quality"))
+                AssetDatabase.CreateFolder("Assets/AAA/Settings", "Quality");
+            if (!AssetDatabase.IsValidFolder(Dir))
+                AssetDatabase.CreateFolder("Assets/AAA/Settings/Quality", "Resources");
         }
     }
 }

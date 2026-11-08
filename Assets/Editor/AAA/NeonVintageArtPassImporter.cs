@@ -44,30 +44,22 @@ namespace _147VR.EditorTools
             Debug.Log($"[NeonVintage] Prepare OK — materials {matCount}, textures touched {texTouched}, fbx touched {fbxTouched}");
         }
 
-        [MenuItem("147VR/AAA/NeonVintage/2) Place In Scene (replace WipRoom content)")]
+        [MenuItem("147VR/AAA/NeonVintage/LEGACY - Disabled unsafe replace path")]
         public static void MenuPlaceInScene()
         {
-            if (!LoadManifest()) return;
-            try { InstanceAll(); } finally { EditorUtility.ClearProgressBar(); }
-            AssetDatabase.SaveAssets();
+            EditorUtility.DisplayDialog("NeonVintage",
+                "Legacy placement path is disabled because it deletes existing ArtPass children and archives scene roots. Use 147VR/AAA/NeonVintage/Safe/3) Stage Static + Dynamic FBX (additive) on the AAA working copy.",
+                "OK");
+            Debug.LogWarning("[NeonVintage] Legacy destructive placement path blocked. Use NeonVintageSafeStager.");
         }
 
-        [MenuItem("147VR/AAA/NeonVintage/3) Fix PostProcess + Ambient only")]
+        [MenuItem("147VR/AAA/NeonVintage/LEGACY - Disabled incomplete PostProcess fix")]
         public static void MenuFixPost()
         {
-            if (!LoadManifest()) return;
-            var active = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
-            foreach (var go in active.GetRootGameObjects())
-            {
-                if (go.name != SceneRootName) continue;
-                SetupPostProcess(go.transform);
-                SetupAmbient();
-                AssetDatabase.SaveAssets();
-                Selection.activeGameObject = go;
-                Debug.Log("[NeonVintage] postprocess(ACES+bloom .asset) + ambient refreshed");
-                return;
-            }
-            EditorUtility.DisplayDialog("NeonVintage", "ยังไม่มี root 147VR_AAA_NeonVintage ในฉาก — รันข้อ 2 ก่อน", "ปิด");
+            EditorUtility.DisplayDialog("NeonVintage",
+                "Legacy PostProcess path is disabled because it does not repair existing VolumeProfile sub-assets. Use 147VR/AAA/NeonVintage/Safe/4) Repair PostProcess Profile (new v002 asset) on the AAA working copy.",
+                "OK");
+            Debug.LogWarning("[NeonVintage] Legacy incomplete PostProcess path blocked. Use NeonVintageSafeStager.");
         }
 
         // ---------- loading ----------

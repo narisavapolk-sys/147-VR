@@ -5,13 +5,13 @@ Single source for Unity execution ownership between LUNA and Claude.
 ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder may open Unity, edit project files, run AssetDatabase-sensitive operations, build, or execute runtime tests.
 
 ## Current Lock
-- Holder: OpenCode (GLM agent), owner-authorized session ("run headless compile gate fresh after the hard reset")
-- Status: RELEASED (compile gate #4 passed; see Takeover record at end of file)
-- Domain: 2026-11-05 consolidation — post-hard-reset compile gate #4 (re-verify the 00811f3e merge state still compiles clean on the canonical checkout)
-- Started: 2026-11-05 ~17:0x CET
+- Holder: None — no Unity executor active.
+- Status: RELEASED (Phase 2 NeonVintage compile + asset preparation passed; scene staging awaits owner GUI click).
+- Domain: 2026-11-08 Phase 2 — NeonVintage Editor compile and asset-only preparation; no scene save.
+- Started/ended: 2026-11-08 08:53–08:56 CET.
 - Preflight (record): no Unity/UnityPackageManager/Blender/Unity.Hub process; RAM 11.97 GB free / 15.44 GB total (above 5-6 GB rule); Library warm (LastWrite 2026-11-05 15:44); stale Library/EditorInstance.json from the killed Consolidation2 instance (pid 10984) — removed as takeover hygiene; assemblies intact (Assembly-CSharp.dll / -Editor.dll 15:43:36 from the killed run's partial import — note: NOT the 14:16 gate-#3 timestamps).
-- Plan: Unity_Safe_Batch_Launch.ps1 in plain compile-gate mode (no -executeMethod, no -runTests), LogName ConsolidationCompile4_PostReset, TimeoutSec 900; then record SUMMARY evidence + release lock.
-- Release condition: Unity exits 0 (or processes manifest as benign timeout after successful import) + zero "error CS" + summary recorded + this file updated.
+- Plan/result: Unity_Safe_Batch_Launch.ps1 + ToolRunner command aaa-prepare-assets; compile exit 0, UPM IPC connected, zero C# errors; 280 materials processed; scene untouched.
+- Release condition met: summary recorded; original MainScene/working copy/Build Settings hashes unchanged; no Unity/UPM process remains; Git not staged/committed.
 
 ## Before Taking the Lock
 1. Read this file.
@@ -234,3 +234,47 @@ If the holder becomes unreachable, do not assume the lock is stale. Inspect actu
 - Evidence chain goal: parse the test outcome from Unity's Editor.log (precedent: V008ProgrammaticPlayMode log recorded `[TestRunnerTools] Test Started`), then write SUMMARY + update 147VR_CURRENT_STATE.md to close the consolidation chain.
 - Machine state when queued: working tree clean at b57d6dfc (S3 audio committed by the QwenWork consolidation session b57d6dfc + handoff docs 1792f9b3); S3 code compiled clean in gate #4 (all three files written 16:50, assemblies rebuilt 16:53:31, 0 "error CS"). Push to origin of the 10-commit consolidation chain queued; LFS upload in progress at handoff time.
 - Owner holds the executor role while Unity is open; no AI session edits project files during that session.
+
+## Takeover 2026-11-07 — Phase 2 NeonVintage safe staging (owner-approved)
+- Holder: GPT-6 remote execution session, temporary and narrowly scoped under the owner's explicit approval: Scene=copy; Git=preserve; import assets=yes. This does not change the long-term LUNA/Physics Authority role.
+- Previous handoff said the owner held execution while Unity was open. Live preflight on 2026-11-07 found NO Unity.exe, UnityPackageManager.exe, UnityHub.exe, or Blender.exe process; therefore no live owner Editor session conflicts with this takeover.
+- Preflight: canonical checkout integration/008-m53, HEAD 50c3e74a61d50680d69279176f4ecf2032613e84, ahead of origin by 5 commits. Working tree has 712 status rows: 602 untracked, 64 modified, 46 deleted. All are preserved; no reset/clean/stash/checkout/stage/commit/push is authorized.
+- Memory preflight: 5.5 GB free / 15.44 GB total. This is borderline for Unity on this machine; do not launch Unity Batchmode or open a second GUI session in this takeover. Follow AGENTS.md: scene changes must be exposed as owner-clicked Editor MenuItems, with rendered preview reviewed by owner.
+- Source scene finding: working-tree Assets/Scenes/147VR_MainScene.unity has 122 GameObjects, but the canonical table/Quest setup are archived under inactive WipRoom_Old_Backup. The last committed HEAD version has 109 GameObjects and active 147VR_Table_V008_OPT_VISUAL, with Quest Setup intentionally inactive. Phase 2 working copy must therefore be based on the exact HEAD scene snapshot, not the heavily modified working-tree scene; both original files remain untouched.
+- Asset source: manifest.json/manifest_flat.json list 32 FBX exports, 280 materials, 161 textures, 211 light records. FBX list includes alternative per-collection exports (30 files) plus aggregate Static_Baked.fbx (653 objects / 76,874 tris) and Dynamic.fbx (59 objects / 9,568 tris). Never place aggregate and per-collection exports together; this would duplicate geometry. Total aggregate geometry is 86,442 triangles, below the project's 350k visible-triangle budget, but draw calls and actual Quest performance remain NOT MEASURED.
+- Scope: create a separate AAA working scene copy from committed HEAD; prepare a safe, additive owner-click staging menu for aggregate static/dynamic FBX only; no Build Settings changes; no writes to the original MainScene; no Physics Authority, collider, Rigidbody, table-root, XR binding, tag, layer, or gameplay edits. Do not invoke legacy destructive Place In Scene path.
+- Release condition: working copy and fresh GUID verified; safe editor menu syntax-reviewed; owner opens the working copy and clicks the menu; owner reviews rendered preview before any save/production adoption. Unity remains closed by this agent.
+
+
+### Release 2026-11-07 — Phase 2 file preparation complete; owner GUI handoff
+- Created and verified the separate working copy from committed HEAD; unique scene GUID confirmed, original dirty MainScene hash unchanged, and Build Settings does not reference the working copy.
+- Added the additive NeonVintageSafeStager Editor menus and disabled the legacy destructive placement and incomplete PostProcess menu paths. Importer source backup and the phase handoff report are recorded.
+- Asset integrity check: 32/32 FBX present, 161/161 referenced textures present, 280/280 material files present, 0 duplicate GUIDs across 2,407 meta files.
+- No Unity/UPM/UnityHub/Blender process was launched. New Editor code is NOT yet compiled by Unity; no FBX was staged, no PostProcess asset was created, no Scene was saved, and no rendered preview was claimed.
+- Docs updated: Docs/147VR_CURRENT_STATE.md, Docs/147VR_PROJECT_MEMORY.md, and Docs/AI_TEAM/PHASE2_NEONVINTAGE_SAFE_STAGING_20261107.md.
+- Git was not staged, committed, pushed, reset, cleaned, or stashed. The original MainScene and existing dirty/untracked work remain preserved.
+- Lock now RELEASED. When the owner opens Unity, the owner holds the single-executor lock; no AI session may perform Unity-sensitive edits until the owner closes Unity and releases the lock.
+- Owner next: confirm free RAM remains >6 GB; open one Unity 6000.4.4f1 instance; open the AAA working copy; run the Safe menus in the handoff report order; inspect Console and rendered preview; save only after visual and Physics Boundary review.
+
+- Final handoff preflight after file preparation: no Unity/UPM/UnityHub/Blender processes; free RAM 6.38 GB / 15.44 GB. Owner may now open one Unity 6000.4.4f1 instance, provided free RAM remains above 6 GB.
+
+
+## Takeover 2026-11-08 — Phase 2 asset preparation only
+- Holder: GPT-6 via Remote Desktop Commander, under the owner's request to resume Phase 2 and complete the NeonVintage work quickly.
+- Scope: compile Editor scripts and run the owner-approved asset-only preparation operation (FBX/texture import settings + generated URP materials). No Scene staging or saving, no Build Settings, no Physics Authority, no XR/gameplay edits, and no Git operations.
+- Preflight: no Unity/UPM/UnityHub/Blender process; 9.6 GB free RAM / 15.44 GB; Library exists and is 5.76 GB; pinned Unity 6000.4.4f1. Manifest validated with Python UTF-8: 32/32 FBX and 161/161 textures present.
+- ToolRunner queue contains only `aaa-prepare-assets`. Its current implementation opens canonical MainScene in batch memory if needed, but this command only configures importers/builds materials; it does not edit or save the Scene. Original MainScene and working copy hashes are to be rechecked after execution.
+- Release condition: confirm Unity exit, UPM/compile logs, material/import counts, hashes, and Git status; then record blockers/next owner click and release lock.
+
+
+### Release 2026-11-08 — Phase 2 asset preparation — RELEASED
+- Package-aware Unity 6000.4.4f1 batch compile exited 0; UPM IPC connected; zero C# errors.
+- ToolRunner aaa-prepare-assets completed: 280 materials processed; textures touched 0; FBX importer settings touched 0. No Scene was modified or saved.
+- Original MainScene, AAA working Scene, and Build Settings hashes are unchanged. ArtpassPost_v002, aggregate FBX staging, render preview, and Physics Boundary audit remain pending owner GUI acceptance.
+- Git remains unstaged/uncommitted; no reset/clean/stash/checkout/push. Unity/UPM processes closed; lock released.
+## Takeover 2026-11-08 — owner-directed Git checkpoint + active scene correction
+- Holder: GPT-6 via Remote Desktop Commander; owner explicitly authorized a local Git commit checkpoint with backups and corrected the active gameplay scene to `Assets/Scenes/147VR_MainScene_WipRoom.unity`.
+- Scope: inspect all current changes; create a recoverable pre-commit backup (Git bundle + tracked diff + untracked files); commit the verified current working tree locally. No push. Then inspect WipRoom scene hierarchy and adapt the NeonVintage staging workflow only after confirming its existing Physics/XR/table boundaries.
+- Safety: no reset/clean/stash/checkout; do not alter Physics Authority, XR anchors, player spawns, Build Settings, or other scenes. Preserve dirty `147VR_MainScene.unity` and existing edits.
+- Preflight: Unity/UPM/Hub/Blender process check returned none; free RAM 9.84 GB / 15.44 GB. Branch `integration/008-m53`, HEAD `50c3e74a61d50680d69279176f4ecf2032613e84`, ahead of origin by 5. Build Settings index 0 already points to WipRoom GUID `e40237f62054426fac34fa47f96070f9`.
+- Lock remains active until backup, commit, WipRoom scene audit, documentation, and postflight checks are complete.

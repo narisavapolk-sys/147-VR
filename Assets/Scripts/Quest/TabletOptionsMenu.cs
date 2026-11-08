@@ -83,6 +83,11 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     private Text _moveSpeedVal;
     private Text _heightVal;
     private Text _volumeVal;
+    private Text _cueGripVal;
+
+    // S2 #2 — cue grip span (BHP GRIP LEN): controller auto-found; may be absent on desktop scenes
+    private BhpCueGripController _cueGrip;
+    private float _cueGripLength = 0.35f;
 
     // Mute button
     private Button _muteBtn;
@@ -98,6 +103,7 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     private float _moveSpeed = 3f;
     private float _height    = 170f;
     private float _volume    = 0.8f;
+    private bool _menuButtonDown;   // left-controller primary level, for the menu-toggle edge probe
 
     // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     //  Lifecycle
@@ -131,15 +137,23 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
     private bool MenuButtonPressed()
     {
-        // Meta Quest left controller primary button (menu button)
+        // Meta Quest left controller primary button (menu button).
+        // EDGE-detected (2026-11-07): a raw level probe made a single held press spam
+        // ToggleMenu() open/close every frame while the button was down.
         var leftHand = new List<XRInputDevice>();
         InputDevices.GetDevicesAtXRNode(XRNode.LeftHand, leftHand);
+        bool down = false;
         foreach (XRInputDevice device in leftHand)
         {
             if (device.TryGetFeatureValue(UnityEngine.XR.CommonUsages.primaryButton, out bool pressed) && pressed)
-                return true;
+            {
+                down = true;
+                break;
+            }
         }
-        return false;
+        bool edge = down && !_menuButtonDown;
+        _menuButtonDown = down;
+        return edge;
     }
 
     public void ToggleMenu()
@@ -227,6 +241,9 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         y = AddLabel(_panel.transform, "PLAYER HEIGHT (CM)", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
         float heightVal = PlayerPrefs.GetFloat(PrefsHeight, 170f);
         y = AddSlider(_panel.transform, "Height", 160f, 185f, heightVal, OnHeightChanged, ref y);
+        y = AddLabel(_panel.transform, "CUE GRIP LENGTH", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
+        float gripVal = PlayerPrefs.GetFloat(BhpCueGripController.PrefsKeyGripLength01, 0.35f);
+        y = AddSlider(_panel.transform, "CueGripLength", 0f, 1f, gripVal, OnCueGripLengthChanged, ref y);
 
         // ÔöÇÔöÇ Divider ÔöÇÔöÇ
         y = AddDivider(_panel.transform, ref y);
@@ -385,6 +402,7 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         if (name == "MoveSpeed") { _moveSpeedVal = valText; UpdateMoveSpeedLabel(val); }
         else if (name == "Height") { _heightVal = valText; UpdateHeightLabel(val); }
         else if (name == "Volume") { _volumeVal = valText; UpdateVolumeLabel(val); }
+        else if (name == "CueGripLength") { _cueGripVal = valText; UpdateCueGripLabel(val); }
 
         y -= 22f;
         return y;
@@ -496,6 +514,20 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         ApplyVolume(val);
     }
 
+    // S2 #2 — BHP GRIP LEN: one key, one authority. BhpCueGripController.SetGripLength01 persists
+    // to PrefsKeyGripLength01 and notifies the cue; on desktop (no controller) persist directly.
+    private void OnCueGripLengthChanged(float val)
+    {
+        _cueGripLength = Mathf.Clamp01(val);
+        if (_cueGrip == null)
+            _cueGrip = FindFirstObjectByType<BhpCueGripController>();
+        if (_cueGrip != null)
+            _cueGrip.SetGripLength01(_cueGripLength);
+        else
+            PlayerPrefs.SetFloat(BhpCueGripController.PrefsKeyGripLength01, _cueGripLength);
+        UpdateCueGripLabel(_cueGripLength);
+    }
+
     private void ToggleMute()
     {
         _muted = !_muted;
@@ -563,6 +595,12 @@ public sealed class TabletOptionsMenu : MonoBehaviour
             _volumeVal.text = $"{(val * 100f):F0}%";
     }
 
+    private void UpdateCueGripLabel(float val)
+    {
+        if (_cueGripVal != null)
+            _cueGripVal.text = $"{val:P0} — {(val < 0.34f ? "SHORT cue" : val > 0.67f ? "LONG cue" : "mid cue")}";
+    }
+
     private void UpdateSceneButtonVisual(int index)
     {
         if (_sceneBtns[index] == null) return;
@@ -582,6 +620,7 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         _volume    = PlayerPrefs.GetFloat(PrefsVolume, 0.8f);
         _muted     = PlayerPrefs.GetInt(PrefsMuted, 0) == 1;
         _selectedScene = PlayerPrefs.GetInt(PrefsScene, 0);
+        _cueGripLength = Mathf.Clamp01(PlayerPrefs.GetFloat(BhpCueGripController.PrefsKeyGripLength01, 0.35f));
     }
 
     // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
@@ -592,6 +631,7 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     public float Volume => _muted ? 0f : _volume;
     public bool IsMuted => _muted;
     public int SelectedSceneIndex => _selectedScene;
+    public float CueGripLength01 => _cueGripLength;
     public string SelectedSceneName => _selectedScene >= 0 && _selectedScene < _sceneNames.Length
         ? _sceneNames[_selectedScene] : "";
 }

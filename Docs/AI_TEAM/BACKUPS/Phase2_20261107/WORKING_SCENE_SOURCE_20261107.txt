@@ -1,0 +1,10 @@
+147VR Phase 2 working scene provenance
+Git HEAD source: 50c3e74a61d50680d69279176f4ecf2032613e84
+Source path: git:Assets/Scenes/147VR_MainScene.unity
+Source SHA256: ec120ef65524c3314d2c2a663330ac12dece949f18c78829724f4a7d21886fe2
+Working copy: Assets/Scenes/147VR_MainScene_AAA_WORKING_v001.unity
+Working copy SHA256: ec120ef65524c3314d2c2a663330ac12dece949f18c78829724f4a7d21886fe2
+Working copy GUID: 3f0d18768c75460d85d8151437e3a25b
+Current dirty MainScene SHA256 (preserved): b08cfbe800751946bb2eac9ffa7c2ad1451bb85e85e4ef527e74b84be692b80d
+Importer backup: Docs\AI_TEAM\Backups\Phase2_20261107\NeonVintageArtPassImporter.prePhase2.cs
+No original scene, Build Settings, physics, or gameplay files were modified by this copy operation.

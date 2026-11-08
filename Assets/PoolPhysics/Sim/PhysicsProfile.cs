@@ -27,15 +27,15 @@ namespace PoolPhysics.Sim
         // ---- Balls (CueVR radius HIGH, mass MED) ----
         public float PoolBallRadius    = 0.028575f; // 57.15 mm WPA
         public float SnookerBallRadius = 0.02625f;  // 52.5 mm
-        public float BallMass          = 0.16f;     // [TUNE] games don't expose mass; WPA ~0.16-0.17 kg
+        public float BallMass          = 0.19f;     // [TUNE] target 0.17–0.22 kg for VR feel (real 0.141 kg)
 
         // ---- Solid sphere inertia & rolling transition (CueVR, HIGH) ----
         public float InertiaFactor = 0.4f;   // 2/5
         public float RollFactor    = 5f/7f;  // 5/7
 
         // ---- Cloth / friction [TUNE] (games: cloth dyn friction pool~0.2, snooker~0.5) ----
-        public float SlidingFriction   = 0.2f;  // [TUNE] μ_s ball vs cloth (pool prior)
-        public float RollingFriction   = 0.01f; // [TUNE] μ_r (rolling resistance)
+        public float SlidingFriction   = 0.22f;  // [TUNE] μ_s ball vs cloth — snooker needs ≥0.18 for screw/backspin
+        public float RollingFriction   = 0.012f; // [TUNE] μ_r (rolling resistance) — cue strike 1.2–1.6 m/s pot travels ~2.5 table lengths
         public float SpinningFriction  = 0.044f;// [TUNE] μ_sp (pivoting/spin decay about vertical)
         public float SpinDecay         = 1.4726f; // (CueVR) from .bss spin-decay constant
         public float RestSpeedEpsilon  = 0.002f;  // below this the ball is considered stopped
@@ -45,8 +45,8 @@ namespace PoolPhysics.Sim
         public float BallBallFriction    = 0.06f; // [TUNE] tangential → "throw"
 
         // ---- Cushion [TUNE] (games: TableCushion bounce 0.78, friction ~0.35 snooker / ~0 pool) ----
-        public float CushionRestitution = 0.78f;  // [TUNE] e_cush (UnlimitedSnooker TableCushion)
-        public float CushionFriction    = 0.30f;  // [TUNE] μ_cush
+        public float CushionRestitution = 0.65f;  // [TUNE] e_cush — real snooker ~0.75, in-game 0.55–0.70 for lively feel
+        public float CushionFriction    = 0.35f;  // [TUNE] μ_cush — snooker cushions grip more than pool (~0.35)
         public float CushionSpinLoss    = 0.85f;  // [TUNE] cush_spin multiplier
         // Cushion "throw" ∝ x/√y — modelled in PoolSimulator, coefficient [TUNE]:
         public float CushionThrowCoeff  = 0.0f;   // [TUNE] 0 = disabled until fitted

@@ -126,6 +126,8 @@ namespace VR147.EditorTools
                         case "gi-flags":       BakeGI.FlagGIBatch(); break;
                         case "lights-baked":   BakeGI.FlipLightsBatch(); break;
                         case "bake":           BakeGI.BatchBake(); break;
+                        case "aaa-audit":      _147VR.EditorTools.NeonVintageAudit.Run(); break;
+                        case "aaa-prepare-assets": _147VR.EditorTools.NeonVintageArtPassImporter.MenuPrepareAssets(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
