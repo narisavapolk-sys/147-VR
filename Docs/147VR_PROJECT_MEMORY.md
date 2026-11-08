@@ -543,3 +543,11 @@ Next:
 - Compiled with Unity 6000.4.4f1 through the canonical safe batch launcher: EXIT 0, UPM IPC connected, zero C# compiler errors. Existing CS0618 obsolete-API warnings remain unrelated. The read-only audit did not save or modify WipRoom.
 - Scene backup before the material operation: `C:\Users\mongo\147VR_Backups\WipRoom_BeforeNeonVintageMaterialRemap_20261108` (WipRoom .unity + .meta and SampleSceneProfile .asset + .meta).
 - Final visual material assignment and render inspection must be done by the owner in Unity GUI using `147VR > AAA > NeonVintage > WipRoom > 1) Apply Prepared Materials (Undoable / No Save)`. Review the scene, then save WipRoom manually only if visually approved. Never use the old Safe menu 3 aggregate staging or menus that require the AAA working copy.
+
+## 2026-11-08 — WipRoom ArtPass A/B/C owner-approved preview
+- Owner approved the Bay3/Bay4 material correction, 26-country flag placement, and visual/physics review on 147VR_MainScene_WipRoom.
+- The owner-opened Editor log confirms A's broad prepared-material apply ran, but did not save WipRoom. The A report records 1,425/1,512 slots changed and unchanged collider/rigidbody/transform counts.
+- For the Bay3/Bay4 correction, use the textured original Rebound materials, not the prepared NeonVintage variants (their albedo maps are empty). For flags, use the textured Rebound country materials; map by object-name suffix to correct the Blender source's Thailand/Turkey swap.
+- Blender source audit found 26 flag meshes plus a flag rod already arranged as a wall row. Keep their exported FBX transforms; instantiate at identity root transform.
+- New Editor menu tool Assets/Editor/AAA/WipRoomArtPassPreviewBuilder.cs is prepared to create a separate preview Scene, apply the above materials, instantiate flags/rod, and enforce physics/light invariants. Unity has not yet imported/compiled it, and no preview has been created. Owner must click menu 3 in the existing Editor, inspect, run menu 4, then decide whether to adopt the preview into production.
+- Do not save over the production WipRoom file before the preview is visually approved.
