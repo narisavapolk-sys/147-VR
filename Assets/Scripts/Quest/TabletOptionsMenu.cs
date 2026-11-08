@@ -89,6 +89,13 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     private BhpCueGripController _cueGrip;
     private float _cueGripLength = 0.35f;
 
+    // S2 #2c — SOLO PRACTICE / UNDO: the bridge owns the mode and the gate; this UI is the only
+    // player-facing entry point and always routes through TrySetGameMode (settled-boundary only).
+    private VR147.Authority.PoolPhysicsRulesBridge _rulesBridge;
+    private Button _practiceBtn;
+    private Text   _practiceLabel;
+    private Text   _practiceStatus;
+
     // Mute button
     private Button _muteBtn;
     private Text   _muteLabel;
@@ -120,6 +127,20 @@ public sealed class TabletOptionsMenu : MonoBehaviour
             GameObject rig = GameObject.Find("OVRCameraRig");
             if (rig != null) xrCameraRig = rig.transform;
         }
+    }
+
+    /// <summary>
+    /// Guarantees the tablet menu exists so the CUE GRIP LENGTH slider and the SOLO PRACTICE
+    /// (UNDO) toggle are reachable in any gameplay scene. No scene or prefab places this
+    /// component today, so both controls were dormant; this mirrors the authority director's
+    /// runtime-bootstrap pattern and is a no-op when a scene already owns one.
+    /// </summary>
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+    private static void Bootstrap()
+    {
+        if (FindFirstObjectByType<TabletOptionsMenu>() != null) return;
+        GameObject go = new GameObject("Tablet Options Menu");
+        go.AddComponent<TabletOptionsMenu>();
     }
 
     private void Update()
@@ -161,7 +182,10 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         _isOpen = !_isOpen;
         _panel.SetActive(_isOpen);
         if (_isOpen)
+        {
+            RefreshPracticeVisual();   // mode/undo state can change between openings
             FollowController();
+        }
     }
 
     // ÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇÔöÇ
@@ -244,6 +268,10 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         y = AddLabel(_panel.transform, "CUE GRIP LENGTH", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
         float gripVal = PlayerPrefs.GetFloat(BhpCueGripController.PrefsKeyGripLength01, 0.35f);
         y = AddSlider(_panel.transform, "CueGripLength", 0f, 1f, gripVal, OnCueGripLengthChanged, ref y);
+
+        // ---- SOLO PRACTICE / UNDO (owner rule: undo is a practice tool, never a match feature) ----
+        y = AddLabel(_panel.transform, "SOLO PRACTICE / UNDO", labelFontSize, TextAnchor.MiddleLeft, ref y, 40f);
+        y = AddPracticeButton(_panel.transform, ref y);
 
         // ÔöÇÔöÇ Divider ÔöÇÔöÇ
         y = AddDivider(_panel.transform, ref y);
@@ -526,6 +554,117 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         else
             PlayerPrefs.SetFloat(BhpCueGripController.PrefsKeyGripLength01, _cueGripLength);
         UpdateCueGripLabel(_cueGripLength);
+    }
+
+    // ---------------------------------------------------------------------
+    //  S2 #2c — SOLO PRACTICE / UNDO entry point
+    //  The bridge owns gameMode and the gate (PoolUndoPolicy); this UI only ever asks
+    //  TrySetGameMode, which refuses unless the shot is closed and the table is at rest.
+    //  The choice is deliberately NOT persisted: every session must start in the safe
+    //  Match default so a practice snapshot can never leak into a real match.
+    // ---------------------------------------------------------------------
+    private float AddPracticeButton(Transform parent, ref float y)
+    {
+        float btnHeight = 40f;
+
+        GameObject go = new GameObject("PracticeButton");
+        go.transform.SetParent(parent, false);
+        RectTransform rt = go.AddComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.08f, 1f);
+        rt.anchorMax = new Vector2(0.92f, 1f);
+        rt.pivot = new Vector2(0.5f, 1f);
+        rt.anchoredPosition = new Vector2(0f, y);
+        rt.sizeDelta = new Vector2(0f, btnHeight);
+
+        _practiceBtn = go.AddComponent<Button>();
+        Image img = go.AddComponent<Image>();
+        _practiceBtn.onClick.AddListener(TogglePractice);
+
+        GameObject labelGO = new GameObject("PracticeLabel");
+        labelGO.transform.SetParent(go.transform, false);
+        RectTransform labelRT = labelGO.AddComponent<RectTransform>();
+        labelRT.anchorMin = Vector2.zero;
+        labelRT.anchorMax = Vector2.one;
+        labelRT.sizeDelta = Vector2.zero;
+        _practiceLabel = labelGO.AddComponent<Text>();
+        _practiceLabel.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        _practiceLabel.fontSize = buttonFontSize;
+        _practiceLabel.fontStyle = FontStyle.Bold;
+        _practiceLabel.color = textPrimary;
+        _practiceLabel.alignment = TextAnchor.MiddleCenter;
+
+        y -= btnHeight + 6f;
+
+        GameObject statusGO = new GameObject("PracticeStatus");
+        statusGO.transform.SetParent(parent, false);
+        RectTransform statusRT = statusGO.AddComponent<RectTransform>();
+        statusRT.anchorMin = new Vector2(0.08f, 1f);
+        statusRT.anchorMax = new Vector2(0.92f, 1f);
+        statusRT.pivot = new Vector2(0.5f, 1f);
+        statusRT.anchoredPosition = new Vector2(0f, y);
+        statusRT.sizeDelta = new Vector2(0f, 26f);
+        _practiceStatus = statusGO.AddComponent<Text>();
+        _practiceStatus.font = Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+        _practiceStatus.fontSize = valueFontSize;
+        _practiceStatus.color = textSecondary;
+        _practiceStatus.alignment = TextAnchor.MiddleCenter;
+        _practiceStatus.horizontalOverflow = HorizontalWrapMode.Overflow;
+
+        y -= 26f + 12f;
+
+        RefreshPracticeVisual();
+        return y;
+    }
+
+    private void TogglePractice()
+    {
+        if (_rulesBridge == null)
+            _rulesBridge = FindFirstObjectByType<VR147.Authority.PoolPhysicsRulesBridge>();
+
+        if (_rulesBridge == null)
+        {
+            Debug.LogWarning("[TabletMenu] No PoolPhysicsRulesBridge found: practice mode unavailable.", this);
+            RefreshPracticeVisual();
+            return;
+        }
+
+        PoolPhysics.Sim.PoolGameMode next = _rulesBridge.SoloPractice
+            ? PoolPhysics.Sim.PoolGameMode.Match
+            : PoolPhysics.Sim.PoolGameMode.SoloPractice;
+
+        bool accepted = _rulesBridge.TrySetGameMode(next);
+        Debug.Log($"[TabletMenu] practice toggle -> {next} ({(accepted ? "accepted" : "rejected: not a settled boundary")})");
+        RefreshPracticeVisual();
+    }
+
+    private void RefreshPracticeVisual()
+    {
+        if (_practiceBtn == null) return;
+        if (_rulesBridge == null)
+            _rulesBridge = FindFirstObjectByType<VR147.Authority.PoolPhysicsRulesBridge>();
+
+        bool practice = _rulesBridge != null && _rulesBridge.SoloPractice;
+        Image bg = _practiceBtn.GetComponent<Image>();
+        if (bg != null) bg.color = practice ? buttonActive : buttonInactive;
+        if (_practiceLabel != null)
+            _practiceLabel.text = practice ? "SOLO PRACTICE: ON" : "SOLO PRACTICE: OFF";
+
+        if (_practiceStatus == null) return;
+        if (_rulesBridge == null)
+        {
+            _practiceStatus.text = "UNDO unavailable: rules bridge not found";
+            return;
+        }
+        if (!practice)
+        {
+            _practiceStatus.text = "UNDO locked during MATCH (practice only)";
+            return;
+        }
+        _practiceStatus.text = _rulesBridge.UndoAvailable
+            ? "UNDO ready: LEFT X while walking"
+            : (_rulesBridge.UndoMapValid
+                ? "UNDO waits: balls must be at rest, no shot in flight"
+                : "UNDO unavailable on this table");
     }
 
     private void ToggleMute()
