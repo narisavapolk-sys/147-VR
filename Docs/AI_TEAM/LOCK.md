@@ -6,12 +6,12 @@ ONE Unity Executor at a time. Multiple AI may reason/review, but only the holder
 
 ## Current Lock
 - Holder: None — no Unity executor active.
-- Status: RELEASED (Phase 2 NeonVintage compile + asset preparation passed; scene staging awaits owner GUI click).
-- Domain: 2026-11-08 Phase 2 — NeonVintage Editor compile and asset-only preparation; no scene save.
-- Started/ended: 2026-11-08 08:53–08:56 CET.
+- Status: RELEASED (WipRoom audit + safe material-upgrade menu compiled; final owner-click preview pending).
+- Domain: 2026-11-08 WipRoom actual-game Scene audit, material-upgrade tooling, and Git checkpoint; no Scene save or push.
+- Started/ended: 2026-11-08 08:53–09:26 CET.
 - Preflight (record): no Unity/UnityPackageManager/Blender/Unity.Hub process; RAM 11.97 GB free / 15.44 GB total (above 5-6 GB rule); Library warm (LastWrite 2026-11-05 15:44); stale Library/EditorInstance.json from the killed Consolidation2 instance (pid 10984) — removed as takeover hygiene; assemblies intact (Assembly-CSharp.dll / -Editor.dll 15:43:36 from the killed run's partial import — note: NOT the 14:16 gate-#3 timestamps).
-- Plan/result: Unity_Safe_Batch_Launch.ps1 + ToolRunner command aaa-prepare-assets; compile exit 0, UPM IPC connected, zero C# errors; 280 materials processed; scene untouched.
-- Release condition met: summary recorded; original MainScene/working copy/Build Settings hashes unchanged; no Unity/UPM process remains; Git not staged/committed.
+- Plan/result: safe batch compile + read-only WipRoom asset/material audit; EXIT 0, UPM IPC connected, zero C# errors; 1,425/1,512 material slots match after canonical 147VR prefix normalization; no Scene edits.
+- Release condition met: pre-commit bundles and scene backup verified; two local commits created; Git working tree clean; no Unity/UPM/Hub/Blender process remains; no push. Owner GUI click remains the only pending visual action.
 
 ## Before Taking the Lock
 1. Read this file.
@@ -279,3 +279,12 @@ If the holder becomes unreachable, do not assume the lock is stale. Inspect actu
 - Preflight: Unity/UPM/Hub/Blender process check returned none; free RAM 9.84 GB / 15.44 GB. Branch `integration/008-m53`, HEAD `50c3e74a61d50680d69279176f4ecf2032613e84`, ahead of origin by 5. Build Settings index 0 already points to WipRoom GUID `e40237f62054426fac34fa47f96070f9`.
 - Lock remains active until backup, commit, WipRoom scene audit, documentation, and postflight checks are complete.
 Using skills: `3d-spatial`, `unity-developer`, `graphics-rendering`, `asset-audit` — ตรวจ WipRoom hierarchy, prefab overlap, lighting/visual assets และ VR safety ก่อนแก้ staging path.
+
+
+### Release 2026-11-08 — WipRoom art-pass tooling + Git checkpoints — RELEASED
+- Commit 1: ec2d0181553481bb82a2faebfe2d18bb3d50c20f — chore: checkpoint 147VR art pass and gameplay updates.
+- Commit 2: afa1b8787b17cfe13a00712fe8a52f8f5c9806d4 — feat: add safe WipRoom NeonVintage material upgrade.
+- Backups: C:\Users\mongo\147VR_Backups\PreCommit_20261108_090521; C:\Users\mongo\147VR_Backups\PreCommit_WipRoomTools_20261108_092525; C:\Users\mongo\147VR_Backups\WipRoom_BeforeNeonVintageMaterialRemap_20261108.
+- WipRoom scene was audited only; not modified or saved. `WipRoomArtPassTools` compiled successfully and exposes an Undoable owner-click material remap that changes materials only and never auto-saves.
+- Branch integration/008-m53 is ahead of origin by 7 commits; no push. Git working tree is clean. No Unity/UPM/UnityHub/Blender process remains.
+- Owner next: open `Assets/Scenes/147VR_MainScene_WipRoom.unity`, click `147VR/AAA/NeonVintage/WipRoom/1) Apply Prepared Materials (Undoable / No Save)`, inspect the rendered room, then save WipRoom manually only if approved.

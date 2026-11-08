@@ -668,3 +668,8 @@ All Phase 2 preparation files and the separate working Scene copy were verified 
 - Compiled with Unity 6000.4.4f1 through the canonical safe batch launcher: EXIT 0, UPM IPC connected, zero C# compiler errors. Existing CS0618 obsolete-API warnings remain unrelated. The read-only audit did not save or modify WipRoom.
 - Scene backup before the material operation: `C:\Users\mongo\147VR_Backups\WipRoom_BeforeNeonVintageMaterialRemap_20261108` (WipRoom .unity + .meta and SampleSceneProfile .asset + .meta).
 - Final visual material assignment and render inspection must be done by the owner in Unity GUI using `147VR > AAA > NeonVintage > WipRoom > 1) Apply Prepared Materials (Undoable / No Save)`. Review the scene, then save WipRoom manually only if visually approved. Never use the old Safe menu 3 aggregate staging or menus that require the AAA working copy.
+
+## 2026-11-08 — Final checkpoint after WipRoom handoff
+- Local commits: `ec2d0181553481bb82a2faebfe2d18bb3d50c20f` (current project checkpoint) and `afa1b8787b17cfe13a00712fe8a52f8f5c9806d4` (WipRoom-safe art-pass tools).
+- Branch `integration/008-m53` is ahead of origin by 7 commits; no push. Git working tree was clean at handoff.
+- Pre-commit backups and WipRoom scene/profile backup are stored under `C:\Users\mongo\147VR_Backups`. WipRoom itself remains unchanged; final material assignment awaits owner GUI click and visual approval.
