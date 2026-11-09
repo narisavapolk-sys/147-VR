@@ -190,6 +190,15 @@ namespace _147VR.EditorTools
                     }
                     serialized.ApplyModifiedProperties();
                 }
+
+                // Every affected file carries m_LightmapFlags: 4 = EmissiveIsBlack, which tells
+                // Unity the emission is black. That is the most likely reason _EMISSION is
+                // stripped again on the next re-serialization even after it is written correctly.
+                // Clear that bit and declare the emission as baked-emissive instead.
+                MaterialGlobalIlluminationFlags giFlags = target.globalIlluminationFlags;
+                giFlags &= ~MaterialGlobalIlluminationFlags.EmissiveIsBlack;
+                giFlags |= MaterialGlobalIlluminationFlags.BakedEmissive;
+                target.globalIlluminationFlags = giFlags;
                 EditorUtility.SetDirty(target);
                 touched.Add(target);
                 emissionFixed++;
@@ -230,13 +239,19 @@ namespace _147VR.EditorTools
                 bool colourLanded = Regex.IsMatch(targetText, @"_EmissionColor: \{r: " +
                     m.GetColor("_EmissionColor").r.ToString("F3", System.Globalization.CultureInfo.InvariantCulture).Replace('.', '\\') + @"[0-9]");
                 bool emissionKeywordOnDisk = targetKeywords.Contains("_EMISSION");
+                Match flagMatch = Regex.Match(targetText, @"m_LightmapFlags: (\d+)");
+                int lightmapFlags = flagMatch.Success ? int.Parse(flagMatch.Groups[1].Value) : -1;
+                bool emissiveIsBlackStillSet = (lightmapFlags & 4) != 0;
                 bool sourceStillHasItsKeyword = string.IsNullOrEmpty(sourceText) || sourceText.Contains("- _EMISSION")
                                                 || !Regex.IsMatch(sourceText, @"_EmissionColor: \{r: (?!0, 0, 0)");
-                bool ok = emissionKeywordOnDisk && m.GetColor("_EmissionColor").maxColorComponent > 0.001f;
+                bool ok = emissionKeywordOnDisk && m.GetColor("_EmissionColor").maxColorComponent > 0.001f
+                          && !emissiveIsBlackStillSet;
                 if (!ok) failed++;
                 sb.AppendLine("  " + (ok ? "PASS " : "FAIL ") + Path.GetFileName(targetPath) +
                               " | on-disk keywords=" + (string.IsNullOrWhiteSpace(targetKeywords) ? "[]" : targetKeywords.Trim().Replace("\n", " ")) +
                               " | emissionColour=" + m.GetColor("_EmissionColor") +
+                              " | m_LightmapFlags=" + lightmapFlags +
+                              (emissiveIsBlackStillSet ? " *** EmissiveIsBlack still set, Unity will drop the keyword again" : "") +
                               (colourLanded ? " (written)" : "") +
                               (sourceStillHasItsKeyword ? "" : " | *** SOURCE LOST _EMISSION, RESTORE IT"));
             }
