@@ -174,6 +174,377 @@ namespace _147VR.EditorTools
             finally { Finish(); }
         }
 
+        /// <summary>ToolRunner entry point: "art-fix-round2". The three things the evidence agents proved
+        /// from disk on 2026-11-11: the scene has almost no Unity lights even though the .blend art pass
+        /// authored bar/stage/chandelier lights; several scene-bound Rebound materials are black-emissive
+        /// while their donor carries the authored value; and two materials bind the wrong texture file.</summary>
+        public static void RunArtFixRound2()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+
+                ReportLightsAndBar(scene);
+
+                int parity = Guard("EMISSION PARITY", () => EmissionParityFromDonors());
+                int rebinds = Guard("TEXTURE REBIND", () => RebindProvenWrongTextures());
+
+                List<Renderer> all = AllRenderers(scene);
+                Renderer bar = all.FirstOrDefault(r => BarHints.Any(h =>
+                    MaterialName(r).IndexOf(h, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    r.name.IndexOf(h, StringComparison.OrdinalIgnoreCase) >= 0));
+                if (bar != null) Capture("20-bar-area", BoundsOf(bar.gameObject), new Vector3(0f, 1.4f, 5.0f));
+
+                Capture("21-ceiling-now", new Bounds(new Vector3(0f, 4.0f, 0f), new Vector3(26f, 1.6f, 36f)),
+                        new Vector3(0f, -3.0f, 12f));
+
+                List<Renderer> curtains = all.Where(r =>
+                    MaterialName(r).IndexOf("Curtain", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    r.name.IndexOf("Curtain", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                    MaterialName(r).IndexOf("Velvet", StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                if (curtains.Count > 0) Capture("22-curtains-now", UnionOf(curtains), new Vector3(0f, 0.6f, 6.0f));
+                else _log.AppendLine("CURTAINS: no curtain renderer found");
+
+                _log.AppendLine();
+                _log.AppendLine("RESULT parityFixed=" + parity + " textureRebinds=" + rebinds +
+                                " - assets only; the Scene was not modified, saved or reopened.");
+            }
+            finally { Finish(); }
+        }
+
+        /// <summary>ToolRunner entry point: "lamp-audit". Read-only. The parity pass edited Rebound
+        /// materials matched BY NAME, and the ceiling render came out byte-identical to the previous one
+        /// with the bulb spheres still black, so this proves which material asset each lamp renderer
+        /// actually binds instead of assuming the name match was the right target.</summary>
+        public static void RunLampAudit()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+
+                string[] hints = { "bulb", "lamp", "light", "shade", "loft", "cove", "chandelier",
+                                   "pin", "uplight", "sconce", "neon", "marquee", "glow" };
+
+                var rows = new List<LampRow>();
+                foreach (Renderer r in AllRenderers(scene))
+                {
+                    if (r.sharedMaterials.Length == 0 || r.sharedMaterials[0] == null) continue;
+                    string m = r.sharedMaterials[0].name;
+                    string hay = (r.name + "|" + m).ToLowerInvariant();
+                    if (!hints.Any(h => hay.Contains(h))) continue;
+
+                    string matPath = AssetDatabase.GetAssetPath(r.sharedMaterials[0]);
+                    Color e = r.sharedMaterials[0].HasProperty("_EmissionColor")
+                                  ? r.sharedMaterials[0].GetColor("_EmissionColor") : Color.black;
+                    Texture em = r.sharedMaterials[0].HasProperty("_EmissionMap")
+                                  ? r.sharedMaterials[0].GetTexture("_EmissionMap") : null;
+                    bool kw = false;
+                    if (!string.IsNullOrEmpty(matPath) && File.Exists(matPath))
+                        kw = File.ReadAllText(matPath).Contains("- _EMISSION");
+
+                    rows.Add(new LampRow
+                    {
+                        Object = r.name,
+                        MaterialPath = string.IsNullOrEmpty(matPath) ? "<not an asset (scene override?)>" : matPath,
+                        Emission = e,
+                        HasKeyword = kw,
+                        EmissionMap = em != null ? em.name : "<none>",
+                        Centre = r.bounds.center,
+                        Active = r.gameObject.activeInHierarchy && r.enabled,
+                    });
+                }
+
+                _log.AppendLine("LAMP BINDING AUDIT - " + rows.Count + " lamp-family renderers");
+                foreach (var group in rows.GroupBy(x => x.MaterialPath, StringComparer.Ordinal)
+                                          .OrderByDescending(g => g.Count()))
+                {
+                    LampRow first = group.First();
+                    _log.AppendLine("  [" + group.Count() + " renderers] " + group.Key);
+                    _log.AppendLine("      emission=" + Fmt(first.Emission) + " keyword=" +
+                                    (first.HasKeyword ? "YES" : "NO ") + " emissionMap=" + first.EmissionMap);
+                    foreach (LampRow x in group.Take(6))
+                        _log.AppendLine("      " + (x.Active ? "on " : "OFF") + " " + x.Object +
+                                        " centre=" + Fmt(x.Centre));
+                    if (group.Count() > 6) _log.AppendLine("      ... " + (group.Count() - 6) + " more");
+                }
+
+                int dark = rows.Count(x => !x.HasKeyword ||
+                                           Mathf.Max(x.Emission.r, Mathf.Max(x.Emission.g, x.Emission.b)) <= 0.011f);
+                _log.AppendLine("SUMMARY renderers=" + rows.Count + " still-dark-or-no-keyword=" + dark +
+                                " distinct materials=" + rows.Select(x => x.MaterialPath).Distinct().Count());
+                _log.AppendLine("Nothing was modified.");
+            }
+            finally { Finish(); }
+        }
+
+        private sealed class LampRow
+        {
+            public string Object;
+            public string MaterialPath;
+            public Color Emission;
+            public bool HasKeyword;
+            public string EmissionMap;
+            public Vector3 Centre;
+            public bool Active;
+        }
+
+        private static readonly string[] BarHints =
+        {
+            "BarPult", "CashDesk", "BottleHolders", "Sampagne", "WhiskeyBottles",
+            "WineBottles", "BeerTap", "BCStools", "Espresso",
+        };
+
+        private static void ReportLightsAndBar(Scene scene)
+        {
+            _log.AppendLine("UNITY LIGHT INVENTORY");
+            _log.AppendLine("  why: the .blend art pass authored LGT_Bar_glow (AREA e=175 colour 1,0.58,0.31),");
+            _log.AppendLine("  LGT_AAA_Bar_Shelf_Key_01/02 (AREA e=68) and LGT_AAA_Bar_Counter_Fill (AREA e=47.6)");
+            _log.AppendLine("  and the agents found only one !u!108 block in the Scene YAML.");
+            Light[] lights = scene.GetRootGameObjects()
+                                  .SelectMany(g => g.GetComponentsInChildren<Light>(true))
+                                  .Where(l => l != null)
+                                  .ToArray();
+            _log.AppendLine("  Light components=" + lights.Length + " lit=" +
+                            lights.Count(l => l.enabled && l.gameObject.activeInHierarchy));
+            foreach (Light l in lights.OrderBy(l => l.name, StringComparer.Ordinal))
+                _log.AppendLine("  " + (l.enabled && l.gameObject.activeInHierarchy ? "ON  " : "OFF ") +
+                                l.name + " type=" + l.type + " intensity=" + l.intensity.ToString("F2") +
+                                " range=" + l.range.ToString("F2") + " colour=" + Fmt(l.color) +
+                                " pos=" + Fmt(l.transform.position));
+
+            List<Renderer> barParts = AllRenderers(scene)
+                .Where(r => BarHints.Any(h => MaterialName(r).IndexOf(h, StringComparison.OrdinalIgnoreCase) >= 0 ||
+                                              r.name.IndexOf(h, StringComparison.OrdinalIgnoreCase) >= 0))
+                .ToList();
+            if (barParts.Count == 0)
+            {
+                _log.AppendLine("BAR: no bar prop renderer matched - world position still UNVERIFIED, so the");
+                _log.AppendLine("     authored bar lights cannot be placed honestly yet.");
+                return;
+            }
+            Bounds bb = UnionOf(barParts);
+            _log.AppendLine("BAR: renderers=" + barParts.Count + " union " + Fmt(bb.min) + ".." + Fmt(bb.max) +
+                            " size=" + Fmt(bb.size) + " centre=" + Fmt(bb.center));
+            foreach (Renderer r in barParts.OrderBy(x => x.name, StringComparer.Ordinal).Take(12))
+                _log.AppendLine("  " + r.name + " mat=" + MaterialName(r) + " centre=" + Fmt(r.bounds.center));
+        }
+
+        private static string MaterialName(Renderer r) =>
+            r.sharedMaterials.Length > 0 && r.sharedMaterials[0] != null ? r.sharedMaterials[0].name : string.Empty;
+
+        /// <summary>Names that must never be touched by a bulk parity pass - the shared wall and damask
+        /// materials are edited deliberately elsewhere and re-serialising them has stripped keywords before.</summary>
+        private static readonly string[] ParityBlacklist = { "PBR_wall", "Wall_Damask" };
+
+        /// <summary>Where a scene-bound Rebound material is black-emissive but its donor counterpart carries
+        /// authored emission, copy the donor value across. Proven pattern: the donor
+        /// 147VR_Aged_Brass_LoftLight.mat holds (0.18, 0.1224, 0.0774) while the scene-bound
+        /// 147VR_147VR_Aged_Brass_LoftLight.mat is (0,0,0,1), so the fixture renders dark. Rebound files carry
+        /// doubled "147VR_" prefixes, so names are normalised before matching. Every value comes from a real
+        /// asset - nothing is invented here.</summary>
+        private static int EmissionParityFromDonors()
+        {
+            const string reboundFolder = "Assets/AAA/Imports/naris_vintage/Rebound/";
+            const string donorFolder = "Assets/AAA/Imports/NeonVintageArtPass/Materials/";
+
+            // Authored values can live in either folder. The scene binds a TRIPLED-prefix Rebound file
+            // (147VR_147VR_147VR_AAA_CeilingPin_WarmDiffuser.mat, emission 0,0,0) whose value only exists
+            // in a sibling Rebound file (147VR_147VR_AAA_CeilingPin_WarmDiffuser.mat, 1.15,0.8,0.45), so
+            // searching the donor folder alone silently skipped the ceiling pins. When several names
+            // normalise to the same key, the one that actually carries emission wins.
+            var candidates = new List<string>();
+            foreach (string folder in new[] { donorFolder, reboundFolder })
+                candidates.AddRange(AssetDatabase.FindAssets("t:Material", new[] { folder })
+                                                 .Select(AssetDatabase.GUIDToAssetPath)
+                                                 .Where(x => x.EndsWith(".mat", StringComparison.OrdinalIgnoreCase)));
+
+            var donorsByName = new Dictionary<string, Material>(StringComparer.Ordinal);
+            foreach (string p in candidates)
+            {
+                Material cand = AssetDatabase.LoadAssetAtPath<Material>(p);
+                if (cand == null || !cand.HasProperty("_EmissionColor")) continue;
+                Color c = cand.GetColor("_EmissionColor");
+                bool authored = Mathf.Max(c.r, Mathf.Max(c.g, c.b)) > 0.011f;
+                if (!authored) continue;
+
+                string key = NormaliseMatName(Path.GetFileNameWithoutExtension(p));
+                if (donorsByName.TryGetValue(key, out Material existing))
+                {
+                    Color old = existing.HasProperty("_EmissionColor") ? existing.GetColor("_EmissionColor") : Color.black;
+                    if (Mathf.Max(old.r, Mathf.Max(old.g, old.b)) >= c.r) continue;
+                }
+                donorsByName[key] = cand;
+            }
+
+            int fixedCount = 0;
+            var touched = new List<Material>();
+
+            foreach (string path in AssetDatabase.FindAssets("t:Material", new[] { reboundFolder })
+                                                 .Select(AssetDatabase.GUIDToAssetPath)
+                                                 .Where(x => x.EndsWith(".mat", StringComparison.OrdinalIgnoreCase))
+                                                 .OrderBy(x => x, StringComparer.Ordinal))
+            {
+                Material target = AssetDatabase.LoadAssetAtPath<Material>(path);
+                if (target == null || !target.HasProperty("_EmissionColor")) continue;
+                string fileBase = Path.GetFileNameWithoutExtension(path);
+                if (ParityBlacklist.Any(b => fileBase.IndexOf(b, StringComparison.OrdinalIgnoreCase) >= 0)) continue;
+
+                Color current = target.GetColor("_EmissionColor");
+                if (Mathf.Max(current.r, Mathf.Max(current.g, current.b)) > 0.011f) continue;
+
+                string key = NormaliseMatName(fileBase);
+                if (!donorsByName.TryGetValue(key, out Material donor)) continue;
+                if (donor == target) continue;
+                Color authored = donor.GetColor("_EmissionColor");
+
+                WriteEmission(target, authored, "147VR Emission Parity");
+                touched.Add(target);
+                fixedCount++;
+                _log.AppendLine("  parity " + Path.GetFileName(path) + " (0,0,0) -> " + Fmt(authored) +
+                                "  from " + Path.GetFileName(AssetDatabase.GetAssetPath(donor)));
+            }
+
+            if (touched.Count > 0) AssetDatabase.SaveAssets();
+
+            int verifyFail = 0;
+            foreach (Material m in touched)
+            {
+                string path = AssetDatabase.GetAssetPath(m);
+                if (string.IsNullOrEmpty(path) || !File.Exists(path)) { verifyFail++; continue; }
+                string txt = File.ReadAllText(path);
+                Color want = m.GetColor("_EmissionColor");
+                bool rgbLanded = txt.Contains("_EmissionColor: {r: " + want.r.ToString("0.####"));
+                bool kwLanded = txt.Contains("- _EMISSION");
+                bool flagsLanded = txt.Contains("m_LightmapFlags: 2");
+                if (!kwLanded || !rgbLanded || !flagsLanded)
+                {
+                    _log.AppendLine("  PARITY VERIFY FAIL " + Path.GetFileName(path) +
+                                    " keyword=" + kwLanded + " rgb=" + rgbLanded + " bakedEmissive=" + flagsLanded);
+                    verifyFail++;
+                }
+            }
+            _log.AppendLine("EMISSION PARITY: fixed=" + fixedCount + " verifyFailures=" + verifyFail);
+            return fixedCount;
+        }
+
+        /// <summary>Writes emission the only way that survives a save in this project: colour, then the
+        /// _EMISSION keyword through SerializedObject (Material.EnableKeyword does not persist into an asset
+        /// .mat file), then BakedEmissive through globalIlluminationFlags. Without the last step Unity
+        /// recomputes m_LightmapFlags as EmissiveIsBlack and strips the keyword again - proven on
+        /// 2026-11-11 when 15 files written at 05:45 all read keyword=NO by 05:50. The enum type is
+        /// resolved by reflection because Unity 6.4 does not expose it as
+        /// UnityEngine.Rendering.MaterialGlobalIlluminationFlags (CS0234).</summary>
+        private static void WriteEmission(Material target, Color authored, string undoLabel)
+        {
+            Undo.RecordObject(target, undoLabel);
+            target.SetColor("_EmissionColor", authored);
+
+            var so = new SerializedObject(target);
+            SerializedProperty kw = so.FindProperty("m_ValidKeywords");
+            if (kw != null && kw.isArray)
+            {
+                bool present = false;
+                for (int i = 0; i < kw.arraySize; i++)
+                    if (kw.GetArrayElementAtIndex(i).stringValue == "_EMISSION") { present = true; break; }
+                if (!present)
+                {
+                    kw.InsertArrayElementAtIndex(kw.arraySize);
+                    kw.GetArrayElementAtIndex(kw.arraySize - 1).stringValue = "_EMISSION";
+                }
+            }
+            so.ApplyModifiedPropertiesWithoutUndo();
+
+            var giProp = typeof(Material).GetProperty("globalIlluminationFlags");
+            if (giProp != null)
+            {
+                try { giProp.SetValue(target, System.Enum.Parse(giProp.PropertyType, "BakedEmissive"), null); }
+                catch (Exception e) { _log.AppendLine("  WARN BakedEmissive failed on " + target.name + ": " + e.Message); }
+            }
+            else _log.AppendLine("  WARN no globalIlluminationFlags property on this Unity version");
+
+            EditorUtility.SetDirty(target);
+        }
+
+        /// <summary>Strips the repeated "147VR_" prefix the Rebound copies accumulate so a Rebound file can
+        /// be matched back to its single-prefix donor.</summary>
+        private static string NormaliseMatName(string fileName)
+        {
+            string s = fileName;
+            while (s.StartsWith("147VR_", StringComparison.Ordinal) && s.Length > 6) s = s.Substring(6);
+            return s;
+        }
+
+        private static readonly (string Material, string BadGuid, string TexturePath, string Label)[] TextureRebinds =
+        {
+            ("Assets/AAA/Imports/NeonVintageArtPass/Materials/147 VR Burgundy Red Velvet _ Sketchfab Curtains.mat",
+             "f83294f83f81afb4b88a32d1e81542dd",
+             "Assets/147 main/BlendTextures/material_2_baseColor.png.png",
+             "curtain velvet (donor)"),
+            ("Assets/AAA/Imports/naris_vintage/Rebound/147VR_147 VR Burgundy Red Velvet _ Sketchfab Curtains.mat",
+             "f83294f83f81afb4b88a32d1e81542dd",
+             "Assets/147 main/BlendTextures/material_2_baseColor.png.png",
+             "curtain velvet (scene-bound)"),
+            ("Assets/AAA/Imports/naris_vintage/Rebound/147VR_147VR_147VR_Mat_PannelFrame.mat",
+             "2faf45249b959da428ef4e53cc34d8e0",
+             "Assets/147 main/BlendTextures/0096_T_WoodPanel_Dark_BaseColor.png.png",
+             "panel frame (doubled prefix)"),
+            ("Assets/AAA/Imports/naris_vintage/Rebound/147VR_147VR_Mat_PannelFrame.mat",
+             "2faf45249b959da428ef4e53cc34d8e0",
+             "Assets/147 main/BlendTextures/0096_T_WoodPanel_Dark_BaseColor.png.png",
+             "panel frame (single prefix)"),
+        };
+
+        /// <summary>Repoints the two proven mis-bindings and only while the material still carries the
+        /// known-bad GUID, so a repeat run does nothing and a hand fix is never overwritten. The curtain
+        /// _BaseMap is a transmission mask used as albedo (guid f83294f8...), and the panel frame binds
+        /// guid 2faf4524... which no .meta defines, so it is dead and renders white.</summary>
+        private static int RebindProvenWrongTextures()
+        {
+            int done = 0;
+            var expected = new List<KeyValuePair<string, string>>();
+
+            foreach ((string matPath, string badGuid, string texPath, string label) in TextureRebinds)
+            {
+                if (!File.Exists(matPath)) { _log.AppendLine("  REBIND SKIP (no material) " + matPath); continue; }
+                if (!File.Exists(texPath)) { _log.AppendLine("  REBIND SKIP (no texture) " + texPath); continue; }
+                if (!File.ReadAllText(matPath).Contains(badGuid))
+                {
+                    _log.AppendLine("  REBIND already clean: " + label);
+                    continue;
+                }
+
+                Material m = AssetDatabase.LoadAssetAtPath<Material>(matPath);
+                Texture t = AssetDatabase.LoadAssetAtPath<Texture>(texPath);
+                if (m == null || t == null)
+                {
+                    _log.AppendLine("  REBIND LOAD FAIL " + label);
+                    continue;
+                }
+
+                Undo.RecordObject(m, "147VR Texture Rebind");
+                m.SetTexture("_BaseMap", t);
+                EditorUtility.SetDirty(m);
+                expected.Add(new KeyValuePair<string, string>(matPath,
+                    AssetDatabase.AssetPathToGUID(texPath)));
+                done++;
+                _log.AppendLine("  REBIND " + label + " -> " + Path.GetFileName(texPath) +
+                                " (was guid " + badGuid.Substring(0, 8) + "...)");
+            }
+
+            if (expected.Count > 0) AssetDatabase.SaveAssets();
+
+            foreach (KeyValuePair<string, string> pair in expected)
+                if (!File.ReadAllText(pair.Key).Contains(pair.Value))
+                    _log.AppendLine("  REBIND VERIFY FAIL " + pair.Key);
+
+            _log.AppendLine("TEXTURE REBIND: done=" + done);
+            return done;
+        }
+
         /// <summary>ToolRunner entry point: "art-capture". Measures and renders only - it never moves a
         /// transform and never writes an asset, so it is safe to run as often as needed. It lists EVERY
         /// cornice and ornament renderer, because the room carries one moulding per wall and the single
@@ -500,43 +871,10 @@ namespace _147VR.EditorTools
                 bool flagsOk = txt.Contains("m_LightmapFlags: 2");
                 if (hasKeyword && flagsOk) { alreadyOk++; continue; }
 
-                var so = new SerializedObject(m);
-                SerializedProperty kw = so.FindProperty("m_ValidKeywords");
-                if (kw != null && kw.isArray)
-                {
-                    bool present = false;
-                    for (int i = 0; i < kw.arraySize; i++)
-                        if (kw.GetArrayElementAtIndex(i).stringValue == "_EMISSION") { present = true; break; }
-                    if (!present)
-                    {
-                        kw.InsertArrayElementAtIndex(kw.arraySize);
-                        kw.GetArrayElementAtIndex(kw.arraySize - 1).stringValue = "_EMISSION";
-                    }
-                }
-                // BakedEmissive, so URP stops marking it black-emissive and re-stripping the keyword.
-                // Writing the raw m_LightmapFlags int does NOT survive - Unity recomputes it from
-                // globalIlluminationFlags on save. The enum is not reachable as
-                // UnityEngine.Rendering.MaterialGlobalIlluminationFlags in Unity 6.4 (CS0234), so the
-                // property and its enum type are resolved by reflection instead of a typed literal.
-                var giProp = typeof(Material).GetProperty("globalIlluminationFlags");
-                if (giProp == null)
-                {
-                    _log.AppendLine("  WARN no Material.globalIlluminationFlags on this Unity version - " + path);
-                }
-                else
-                {
-                    try
-                    {
-                        object baked = System.Enum.Parse(giProp.PropertyType, "BakedEmissive");
-                        giProp.SetValue(m, baked, null);
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.AppendLine("  WARN could not set BakedEmissive on " + path + ": " + ex.Message);
-                    }
-                }
-                so.ApplyModifiedPropertiesWithoutUndo();
-                EditorUtility.SetDirty(m);
+                // Shared with the parity pass on purpose: the flag must be set AFTER
+                // ApplyModifiedPropertiesWithoutUndo, otherwise the apply pushes the stale serialized
+                // value back and BakedEmissive never lands (this pass used to fail every file that way).
+                WriteEmission(m, e, "147VR Emission Keyword");
                 touched.Add(m);
                 changed++;
                 _log.AppendLine("  +keyword " + path + "  emission=" + Fmt(e) +

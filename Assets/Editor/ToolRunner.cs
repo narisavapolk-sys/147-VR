@@ -133,6 +133,8 @@ namespace VR147.EditorTools
                         case "art-followups": _147VR.EditorTools.WipRoomArtFollowups.Run(); break;
                         case "emission-fix": _147VR.EditorTools.WipRoomArtFollowups.RunEmissionFix(); break;
                         case "art-capture": _147VR.EditorTools.WipRoomArtFollowups.RunCapture(); break;
+                        case "art-fix-round2": _147VR.EditorTools.WipRoomArtFollowups.RunArtFixRound2(); break;
+                        case "lamp-audit": _147VR.EditorTools.WipRoomArtFollowups.RunLampAudit(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
@@ -181,3 +183,7 @@ namespace VR147.EditorTools
 // round 8 step 2 queue: colour-only materials + 12 lamp lights
 
 // round 9 queue
+
+// round 11-11 queue: emission-fix then lamp-audit (touch to force domain reload)
+
+// round 11-11b: re-render after emission parity completed
