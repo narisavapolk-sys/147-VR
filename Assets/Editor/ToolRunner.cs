@@ -104,6 +104,7 @@ namespace VR147.EditorTools
             Archive();
             MaterialPass.NoDialog = true;
             LightRigAB.NoDialog = true;
+            _147VR.EditorTools.WipRoomArtFollowups.SilenceDialogs = true;
 
             foreach (string cmd in lines)
             {
@@ -129,6 +130,9 @@ namespace VR147.EditorTools
                         case "aaa-audit":      _147VR.EditorTools.NeonVintageAudit.Run(); break;
                         case "aaa-prepare-assets": _147VR.EditorTools.NeonVintageArtPassImporter.MenuPrepareAssets(); break;
                         case "wiproom-visual-audit": _147VR.EditorTools.WipRoomVisualAudit.Run(); break;
+                        case "art-followups": _147VR.EditorTools.WipRoomArtFollowups.Run(); break;
+                        case "emission-fix": _147VR.EditorTools.WipRoomArtFollowups.RunEmissionFix(); break;
+                        case "art-capture": _147VR.EditorTools.WipRoomArtFollowups.RunCapture(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
