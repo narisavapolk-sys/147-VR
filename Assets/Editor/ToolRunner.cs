@@ -135,6 +135,8 @@ namespace VR147.EditorTools
                         case "art-capture": _147VR.EditorTools.WipRoomArtFollowups.RunCapture(); break;
                         case "art-fix-round2": _147VR.EditorTools.WipRoomArtFollowups.RunArtFixRound2(); break;
                         case "lamp-audit": _147VR.EditorTools.WipRoomArtFollowups.RunLampAudit(); break;
+                        case "art-round3-audit": _147VR.EditorTools.WipRoomArtRound3.RunAudit(); break;
+                        case "art-round3": _147VR.EditorTools.WipRoomArtRound3.Run(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
