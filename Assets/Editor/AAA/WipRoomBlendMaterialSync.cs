@@ -124,7 +124,6 @@ namespace _147VR.EditorTools
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_Pool_VR_Material.mat|Assets/147 main/BlendTextures/147VR_PoolTable_ALB.001.png|||0|0.5|0,0,0,0|1,1,1,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_Sparkle.mat||||0|0.5|9,8.28,6.75,9|1,1,1,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_Turkish_Oushak_Vintage.mat|Assets/147 main/BlendTextures/147VR_Turkish_Oushak_Vintage_Texture.png|||0|0.12|0,0,0,0|1,1,1,1",
-            "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_Wall_Damask.mat|Assets/147 main/BlendTextures/147VR_damask_albedo.png.png|Assets/147 main/BlendTextures/147VR_damask_normal.png.png||0|0.5|0,0,0,0|1,1,1,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_WallArt_New_01.mat|Assets/147 main/BlendTextures/art_snooker_overhead.png.png|||0|0.45|0,0,0,0|1,1,1,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_WallArt_New_02.mat|Assets/147 main/BlendTextures/art_147_emblem.png.png|||0|0.45|0,0,0,0|1,1,1,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_WallArt_New_03.mat|Assets/147 main/BlendTextures/art_stilllife.png.png|||0|0.45|0,0,0,0|1,1,1,1",
@@ -191,10 +190,6 @@ namespace _147VR.EditorTools
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/PBR_floor.mat||Assets/147 main/RoomTextures/herringbone_parquet_nor_gl.png||0|0.5|0,0,0,0|0.8,0.8,0.8,1",
             "Assets/AAA/Imports/naris_vintage/Rebound/147VR_PBR_floor.001.mat||Assets/147 main/BlendTextures/herringbone_parquet_nor_gl.jpg.001.jpg||0|0.5|0,0,0,0|0.8,0.8,0.8,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/PBR_floor.001.mat||Assets/147 main/BlendTextures/herringbone_parquet_nor_gl.jpg.001.jpg||0|0.5|0,0,0,0|0.8,0.8,0.8,1",
-            "Assets/AAA/Imports/naris_vintage/Rebound/147VR_PBR_wall.mat|Assets/147 main/RoomTextures/dark_paneled_wood_diff.png|Assets/147 main/RoomTextures/dark_paneled_wood_nor_gl.png||0|0.5|0,0,0,0|1,1,1,1",
-            "Assets/AAA/Imports/NeonVintageArtPass/Materials/PBR_wall.mat|Assets/147 main/RoomTextures/dark_paneled_wood_diff.png|Assets/147 main/RoomTextures/dark_paneled_wood_nor_gl.png||0|0.5|0,0,0,0|1,1,1,1",
-            "Assets/AAA/Imports/naris_vintage/Rebound/147VR_PBR_wall_WS.mat|Assets/147 main/RoomTextures/dark_paneled_wood_diff.png|Assets/147 main/RoomTextures/dark_paneled_wood_nor_gl.png||0|0.5|0,0,0,0|1,1,1,1",
-            "Assets/AAA/Imports/NeonVintageArtPass/Materials/PBR_wall_WS.mat|Assets/147 main/RoomTextures/dark_paneled_wood_diff.png|Assets/147 main/RoomTextures/dark_paneled_wood_nor_gl.png||0|0.5|0,0,0,0|1,1,1,1",
             "Assets/AAA/Imports/naris_vintage/Rebound/147VR_TableSurface.mat||Assets/147 main/BlendTextures/SurfaceNormal_1024x1024.png.png||0|0|0,0,0,0|1,0.651,0.1627,1",
             "Assets/AAA/Imports/NeonVintageArtPass/Materials/TableSurface.mat||Assets/147 main/BlendTextures/SurfaceNormal_1024x1024.png.png||0|0|0,0,0,0|1,0.651,0.1627,1",
             "Assets/AAA/Imports/naris_vintage/Rebound/147VR_TC_cove.mat||||0|0|0.75,0.54,0.315,0.75|1,1,1,1",
@@ -203,6 +198,10 @@ namespace _147VR.EditorTools
             "Assets/AAA/Imports/naris_vintage/Rebound/147VR_147VR_MAT_Neon_Ivory_Hot.mat||||0.2|0.76|0.25,0.2075,0.13,0.25|1,0.83,0.52,1",
             "Assets/AAA/Imports/naris_vintage/Rebound/147VR_Table Mahogany.mat|Assets/147 main/RoomTextures/Wood_Mahogany_Diffuse_mqt_2048.png|Assets/147 main/RoomTextures/Wood_Mahogany_Normal_mqt_2048.png||0|0.73|0,0,0,1|1,1,1,1",
             "Assets/AAA/Imports/naris_vintage/Rebound/147VR_Table Mahogany.001.mat|Assets/147 main/RoomTextures/Wood_Mahogany_Diffuse_mqt_2048.png|Assets/147 main/RoomTextures/Wood_Mahogany_Normal_mqt_2048.png||0|0.7|0,0,0,1|1,1,1,1",
+            "Assets/AAA/Imports/NeonVintageArtPass/Materials/147VR_Sparkle.mat||||0|0.5|9,8.28,6.75,9|1,1,1,1",
+            "Assets/AAA/Imports/NeonVintageArtPass/Materials/Juke_Buttons.mat||||0.05|0.7|6,4.8,2.4,6|0.92,0.76,0.48,1",
+            "Assets/AAA/Imports/NeonVintageArtPass/Materials/lightbulb_01_base.mat||||0|0.5|10,7.2,4.2,10|0.8,0.8,0.8,1",
+            "Assets/AAA/Imports/NeonVintageArtPass/Materials/lightbulb_01_glass.mat||||0|0.76|1.4,1.022,0.602,1.4|0.8,0.8,0.8,1",
         };
 
         [MenuItem("147VR/AAA/NeonVintage/WipRoom/17) Sync Materials From Blend - Dry Run (Read-Only)")]
