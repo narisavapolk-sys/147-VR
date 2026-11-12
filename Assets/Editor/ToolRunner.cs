@@ -141,6 +141,7 @@ namespace VR147.EditorTools
                         case "flag-verify": _147VR.EditorTools.WipRoomArtRound3.RunFlagVerify(); break;
                         case "sprint23": _147VR.EditorTools.WipRoomArtRound3.RunSprint23(); break;
                         case "frame-reuv": _147VR.EditorTools.WipRoomArtRound3.RunFrameReUv(); break;
+                        case "sprint4": _147VR.EditorTools.WipRoomArtSprint4.Run(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
@@ -193,3 +194,5 @@ namespace VR147.EditorTools
 // round 11-11 queue: emission-fix then lamp-audit (touch to force domain reload)
 
 // round 11-11b: re-render after emission parity completed
+
+// sprint4 queue touch - force domain reload (ToolRunner only polls on reload)
