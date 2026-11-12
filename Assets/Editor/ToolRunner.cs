@@ -142,6 +142,7 @@ namespace VR147.EditorTools
                         case "sprint23": _147VR.EditorTools.WipRoomArtRound3.RunSprint23(); break;
                         case "frame-reuv": _147VR.EditorTools.WipRoomArtRound3.RunFrameReUv(); break;
                         case "sprint4": _147VR.EditorTools.WipRoomArtSprint4.Run(); break;
+                        case "neon-import": _147VR.EditorTools.NeonSignImporter.Run(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
@@ -196,3 +197,5 @@ namespace VR147.EditorTools
 // round 11-11b: re-render after emission parity completed
 
 // sprint4 queue touch - force domain reload (ToolRunner only polls on reload)
+
+// neon-import registration
