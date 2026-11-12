@@ -307,6 +307,504 @@ namespace _147VR.EditorTools
             finally { Finish(); }
         }
 
+        [MenuItem("147VR/AAA/NeonVintage/WipRoom/27) Sprint 2+3 - Bay1 lights down + carpet diagnosis (saves the Scene)")]
+        public static void MenuSprint23() { RunSprint23(); }
+
+        /// <summary>ToolRunner entry point: "sprint23". Two jobs, one Unity cycle.</summary>
+        public static void RunSprint23()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+
+                int dimmed = Guard("BAY1 LIGHTS", () => DimBay1TableLights(scene));
+                Capture("42-bay1-after", BayBounds(scene, "_R01"), new Vector3(3.0f, 1.6f, 3.4f));
+
+                int carpetFixed = DiagnoseAndFixCarpet(scene);
+                Capture("43-carpet-after", HallFloorBounds(scene), new Vector3(0f, 6.0f, 11.0f));
+
+                EditorSceneManager.MarkSceneDirty(scene);
+                bool saved = EditorSceneManager.SaveScene(scene);
+                _log.AppendLine();
+                _log.AppendLine("RESULT bay1LampsDimmed=" + dimmed + " carpetMaterialsChanged=" + carpetFixed +
+                                " sceneSaved=" + saved);
+            }
+            finally { Finish(); }
+        }
+
+        /// <summary>Owner request: only the Bay1 row (z 9.297, the three ..._R01_B01/B02/B03) goes down.</summary>
+        private const float Bay1TargetIntensity = 6f;
+
+        private static int DimBay1TableLights(Scene scene)
+        {
+            _log.AppendLine("2) BAY1 TABLE LIGHTS - 10 -> " + Bay1TargetIntensity.ToString("F1") + " (row _R01 only)");
+            Light[] lamps = scene.GetRootGameObjects()
+                                 .SelectMany(g => g.GetComponentsInChildren<Light>(true))
+                                 .Where(l => l != null && l.name.StartsWith("TableKey_", StringComparison.Ordinal) &&
+                                             l.name.IndexOf("_R01", StringComparison.Ordinal) >= 0)
+                                 .OrderBy(l => l.name, StringComparer.Ordinal)
+                                 .ToArray();
+            if (lamps.Length == 0) { _log.AppendLine("  no _R01 TableKey lamps found"); return 0; }
+
+            int changed = 0;
+            foreach (Light l in lamps)
+            {
+                float before = l.intensity;
+                if (before <= Bay1TargetIntensity + 0.01f)
+                {
+                    _log.AppendLine("  SKIP " + l.name + " - already at " + before.ToString("F2") +
+                                    " (target " + Bay1TargetIntensity.ToString("F1") + ")");
+                    continue;
+                }
+                Undo.RecordObject(l, "147VR Bay1 Light Down");
+                l.intensity = Bay1TargetIntensity;
+                EditorUtility.SetDirty(l);
+                changed++;
+                _log.AppendLine("  " + l.name + " intensity " + before.ToString("F2") + " -> " +
+                                l.intensity.ToString("F2") + " | inner=" + l.innerSpotAngle.ToString("F1") +
+                                " outer=" + l.spotAngle.ToString("F1") + " pos=" + Fmt(l.transform.position));
+            }
+            _log.AppendLine("  lamps dimmed=" + changed + " of " + lamps.Length);
+            return changed;
+        }
+
+        private static Bounds BayBounds(Scene scene, string rowTag)
+        {
+            // The bay rows sit at z 9.297 / 3.097 / -3.103 / -9.303; use the lamp z to find the table box.
+            Light[] lamps = scene.GetRootGameObjects()
+                                 .SelectMany(g => g.GetComponentsInChildren<Light>(true))
+                                 .Where(l => l != null && l.name.StartsWith("TableKey_", StringComparison.Ordinal) &&
+                                             l.name.IndexOf(rowTag, StringComparison.Ordinal) >= 0)
+                                 .ToArray();
+            if (lamps.Length == 0) return new Bounds(Vector3.zero, Vector3.one * 4f);
+            float z = lamps.Average(l => l.transform.position.z);
+            GameObject table = scene.GetRootGameObjects()
+                .SelectMany(g => g.GetComponentsInChildren<Transform>(true))
+                .Select(t => t.gameObject)
+                .Where(g => g.name.StartsWith("ROOT_PoolTable_", StringComparison.Ordinal))
+                .Distinct()
+                .OrderBy(g => Mathf.Abs(g.transform.position.z - z))
+                .FirstOrDefault();
+            return table != null ? BoundsOf(table) : new Bounds(new Vector3(0f, 0.9f, z), new Vector3(4f, 1f, 2.2f));
+        }
+
+        private static Bounds HallFloorBounds(Scene scene)
+        {
+            List<Renderer> carpets = CarpetRenderers(scene);
+            return carpets.Count > 0 ? UnionOf(carpets) : new Bounds(new Vector3(0f, 0.0f, 0f), new Vector3(20f, 0.2f, 26f));
+        }
+
+        private static List<Renderer> CarpetRenderers(Scene scene) =>
+            AllRenderers(scene)
+                .Where(r => MatName(r).IndexOf("Carpet", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                            r.name.IndexOf("Carpet", StringComparison.OrdinalIgnoreCase) >= 0)
+                .ToList();
+
+        /// <summary>The owner confirmed the hall carpet reads as burnt orange. The scene-bound MP_Carpet copy
+        /// is clean on disk, so this measures which renderer actually paints the middle of the hall and only
+        /// changes something when the evidence says the material is at fault.</summary>
+        private static int DiagnoseAndFixCarpet(Scene scene)
+        {
+            _log.AppendLine("3) CARPET - WHICH RENDERER DRAWS THE HALL CENTRE?");
+            const string chosenCarpetTexture = "Assets/AAA/ClubVenue/MiraclePool_vintage/textures/Carpet.png";
+
+            List<Renderer> carpets = CarpetRenderers(scene);
+            if (carpets.Count == 0) { _log.AppendLine("  no carpet renderers found"); return 0; }
+
+            Renderer centre = null;
+            float bestArea = 0f;
+            foreach (Renderer r in carpets.OrderBy(x => x.name, StringComparer.Ordinal))
+            {
+                if (r.sharedMaterials.Length == 0 || r.sharedMaterials[0] == null)
+                {
+                    _log.AppendLine("  " + r.name + " -> <NO MATERIAL> centre=" + Fmt(r.bounds.center));
+                    continue;
+                }
+                Material m = r.sharedMaterials[0];
+                Texture b = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : null;
+                Color t = m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor") : Color.white;
+                float sm = m.HasProperty("_Smoothness") ? m.GetFloat("_Smoothness") : -1f;
+                Color e = m.HasProperty("_EmissionColor") ? m.GetColor("_EmissionColor") : Color.black;
+                float area = r.bounds.size.x * r.bounds.size.z;
+                float distToCentre = Mathf.Sqrt(r.bounds.center.x * r.bounds.center.x +
+                                                r.bounds.center.z * r.bounds.center.z);
+                bool coversMiddle = distToCentre < 3f && area > bestArea;
+                _log.AppendLine("  " + r.name + " mat=" + m.name +
+                                " | baseMap=" + (b != null ? b.name : "<NONE>") +
+                                " tint=" + Fmt(t) + " smoothness=" + sm.ToString("F2") +
+                                " emission=" + Fmt(e) +
+                                " | area=" + area.ToString("F1") + " m2 centre=" + Fmt(r.bounds.center) +
+                                " distToHallCentre=" + distToCentre.ToString("F2") + " m" +
+                                (coversMiddle ? "  *** main hall cover" : ""));
+                if (coversMiddle) { bestArea = area; centre = r; }
+            }
+
+            if (centre == null)
+            {
+                _log.AppendLine("  no carpet renderer covers the hall centre (within 3 m and largest)." +
+                                " The orange must come from the floor itself - reporting, not guessing.");
+                return 0;
+            }
+
+            Material target = centre.sharedMaterials[0];
+            Texture bound = target.HasProperty("_BaseMap") ? target.GetTexture("_BaseMap") : null;
+            if (bound != null)
+            {
+                _log.AppendLine("  VERDICT: " + centre.name + " already binds a real image (" + bound.name +
+                                ") through " + target.name + ", so the material is NOT the cause. The burnt look" +
+                                " must be lighting/exposure on top of that image - no material was changed here.");
+                return 0;
+            }
+
+            if (!File.Exists(chosenCarpetTexture))
+            {
+                _log.AppendLine("  REFUSED - " + chosenCarpetTexture + " is not on disk.");
+                return 0;
+            }
+            Texture carpet = AssetDatabase.LoadAssetAtPath<Texture>(chosenCarpetTexture);
+            if (carpet == null) { _log.AppendLine("  REFUSED - could not load " + chosenCarpetTexture); return 0; }
+
+            Color before = target.HasProperty("_BaseColor") ? target.GetColor("_BaseColor") : Color.white;
+            Undo.RecordObject(target, "147VR Carpet Texture Restore");
+            target.SetTexture("_BaseMap", carpet);
+            if (target.HasProperty("_BaseColor")) target.SetColor("_BaseColor", Color.white);
+            EditorUtility.SetDirty(target);
+            AssetDatabase.SaveAssets();
+            _log.AppendLine("  FIX APPLIED: " + AssetDatabase.GetAssetPath(target) +
+                            " had NO _BaseMap - bound it to the owner-chosen rip image " +
+                            Path.GetFileName(chosenCarpetTexture) + " and reset tint " + Fmt(before) +
+                            " -> (1.000, 1.000, 1.000, 1.000)");
+
+            string saved = File.Exists(AssetDatabase.GetAssetPath(target))
+                ? File.ReadAllText(AssetDatabase.GetAssetPath(target)) : "";
+            string want = AssetDatabase.AssetPathToGUID(chosenCarpetTexture);
+            _log.AppendLine("  VERIFY from the saved file: guid present=" + saved.Contains(want));
+            return 1;
+        }
+
+        /// <summary>ToolRunner entry point: "surface-tint". Corrects the baize colour from the rip manifest.</summary>
+        public static void RunSurfaceTint()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+                FixTableSurfaceTint(scene);
+                EditorSceneManager.MarkSceneDirty(scene);
+                bool saved = EditorSceneManager.SaveScene(scene);
+                Capture("44-bay1-surface", BayBounds(scene, "_R01"), new Vector3(3.0f, 1.6f, 3.4f));
+                _log.AppendLine("sceneSaved=" + saved);
+            }
+            finally { Finish(); }
+        }
+
+        private const string ManifestPath = "Assets/AAA/Imports/NeonVintageArtPass/manifest.json";
+
+        /// <summary>Bay1's cloth renders yellow-orange while the other three tables look right. The cause is
+        /// a transcription error, not the art: manifest.json records TableSurface base_color as
+        /// (0.0, 0.651, 0.1627) - green - but the sync rows write tint (1, 0.651, 0.1627), and adding that
+        /// red channel turns green into amber. The authored value is therefore read straight out of the
+        /// manifest at runtime instead of being hardcoded here, so this tool cannot repeat the same mistake.</summary>
+        private static int FixTableSurfaceTint(Scene scene)
+        {
+            _log.AppendLine("2b) TABLE SURFACE COLOUR - authored value read from the rip manifest");
+            if (!File.Exists(ManifestPath)) { _log.AppendLine("  manifest missing: " + ManifestPath); return 0; }
+
+            string json = File.ReadAllText(ManifestPath);
+            int nameAt = json.IndexOf("\"name\": \"TableSurface\"", StringComparison.Ordinal);
+            if (nameAt < 0) { _log.AppendLine("  no TableSurface entry in the manifest"); return 0; }
+            int bcAt = json.IndexOf("base_color", nameAt, StringComparison.Ordinal);
+            if (bcAt < 0 || bcAt - nameAt > 200) { _log.AppendLine("  no base_color near that entry"); return 0; }
+
+            var nums = new List<float>();
+            int bracket = json.IndexOf('[', bcAt);
+            int close = json.IndexOf(']', bracket);
+            foreach (string tok in json.Substring(bracket + 1, close - bracket - 1)
+                         .Split(new[] { ',', '\n', '\r', ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+                if (float.TryParse(tok, System.Globalization.NumberStyles.Float,
+                                   System.Globalization.CultureInfo.InvariantCulture, out float v)) nums.Add(v);
+            if (nums.Count < 3) { _log.AppendLine("  could not parse base_color"); return 0; }
+
+            Color authored = new Color(nums[0], nums[1], nums[2], nums.Count > 3 ? nums[3] : 1f);
+            _log.AppendLine("  manifest TableSurface base_color = " + Fmt(authored) +
+                            "  (green: red channel is " + authored.r.ToString("F3") + ")");
+
+            int changed = 0, already = 0;
+            foreach (string folder in new[] { "Assets/AAA/Imports/naris_vintage/Rebound/",
+                                              "Assets/AAA/Imports/NeonVintageArtPass/Materials/" })
+            {
+                foreach (string p in AssetDatabase.FindAssets("t:Material", new[] { folder })
+                             .Select(AssetDatabase.GUIDToAssetPath)
+                             .Where(x => x.EndsWith(".mat", StringComparison.OrdinalIgnoreCase) &&
+                                         NormaliseSurfaceName(Path.GetFileNameWithoutExtension(x))
+                                             .StartsWith("TableSurface", StringComparison.Ordinal))
+                             .OrderBy(x => x, StringComparer.Ordinal))
+                {
+                    Material m = AssetDatabase.LoadAssetAtPath<Material>(p);
+                    if (m == null || !m.HasProperty("_BaseColor")) continue;
+                    Color now = m.GetColor("_BaseColor");
+                    bool same = Mathf.Abs(now.r - authored.r) < 0.01f && Mathf.Abs(now.g - authored.g) < 0.01f &&
+                                Mathf.Abs(now.b - authored.b) < 0.01f;
+                    if (same) { already++; _log.AppendLine("  already authored " + Path.GetFileName(p)); continue; }
+
+                    Undo.RecordObject(m, "147VR Table Surface Colour");
+                    m.SetColor("_BaseColor", authored);
+                    EditorUtility.SetDirty(m);
+                    changed++;
+                    _log.AppendLine("  " + Path.GetFileName(p) + " " + Fmt(now) + " -> " + Fmt(authored) +
+                                    "  (was " + (now.r > 0.5f ? "amber - red channel added" : "off-author") + ")");
+                }
+            }
+
+            AssetDatabase.SaveAssets();
+            foreach (string p in AssetDatabase.FindAssets("t:Material", new[] { "Assets/AAA/Imports" })
+                         .Select(AssetDatabase.GUIDToAssetPath)
+                         .Where(x => x.EndsWith(".mat", StringComparison.OrdinalIgnoreCase) &&
+                                     NormaliseSurfaceName(Path.GetFileNameWithoutExtension(x))
+                                         .StartsWith("TableSurface", StringComparison.Ordinal)))
+            {
+                string txt = File.Exists(p) ? File.ReadAllText(p) : "";
+                if (!txt.Contains("_BaseColor: {r: " + authored.r.ToString("0.####")))
+                    _log.AppendLine("  VERIFY FAIL " + p);
+            }
+            _log.AppendLine("  changed=" + changed + " alreadyCorrect=" + already);
+            return changed;
+        }
+
+        private static string NormaliseSurfaceName(string fileName)
+        {
+            string s = fileName;
+            while (s.StartsWith("147VR_", StringComparison.Ordinal) && s.Length > 6) s = s.Substring(6);
+            return s;
+        }
+
+        [MenuItem("147VR/AAA/NeonVintage/WipRoom/28) Bay2 frame edge - UV audit then re-UV (saves the Scene)")]
+        public static void MenuFrameReUv() { RunFrameReUv(); }
+
+        /// <summary>ToolRunner entry point: "frame-reuv". The owner's current priority.</summary>
+        public static void RunFrameReUv()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+
+                Renderer frame = FindBay2Frame(scene);
+                if (frame == null) { _log.AppendLine("no SM_TABLE FRAME renderer under ROOT_PoolTable_02"); return; }
+
+                AuditFrameUv(frame);
+                bool applied = ReUvFrame(frame);
+                if (applied)
+                {
+                    ResetMahoganyTiling();
+                    EditorSceneManager.MarkSceneDirty(scene);
+                    bool saved = EditorSceneManager.SaveScene(scene);
+                    _log.AppendLine("  sceneSaved=" + saved);
+                }
+                Capture("45-bay2-frame-after", frame.bounds, new Vector3(1.1f, 0.25f, 1.5f));
+            }
+            finally { Finish(); }
+        }
+
+        /// <summary>One texture tile spans 1/TexelScale metres. UVs are written in metres so the grain
+        /// repeats at a real-world size instead of being stretched over the whole frame.</summary>
+        private const float TexelScale = 0.45f;
+
+        private static Renderer FindBay2Frame(Scene scene)
+        {
+            GameObject table = scene.GetRootGameObjects()
+                .SelectMany(g => g.GetComponentsInChildren<Transform>(true))
+                .Select(t => t.gameObject)
+                .FirstOrDefault(g => g.name == "ROOT_PoolTable_02");
+            if (table == null) return null;
+            return table.GetComponentsInChildren<Renderer>(true)
+                       .FirstOrDefault(r => r.name.IndexOf("TABLE FRAME", StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
+        private static readonly string[] BoxDir = { "+X", "-X", "+Y", "-Y", "+Z", "-Z" };
+
+        private static void AuditFrameUv(Renderer frame)
+        {
+            _log.AppendLine("BAY2 FRAME UV AUDIT - " + frame.name + " (read-only)");
+            Mesh mesh = frame.GetComponent<MeshFilter>() != null ? frame.GetComponent<MeshFilter>().sharedMesh : null;
+            if (mesh == null) { _log.AppendLine("  no MeshFilter mesh"); return; }
+
+            Vector3[] v, n; int[] t; Vector2[] uv;
+            try { v = mesh.vertices; n = mesh.normals; t = mesh.triangles; uv = mesh.uv; }
+            catch (Exception e) { _log.AppendLine("  mesh not readable (" + e.GetType().Name + ") - " +
+                                                 "the copy step below uses Instantiate, which works regardless."); return; }
+            if (uv == null || uv.Length == 0) { _log.AppendLine("  mesh has no UV0 at all"); return; }
+
+            var buckets = new Dictionary<int, Bucket>();
+            for (int i = 0; i + 2 < t.Length; i += 3)
+            {
+                int i0 = t[i], i1 = t[i + 1], i2 = t[i + 2];
+                if (i0 >= v.Length || i1 >= v.Length || i2 >= v.Length) continue;
+                Vector3 fn = Vector3.Cross(v[i1] - v[i0], v[i2] - v[i0]);
+                float area = fn.magnitude * 0.5f;
+                if (area < 1e-8f) continue;
+                fn.Normalize();
+                int axis = 0;
+                if (Mathf.Abs(fn.y) > Mathf.Abs(fn.x)) axis = 1;
+                if (Mathf.Abs(fn.z) > Mathf.Abs(fn[axis])) axis = 2;
+                int dir = axis * 2 + (fn[axis] >= 0f ? 0 : 1);
+
+                if (!buckets.TryGetValue(dir, out Bucket b)) { b = new Bucket(); buckets[dir] = b; }
+                b.Tris++; b.Area += area;
+                foreach (int idx in new[] { i0, i1, i2 })
+                {
+                    if (idx >= uv.Length) continue;
+                    if (uv[idx].x < b.UvMin.x) b.UvMin.x = uv[idx].x;
+                    if (uv[idx].y < b.UvMin.y) b.UvMin.y = uv[idx].y;
+                    if (uv[idx].x > b.UvMax.x) b.UvMax.x = uv[idx].x;
+                    if (uv[idx].y > b.UvMax.y) b.UvMax.y = uv[idx].y;
+                }
+            }
+
+            float totalArea = buckets.Values.Sum(b => b.Area);
+            foreach (KeyValuePair<int, Bucket> kv in buckets.OrderBy(x => x.Key))
+            {
+                Bucket b = kv.Value;
+                float uw = Mathf.Max(0f, b.UvMax.x - b.UvMin.x);
+                float vh = Mathf.Max(0f, b.UvMax.y - b.UvMin.y);
+                float uvCoverage = uw * vh;
+                _log.AppendLine("  " + BoxDir[kv.Key] + " tris=" + b.Tris +
+                                " area=" + b.Area.ToString("F3") + " m2 (" +
+                                (totalArea > 0f ? (b.Area / totalArea * 100f).ToString("F1") : "0") + "% of surface)" +
+                                " | UV0 box u " + b.UvMin.x.ToString("F3") + ".." + b.UvMax.x.ToString("F3") +
+                                " v " + b.UvMin.y.ToString("F3") + ".." + b.UvMax.y.ToString("F3") +
+                                " = " + uw.ToString("F3") + " x " + vh.ToString("F3") +
+                                " (" + (uvCoverage * 100f).ToString("F2") + "% of 0..1)" +
+                                (uvCoverage < 0.02f && b.Area > 0.1f ? "  *** THIS FACE CANNOT SHOW GRAIN" : ""));
+            }
+            _log.AppendLine("  mesh verts=" + v.Length + " tris=" + (t.Length / 3) +
+                            " bounds=" + Fmt(mesh.bounds.size) + " | uv2=" +
+                            (mesh.uv2 != null ? mesh.uv2.Length : 0));
+        }
+
+        private sealed class Bucket
+        {
+            public int Tris;
+            public float Area;
+            public Vector2 UvMin = new Vector2(float.MaxValue, float.MaxValue);
+            public Vector2 UvMax = new Vector2(float.MinValue, float.MinValue);
+        }
+
+        /// <summary>Rebuilds the frame with box-projected, metre-based UVs. The source FBX mesh is never
+        /// touched: this instantiates a readable copy, saves it as a new .asset and re-points only the Bay2
+        /// MeshFilter through Undo, so the prefab and the import stay intact.</summary>
+        private static bool ReUvFrame(Renderer frame)
+        {
+            _log.AppendLine("BAY2 FRAME RE-UV (owner authorized modifying the ripped mesh)");
+            var filter = frame.GetComponent<MeshFilter>();
+            if (filter == null || filter.sharedMesh == null) { _log.AppendLine("  no MeshFilter"); return false; }
+
+            Mesh src = filter.sharedMesh;
+            Mesh copy = UnityEngine.Object.Instantiate(src);
+            copy.name = src.name + "_REUV";
+
+            Vector3[] v = copy.vertices;
+            Vector3[] n = copy.normals;
+            Vector2[] uv2 = copy.uv2;
+            int[] t = copy.triangles;
+            bool haveNormals = n != null && n.Length == v.Length;
+            bool haveUv2 = uv2 != null && uv2.Length == v.Length;
+
+            int corners = t.Length;
+            var nv = new Vector3[corners];
+            var nn = new Vector3[corners];
+            var nuv = new Vector2[corners];
+            var nuv2 = haveUv2 ? new Vector2[corners] : null;
+
+            int tris = corners / 3;
+            for (int i = 0; i < corners; i++)
+            {
+                int src0 = t[3 * (i / 3)], src1 = t[3 * (i / 3) + 1], src2 = t[3 * (i / 3) + 2];
+                int my = i % 3;
+                int s = my == 0 ? src0 : my == 1 ? src1 : src2;
+                nv[i] = v[s];
+                nn[i] = haveNormals ? n[s] : Vector3.up;
+                if (haveUv2) nuv2[i] = uv2[s];
+
+                Vector3 fn = Vector3.Cross(v[src1] - v[src0], v[src2] - v[src0]);
+                if (fn.sqrMagnitude < 1e-12f) fn = Vector3.up;
+                fn.Normalize();
+                int axis = 0;
+                if (Mathf.Abs(fn.y) > Mathf.Abs(fn.x)) axis = 1;
+                if (Mathf.Abs(fn.z) > Mathf.Abs(fn[axis])) axis = 2;
+                int uAxis = axis == 0 ? 1 : 0;
+                int wAxis = axis == 0 ? 2 : axis == 1 ? 2 : 0;
+                Vector3 p = v[s];
+                float u = (uAxis == 0 ? p.x : uAxis == 1 ? p.y : p.z) * TexelScale;
+                float w = (wAxis == 0 ? p.x : wAxis == 1 ? p.y : p.z) * TexelScale;
+                nuv[i] = new Vector2(u, w);
+            }
+
+            copy.vertices = nv;
+            copy.triangles = Enumerable.Range(0, corners).ToArray();
+            copy.normals = nn;
+            copy.uv = nuv;
+            if (haveUv2) copy.uv2 = nuv2;
+            copy.RecalculateBounds();
+            copy.UploadMeshData(false);
+
+            const string meshDir = "Assets/AAA/ImportedSnooker/Meshes/";
+            if (!Directory.Exists(meshDir)) Directory.CreateDirectory(meshDir);
+            string target = meshDir + "TABLE_FRAME_Bay2_REUV.asset";
+            if (File.Exists(target)) AssetDatabase.DeleteAsset(target);
+            AssetDatabase.CreateAsset(copy, target);
+            AssetDatabase.SaveAssets();
+
+            Mesh saved = AssetDatabase.LoadAssetAtPath<Mesh>(target);
+            if (saved == null) { _log.AppendLine("  FAILED to save " + target); return false; }
+
+            Mesh before = filter.sharedMesh;
+            Undo.RecordObject(filter, "147VR Bay2 Frame Re-UV");
+            filter.sharedMesh = saved;
+            EditorUtility.SetDirty(filter);
+
+            _log.AppendLine("  wrote " + target + " | tris=" + tris + " corners=" + corners +
+                            " (one vertex per corner so each box face unwraps on its own)" +
+                            " | uv2 carried=" + haveUv2 + " | normals carried=" + haveNormals +
+                            " | texel=" + TexelScale.ToString("F2") + " UV units per metre (one tile = " +
+                            (1f / TexelScale).ToString("F2") + " m)");
+            _log.AppendLine("  MeshFilter re-pointed on " + frame.name + ": " +
+                            (before != null ? before.name : "<null>") + " -> " + saved.name +
+                            " (FBX and prefab untouched; this is a scene override)");
+            return true;
+        }
+
+        /// <summary>Metre-based UVs already repeat the tile, so the 6,2 hand-set repeat would be far too
+        /// dense afterwards.</summary>
+        private static void ResetMahoganyTiling()
+        {
+            _log.AppendLine("MAHOGANY TILING - back to (1,1) because the new UVs are in metres");
+            var st = new Vector4(1f, 1f, 0f, 0f);
+            foreach (string folder in new[] { "Assets/AAA/Imports/naris_vintage/Rebound/",
+                                              "Assets/AAA/Imports/NeonVintageArtPass/Materials/" })
+                foreach (string p in AssetDatabase.FindAssets("t:Material", new[] { folder })
+                             .Select(AssetDatabase.GUIDToAssetPath)
+                             .Where(x => x.EndsWith(".mat", StringComparison.OrdinalIgnoreCase) &&
+                                         Path.GetFileNameWithoutExtension(x)
+                                             .IndexOf("Table Mahogany", StringComparison.OrdinalIgnoreCase) >= 0))
+                {
+                    Material m = AssetDatabase.LoadAssetAtPath<Material>(p);
+                    if (m == null || !m.HasProperty("_BaseMap_ST")) continue;
+                    Vector4 was = m.GetVector("_BaseMap_ST");
+                    if (Mathf.Abs(was.x - 1f) < 0.01f && Mathf.Abs(was.y - 1f) < 0.01f) continue;
+                    Undo.RecordObject(m, "147VR Mahogany Tiling Reset");
+                    m.SetVector("_BaseMap_ST", st);
+                    if (m.HasProperty("_BumpMap_ST")) m.SetVector("_BumpMap_ST", st);
+                    EditorUtility.SetDirty(m);
+                    _log.AppendLine("  " + Path.GetFileName(p) + " ST " + Fmt4(was) + " -> " + Fmt4(st));
+                }
+            AssetDatabase.SaveAssets();
+        }
+
         /// <summary>Tolerance used to decide whether the row still has its centre hole.</summary>
         private const float FlagPitchTolerance = 0.06f;
 
@@ -317,7 +815,12 @@ namespace _147VR.EditorTools
             if (flags.Count == 0) { _log.AppendLine("  no SM_147VR_AAA_Flag_* renderers found"); return; }
 
             float[] xs = flags.Select(f => f.bounds.center.x).OrderBy(v => v).ToArray();
-            float pitch = xs.Length > 1 ? (xs[xs.Length - 1] - xs[0]) / (xs.Length - 1) : 0f;
+            // Median neighbour step, NOT (max-min)/(n-1): a missing slot inflates the mean, which is how
+            // this row reported a pitch of 0.84 against its real 0.8077 spacing.
+            var steps = new List<float>();
+            for (int i = 1; i < xs.Length; i++) steps.Add(xs[i] - xs[i - 1]);
+            steps.Sort();
+            float pitch = steps.Count > 0 ? steps[steps.Count / 2] : 0f;
             float innermost = xs.Min(v => Mathf.Abs(v));
             _log.AppendLine("  flags=" + flags.Count + " x " + xs[0].ToString("F3") + " .. " +
                             xs[xs.Length - 1].ToString("F3") + " | mean pitch=" + pitch.ToString("F4") +

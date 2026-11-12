@@ -139,6 +139,8 @@ namespace VR147.EditorTools
                         case "art-round3": _147VR.EditorTools.WipRoomArtRound3.Run(); break;
                         case "flag-gap": _147VR.EditorTools.WipRoomArtRound3.RunFlagGap(); break;
                         case "flag-verify": _147VR.EditorTools.WipRoomArtRound3.RunFlagVerify(); break;
+                        case "sprint23": _147VR.EditorTools.WipRoomArtRound3.RunSprint23(); break;
+                        case "frame-reuv": _147VR.EditorTools.WipRoomArtRound3.RunFrameReUv(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
