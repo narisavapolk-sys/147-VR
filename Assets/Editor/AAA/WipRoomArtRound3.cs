@@ -694,88 +694,11 @@ namespace _147VR.EditorTools
             public Vector2 UvMax = new Vector2(float.MinValue, float.MinValue);
         }
 
-        /// <summary>Rebuilds the frame with box-projected, metre-based UVs. The source FBX mesh is never
-        /// touched: this instantiates a readable copy, saves it as a new .asset and re-points only the Bay2
-        /// MeshFilter through Undo, so the prefab and the import stay intact.</summary>
+        /// <summary>Disabled: Rebuilding frame caused 16-bit vertex overflow (>65535 corners) and stripped submesh 1, rendering table invisible. Keeping native FBX mesh.</summary>
         private static bool ReUvFrame(Renderer frame)
         {
-            _log.AppendLine("BAY2 FRAME RE-UV (owner authorized modifying the ripped mesh)");
-            var filter = frame.GetComponent<MeshFilter>();
-            if (filter == null || filter.sharedMesh == null) { _log.AppendLine("  no MeshFilter"); return false; }
-
-            Mesh src = filter.sharedMesh;
-            Mesh copy = UnityEngine.Object.Instantiate(src);
-            copy.name = src.name + "_REUV";
-
-            Vector3[] v = copy.vertices;
-            Vector3[] n = copy.normals;
-            Vector2[] uv2 = copy.uv2;
-            int[] t = copy.triangles;
-            bool haveNormals = n != null && n.Length == v.Length;
-            bool haveUv2 = uv2 != null && uv2.Length == v.Length;
-
-            int corners = t.Length;
-            var nv = new Vector3[corners];
-            var nn = new Vector3[corners];
-            var nuv = new Vector2[corners];
-            var nuv2 = haveUv2 ? new Vector2[corners] : null;
-
-            int tris = corners / 3;
-            for (int i = 0; i < corners; i++)
-            {
-                int src0 = t[3 * (i / 3)], src1 = t[3 * (i / 3) + 1], src2 = t[3 * (i / 3) + 2];
-                int my = i % 3;
-                int s = my == 0 ? src0 : my == 1 ? src1 : src2;
-                nv[i] = v[s];
-                nn[i] = haveNormals ? n[s] : Vector3.up;
-                if (haveUv2) nuv2[i] = uv2[s];
-
-                Vector3 fn = Vector3.Cross(v[src1] - v[src0], v[src2] - v[src0]);
-                if (fn.sqrMagnitude < 1e-12f) fn = Vector3.up;
-                fn.Normalize();
-                int axis = 0;
-                if (Mathf.Abs(fn.y) > Mathf.Abs(fn.x)) axis = 1;
-                if (Mathf.Abs(fn.z) > Mathf.Abs(fn[axis])) axis = 2;
-                int uAxis = axis == 0 ? 1 : 0;
-                int wAxis = axis == 0 ? 2 : axis == 1 ? 2 : 0;
-                Vector3 p = v[s];
-                float u = (uAxis == 0 ? p.x : uAxis == 1 ? p.y : p.z) * TexelScale;
-                float w = (wAxis == 0 ? p.x : wAxis == 1 ? p.y : p.z) * TexelScale;
-                nuv[i] = new Vector2(u, w);
-            }
-
-            copy.vertices = nv;
-            copy.triangles = Enumerable.Range(0, corners).ToArray();
-            copy.normals = nn;
-            copy.uv = nuv;
-            if (haveUv2) copy.uv2 = nuv2;
-            copy.RecalculateBounds();
-            copy.UploadMeshData(false);
-
-            const string meshDir = "Assets/AAA/ImportedSnooker/Meshes/";
-            if (!Directory.Exists(meshDir)) Directory.CreateDirectory(meshDir);
-            string target = meshDir + "TABLE_FRAME_Bay2_REUV.asset";
-            if (File.Exists(target)) AssetDatabase.DeleteAsset(target);
-            AssetDatabase.CreateAsset(copy, target);
-            AssetDatabase.SaveAssets();
-
-            Mesh saved = AssetDatabase.LoadAssetAtPath<Mesh>(target);
-            if (saved == null) { _log.AppendLine("  FAILED to save " + target); return false; }
-
-            Mesh before = filter.sharedMesh;
-            Undo.RecordObject(filter, "147VR Bay2 Frame Re-UV");
-            filter.sharedMesh = saved;
-            EditorUtility.SetDirty(filter);
-
-            _log.AppendLine("  wrote " + target + " | tris=" + tris + " corners=" + corners +
-                            " (one vertex per corner so each box face unwraps on its own)" +
-                            " | uv2 carried=" + haveUv2 + " | normals carried=" + haveNormals +
-                            " | texel=" + TexelScale.ToString("F2") + " UV units per metre (one tile = " +
-                            (1f / TexelScale).ToString("F2") + " m)");
-            _log.AppendLine("  MeshFilter re-pointed on " + frame.name + ": " +
-                            (before != null ? before.name : "<null>") + " -> " + saved.name +
-                            " (FBX and prefab untouched; this is a scene override)");
-            return true;
+            _log.AppendLine("BAY2 FRAME RE-UV disabled - using source FBX mesh directly to avoid vertex overflow and preserve both submeshes.");
+            return false;
         }
 
         /// <summary>Metre-based UVs already repeat the tile, so the 6,2 hand-set repeat would be far too
