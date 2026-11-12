@@ -137,6 +137,8 @@ namespace VR147.EditorTools
                         case "lamp-audit": _147VR.EditorTools.WipRoomArtFollowups.RunLampAudit(); break;
                         case "art-round3-audit": _147VR.EditorTools.WipRoomArtRound3.RunAudit(); break;
                         case "art-round3": _147VR.EditorTools.WipRoomArtRound3.Run(); break;
+                        case "flag-gap": _147VR.EditorTools.WipRoomArtRound3.RunFlagGap(); break;
+                        case "flag-verify": _147VR.EditorTools.WipRoomArtRound3.RunFlagVerify(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }

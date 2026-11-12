@@ -236,6 +236,157 @@ namespace _147VR.EditorTools
             "scale(" + v.x.ToString("F2") + "," + v.y.ToString("F2") + ") offset(" +
             v.z.ToString("F2") + "," + v.w.ToString("F2") + ")";
 
+        [MenuItem("147VR/AAA/NeonVintage/WipRoom/26) Close the flag row gap (Undoable + saves the Scene)")]
+        public static void MenuFlagGap() { RunFlagGap(); }
+
+        /// <summary>ToolRunner entry point: "flag-gap". Sprint one of the resume plan.</summary>
+        public static void RunFlagGap()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+                CloseFlagRowGap(scene);
+            }
+            finally { Finish(); }
+        }
+
+        /// <summary>ToolRunner entry point: "flag-verify". Read-only. The single wide shot from 7.5 m back
+        /// cannot prove the centre hole is closed, so this renders three close-ups along the row and lists
+        /// every neighbour gap over 0.9 m, plus the flags that render as blank cloth.</summary>
+        public static void RunFlagVerify()
+        {
+            Begin();
+            try
+            {
+                Scene scene = ActiveWipRoom();
+                if (!scene.IsValid()) return;
+
+                List<Renderer> flags = FlagRenderers(scene);
+                if (flags.Count == 0) { _log.AppendLine("no flag renderers"); return; }
+
+                float[] xs = flags.Select(f => f.bounds.center.x).OrderBy(v => v).ToArray();
+                float zFace = flags.Average(f => f.bounds.center.z);
+                _log.AppendLine("FLAG VERIFY - " + flags.Count + " flags, sorted x: " +
+                                string.Join(", ", xs.Select(v => v.ToString("F2")).ToArray()));
+
+                var wide = new List<string>();
+                for (int i = 1; i < xs.Length; i++)
+                    if (xs[i] - xs[i - 1] > 0.9f) wide.Add(xs[i - 1].ToString("F2") + " -> " + xs[i].ToString("F2") +
+                                                            " (" + (xs[i] - xs[i - 1]).ToString("F3") + " m)");
+                _log.AppendLine("  gaps wider than 0.9 m: " + (wide.Count == 0 ? "NONE - the row is continuous"
+                                                                                : string.Join(" | ", wide.ToArray())));
+
+                int blank = 0;
+                foreach (Renderer f in flags)
+                {
+                    Material m = f.sharedMaterials.Length > 0 ? f.sharedMaterials[0] : null;
+                    if (m == null) { blank++; continue; }
+                    Texture b = m.HasProperty("_BaseMap") ? m.GetTexture("_BaseMap") : null;
+                    Color t = m.HasProperty("_BaseColor") ? m.GetColor("_BaseColor") : Color.white;
+                    bool flatWhite = b == null && Mathf.Min(t.r, Mathf.Min(t.g, t.b)) > 0.9f;
+                    if (b == null || flatWhite)
+                    {
+                        blank++;
+                        _log.AppendLine("  BLANK " + f.name + " mat=" + m.name +
+                                        " baseMap=" + (b != null ? b.name : "<NONE>") + " tint=" + Fmt(t));
+                    }
+                }
+                _log.AppendLine("  flags with no albedo or flat-white cloth: " + blank + " / " + flags.Count);
+
+                float y = flags.Average(f => f.bounds.center.y);
+                var shots = new (string Label, float CentreX)[] { ("left", -6.7f), ("centre", 0f), ("right", 6.7f) };
+                foreach (var s in shots)
+                {
+                    var box = new Bounds(new Vector3(s.CentreX, y, zFace), new Vector3(6.0f, 2.6f, 0.4f));
+                    Capture("41-flags-" + s.Label, box, new Vector3(0f, 0.15f, 4.0f));
+                }
+                _log.AppendLine("Nothing modified, Scene not saved.");
+            }
+            finally { Finish(); }
+        }
+
+        /// <summary>Tolerance used to decide whether the row still has its centre hole.</summary>
+        private const float FlagPitchTolerance = 0.06f;
+
+        private static void CloseFlagRowGap(Scene scene)
+        {
+            _log.AppendLine("1) FLAG ROW - CLOSE THE CENTRE HOLE (index 13 was never authored in the rip)");
+            List<Renderer> flags = FlagRenderers(scene);
+            if (flags.Count == 0) { _log.AppendLine("  no SM_147VR_AAA_Flag_* renderers found"); return; }
+
+            float[] xs = flags.Select(f => f.bounds.center.x).OrderBy(v => v).ToArray();
+            float pitch = xs.Length > 1 ? (xs[xs.Length - 1] - xs[0]) / (xs.Length - 1) : 0f;
+            float innermost = xs.Min(v => Mathf.Abs(v));
+            _log.AppendLine("  flags=" + flags.Count + " x " + xs[0].ToString("F3") + " .. " +
+                            xs[xs.Length - 1].ToString("F3") + " | mean pitch=" + pitch.ToString("F4") +
+                            " m | innermost |x|=" + innermost.ToString("F3") + " m");
+
+            if (Mathf.Abs(innermost - pitch * 0.5f) < FlagPitchTolerance)
+            {
+                _log.AppendLine("  ALREADY CLOSED - innermost pair sits at one half-slot (" +
+                                innermost.ToString("F3") + " vs half pitch " + (pitch * 0.5f).ToString("F3") +
+                                "). Nothing moved.");
+                return;
+            }
+            if (Mathf.Abs(innermost - pitch) > FlagPitchTolerance)
+            {
+                _log.AppendLine("  REFUSED - innermost |x| " + innermost.ToString("F3") + " m is neither a full pitch (" +
+                                pitch.ToString("F3") + ", hole present) nor a half pitch (" +
+                                (pitch * 0.5f).ToString("F3") + ", closed). Reporting instead of guessing.");
+                return;
+            }
+
+            float halfSlot = pitch * 0.5f;
+            Bounds rowBefore = UnionOf(flags);
+            int moved = 0;
+            foreach (Renderer f in flags)
+            {
+                float x = f.bounds.center.x;
+                if (Mathf.Abs(x) < 0.01f) { _log.AppendLine("  SKIP " + f.name + " - already on the centre line"); continue; }
+                Transform t = f.transform;
+                Vector3 before = t.position;
+                Undo.RecordObject(t, "147VR Close Flag Gap");
+                t.position = t.position + new Vector3(x > 0f ? -halfSlot : halfSlot, 0f, 0f);
+                EditorUtility.SetDirty(t);
+                moved++;
+                _log.AppendLine("  " + f.name + " x " + before.x.ToString("F3") + " -> " + t.position.x.ToString("F3") +
+                                " (bounds centre now " + f.bounds.center.x.ToString("F3") + ")");
+            }
+
+            float[] after = flags.Select(f => f.bounds.center.x).OrderBy(v => v).ToArray();
+            float worstStep = 0f, leftoverHole = 0f;
+            for (int i = 1; i < after.Length; i++)
+            {
+                float step = after[i] - after[i - 1];
+                if (step > worstStep) worstStep = step;
+                if (step - pitch > leftoverHole) leftoverHole = step - pitch;
+            }
+            Bounds rowAfter = UnionOf(flags);
+            float zThickness = rowAfter.max.z - rowAfter.min.z;
+
+            _log.AppendLine("  moved " + moved + " flags inward by " + halfSlot.ToString("F4") + " m each");
+            _log.AppendLine("  VERIFY x " + after[0].ToString("F3") + " .. " + after[after.Length - 1].ToString("F3") +
+                            " | largest neighbour step=" + worstStep.ToString("F4") + " m vs pitch " +
+                            pitch.ToString("F4") + " | leftover hole=" + leftoverHole.ToString("F4") + " m" +
+                            (leftoverHole > FlagPitchTolerance ? "  *** STILL OPEN" : " -> closed, spacing uniform"));
+            _log.AppendLine("  row z thickness " + zThickness.ToString("F3") + " m (was " +
+                            (rowBefore.max.z - rowBefore.min.z).ToString("F3") +
+                            ") - must stay ~0.14; a second z value would mean the cloth swung across the room");
+
+            EditorSceneManager.MarkSceneDirty(scene);
+            bool saved = EditorSceneManager.SaveScene(scene);
+            _log.AppendLine("  Scene saved=" + saved + " -> " + scene.path);
+
+            Capture("40-flag-row-after", rowAfter, new Vector3(0f, 0.9f, 7.5f));
+        }
+
+        private static List<Renderer> FlagRenderers(Scene scene) =>
+            AllRenderers(scene)
+                .Where(r => r.name.StartsWith("SM_147VR_AAA_Flag_", StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
         private static int Guard(string label, Func<int> action)
         {
             try { return action(); }
