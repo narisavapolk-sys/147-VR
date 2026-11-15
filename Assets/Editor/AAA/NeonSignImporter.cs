@@ -191,8 +191,9 @@ namespace _147VR.EditorTools
 
             EditorSceneManager.MarkSceneDirty(scene);
             CaptureStageSign(log);
+            // Head-on closeup of the WELCOME sign (was a ~17.9m wide hall shot that hid any glow).
             Capture(log, "Logs/renders/61-neon-hall-from-entrance.png",
-                     new Vector3(0.5f, 2.3f, 17.0f), new Vector3(6.0f, 1.5f, 0.0f));
+                     new Vector3(0.04f, 2.63f, 17.0f), new Vector3(0.04f, 2.63f, 14.49f));
             Capture(log, "Logs/renders/62-neon-logopass.png",
                      new Vector3(5.5f, 1.7f, -8.0f), new Vector3(9.67f, 0.6f, -4.89f));
 
@@ -244,7 +245,8 @@ namespace _147VR.EditorTools
         {
             // Hero closeup: the stage landmark is on the +X stage wall (Unity side).
             Vector3 focus = new Vector3(12.31f, 2.05f, 3.10f);
-            Capture(log, "Logs/renders/60-neon-stage-sign.png", focus + new Vector3(-4.5f, 0.6f, 2.5f), focus);
+            // Tighter head-on closeup so a real glow reads even at low bloom (was eye=focus+(-4.5,0.6,2.5) ~5.2m).
+            Capture(log, "Logs/renders/60-neon-stage-sign.png", focus + new Vector3(-2.6f, 0.4f, 1.5f), focus);
         }
 
         private static void Capture(StringBuilder log, string file, Vector3 eye, Vector3 focus)
