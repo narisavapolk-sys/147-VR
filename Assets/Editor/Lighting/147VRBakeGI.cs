@@ -84,6 +84,7 @@ namespace VR147.EditorTools
             {
                 int reimported = 0, already = 0, missingAfter = 0;
                 var perFile = new List<string>();
+                var cannotUnwrapFiles = new List<string>();
 
                 foreach (var guid in AssetDatabase.FindAssets("t:Model", ModelFolders))
                 {
@@ -98,8 +99,15 @@ namespace VR147.EditorTools
                     {
                         // Unity 6 (6000.x): ModelImporter.generateSecondaryUV is the
                         // lightmap-UV (uv2/secondary channel) generator flag.
-                        // Log BEFORE the import work — a native crash inside the
-                        // unwrap leaves no other trace of which file was involved.
+                        // Only reimport files whose lightmap-UV flag was never turned on.
+                        //
+                        // DO NOT force-toggle the flag on files that already have it ON but
+                        // still miss UV2: those meshes are degenerate/non-manifold and Unity's
+                        // auto-unwrap CANNOT fix them (verified — a forced re-unwrap pass left
+                        // all 328 still missing), and force-reimporting the big FBX files
+                        // (naris_vintage 1182 / Static_Baked 653 / PartyBalloons 271 / Venue x3)
+                        // blows up the Asset Pipeline Refresh and HARD-FREEZES a 15 GB machine.
+                        // The bake-time UV2 guard (menu 4) strips those meshes from GI instead.
                         Log(sb, $"reimport BEGIN: {path} (meshes={meshes.Count}, uv2Missing={missing})");
                         imp.generateSecondaryUV = true;
                         imp.secondaryUVHardAngle = 65f;   // softer unwrap on the big room FBX
@@ -112,17 +120,30 @@ namespace VR147.EditorTools
                         missingAfter += still;
                         perFile.Add($"{path}: reimported, meshes={meshes.Count} uv2Missing={still}");
                     }
+                    else if (missing > 0)
+                    {
+                        // Already flagged but still missing UV2 -> Unity cannot auto-unwrap it.
+                        // Leave it alone (do NOT reimport). The menu-4 UV2 guard strips these.
+                        already++;
+                        missingAfter += missing;
+                        cannotUnwrapFiles.Add($"{path}: uv2Missing={missing} (already flagged, Unity cannot auto-unwrap)");
+                        perFile.Add($"{path}: already-flagged, meshes={meshes.Count} uv2Missing={missing}");
+                    }
                     else
                     {
                         already++;
-                        missingAfter += missing;
-                        perFile.Add($"{path}: ok, meshes={meshes.Count} uv2Missing={missing}");
+                        perFile.Add($"{path}: ok, meshes={meshes.Count} uv2Missing=0");
                     }
                 }
 
                 Log(sb, $"model files: {perFile.Count} (reimported with lightmap UVs: {reimported}, already had them: {already})");
                 foreach (var p in perFile) Log(sb, "  " + p);
                 Log(sb, $"[UV2] meshes still missing UV2 after pass: {missingAfter}");
+                if (cannotUnwrapFiles.Count > 0)
+                {
+                    Log(sb, $"[UV2-WARN] {cannotUnwrapFiles.Count} file(s) are already flagged but still have meshes Unity CANNOT auto-unwrap. Do NOT force-reimport them (it froze the machine). menu 4's UV2 guard will strip them from baked GI automatically:");
+                    foreach (var c in cannotUnwrapFiles) Log(sb, "  " + c);
+                }
             }
             catch (Exception e)
             {
@@ -230,7 +251,6 @@ namespace VR147.EditorTools
         {
             var sb = new StringBuilder();
             sb.AppendLine($"[BakeGI/bake] {DateTime.Now:HH:mm:ss}");
-            var sw = System.Diagnostics.Stopwatch.StartNew();
             try
             {
                 // 1) lighting settings asset
@@ -284,13 +304,58 @@ namespace VR147.EditorTools
                 sb.AppendLine($"[BakeGI/bake:lights] {DateTime.Now:HH:mm:ss}");
                 FlipLightsTo(sb);   // reuse the flip logic, logging into the same report
 
-                // 3) synchronous bake (batchmode-safe, Progressive CPU)
+                // 3) NEW: UV2 guard — drop Contribute GI from any static renderer whose
+                //    mesh still has no lightmap UV2, so lightmap packing can never hit
+                //    "Assertion failed: meshAtlasIndex >= 0" and hang the editor again.
                 sb.AppendLine();
-                sb.AppendLine($"[BakeGI/bake:progressive] {DateTime.Now:HH:mm:ss}  baking — this can take 10-30+ min on a 15.4 GB machine");
-                Debug.Log("[BakeGI] Lightmapping.Bake() starting (synchronous)...");
-                Lightmapping.Bake();
+                sb.AppendLine($"[BakeGI/bake:uv2-guard] {DateTime.Now:HH:mm:ss}");
+                GuardUV2BeforeBake(sb);
 
-                // 4) evidence
+                // 4) ASYNC bake (non-blocking). The old synchronous Lightmapping.Bake()
+                //    froze the whole editor with a "Hold on" dialog that had no Cancel —
+                //    that is exactly what hung for 3h. BakeAsync keeps the editor live,
+                //    shows real progress in the Lighting window, and a failure no longer
+                //    freezes Unity. The evidence + save happen in OnBakeCompleted().
+                if (Lightmapping.isRunning)
+                {
+                    Log(sb, "[SKIP] a lightmap bake is already running — wait for it or cancel it.");
+                    Report(sb);
+                    return;
+                }
+
+                s_bakeSb = sb;
+                s_bakeSw = System.Diagnostics.Stopwatch.StartNew();
+                Lightmapping.bakeCompleted -= OnBakeCompleted;   // avoid double subscribe
+                Lightmapping.bakeCompleted += OnBakeCompleted;
+
+                Log(sb, $"[BakeGI/bake:progressive] {DateTime.Now:HH:mm:ss}  baking (ASYNC, non-blocking) — watch the Lighting window / status bar for progress.");
+                Debug.Log("[BakeGI] Lightmapping.BakeAsync() starting (non-blocking).");
+                Report(sb);   // write a "started" report now so the file reflects in-progress state
+                Lightmapping.BakeAsync();
+            }
+            catch (Exception e)
+            {
+                Log(sb, $"[ERROR] bake failed to start: {e}");
+                Report(sb);
+            }
+        }
+
+        // State carried across the non-blocking bake -> completion callback.
+        static StringBuilder s_bakeSb;
+        static System.Diagnostics.Stopwatch s_bakeSw;
+
+        /// <summary>Runs when Lightmapping.BakeAsync() finishes (or fails). Writes the
+        /// evidence, saves the scene + assets, and finalizes the report. Unsubscribes
+        /// itself so it never double-fires.</summary>
+        static void OnBakeCompleted()
+        {
+            Lightmapping.bakeCompleted -= OnBakeCompleted;
+            var sb = s_bakeSb ?? new StringBuilder();
+            try
+            {
+                sb.AppendLine();
+                sb.AppendLine($"[BakeGI/bake:done] {DateTime.Now:HH:mm:ss}");
+
                 var ldGuids = AssetDatabase.FindAssets("t:LightingDataAsset", new[] { "Assets/Scenes" });
                 var ldPaths = ldGuids.Select(g => AssetDatabase.GUIDToAssetPath(g)).ToList();
                 foreach (var p in ldPaths)
@@ -303,9 +368,9 @@ namespace VR147.EditorTools
                 if (ldPaths.Count == 0)
                     Log(sb, "[WARN] no LightingDataAsset found after bake — bake likely failed, check Unity log");
 
-                Log(sb, $"[OK] bake finished in {sw.Elapsed.TotalMinutes:F1} min; scene = {Lightmapping.lightingDataAsset}");
+                double elapsedMin = s_bakeSw != null ? s_bakeSw.Elapsed.TotalMinutes : 0;
+                Log(sb, $"[OK] bake finished in {elapsedMin:F1} min; scene = {Lightmapping.lightingDataAsset}");
 
-                // 5) persist RenderSettings (references the lighting data asset) + lamp states
                 var scene = SceneManager.GetActiveScene();
                 EditorSceneManager.MarkSceneDirty(scene);
                 if (scene.IsValid()) EditorSceneManager.SaveOpenScenes();
@@ -314,9 +379,58 @@ namespace VR147.EditorTools
             }
             catch (Exception e)
             {
-                Log(sb, $"[ERROR] bake failed after {sw.Elapsed.TotalMinutes:F1} min: {e}");
+                Log(sb, "[ERROR] post-bake finalize failed: " + e);
             }
             Report(sb);
+            Debug.Log("[BakeGI] Bake completed — see Logs/gi_bake_report.txt");
+        }
+
+        /// <summary>UV2 guard: for every MeshRenderer currently flagged Contribute GI,
+        /// if its mesh has no lightmap UV2 we clear the Contribute GI flag (so it is
+        /// excluded from the bake) and log it. This is what prevents the
+        /// "meshAtlasIndex >= 0" assertion that hung the synchronous bake.</summary>
+        public static void GuardUV2BeforeBake(StringBuilder sb)
+        {
+            int checkedCount = 0, stripped = 0;
+            var strippedNames = new List<string>();
+            foreach (var root in SceneManager.GetActiveScene().GetRootGameObjects())
+            {
+                foreach (var ren in root.GetComponentsInChildren<MeshRenderer>(true))
+                {
+                    var flags = GameObjectUtility.GetStaticEditorFlags(ren.gameObject);
+                    if ((flags & StaticEditorFlags.ContributeGI) == 0) continue; // not baked — fine
+                    checkedCount++;
+
+                    var mf = ren.GetComponent<MeshFilter>();
+                    var mesh = mf != null ? mf.sharedMesh : null;
+                    if (MeshHasUv2(mesh)) continue;
+
+                    GameObjectUtility.SetStaticEditorFlags(ren.gameObject, flags & ~StaticEditorFlags.ContributeGI);
+                    stripped++;
+                    if (strippedNames.Count < 40) strippedNames.Add(PathOf(ren.transform));
+                }
+            }
+            Log(sb, $"[UV2-GUARD] Contribute-GI renderers checked: {checkedCount}, stripped (no UV2): {stripped}");
+            foreach (var n in strippedNames) Log(sb, "  stripped: " + n);
+            if (stripped > strippedNames.Count)
+                Log(sb, $"  ... (+{stripped - strippedNames.Count} more)");
+            if (stripped > 0)
+                Log(sb, "[NOTE] stripped objects will NOT receive baked GI — give them UV2 (menu 1) if they must.");
+        }
+
+        static bool MeshHasUv2(Mesh m)
+        {
+            if (m == null) return false;
+            try { return m.HasVertexAttribute(Uv2Attribute); }
+            catch { return false; }
+        }
+
+        static string PathOf(Transform t)
+        {
+            var s = t.name;
+            var p = t.parent;
+            while (p != null) { s = p.name + "/" + s; p = p.parent; }
+            return s;
         }
 
         /// <summary>Flip logic shared by lights-baked and bake (pure, no heavy recursion).</summary>

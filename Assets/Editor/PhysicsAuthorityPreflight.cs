@@ -31,7 +31,7 @@ namespace _147VR.QA
     /// </summary>
     public static class PhysicsAuthorityPreflight
     {
-        const string MainScene = "Assets/Scenes/147VR_MainScene.unity";
+        const string MainScene = "Assets/Scenes/147VR_MainScene_WipRoom.unity";
         const string ReportPath = "Logs/preflight_report.txt";
         const string CueControllerPath = "Assets/Scripts/Quest/SnookerCueController.cs";
         const string DirectorPath = "Assets/Scripts/Authority/PoolPhysicsAuthorityDirector.cs";
@@ -144,6 +144,7 @@ namespace _147VR.QA
                 Fail("no PoolPhysicsEventRunner in the scene — run 147VR/Physics/Scene Swap Pass C");
                 return;
             }
+            if (runners.Count != 4) Fail($"WipRoom requires exactly four bays; found {runners.Count}");
             Ok($"{runners.Count} bay backend(s) discovered");
 
             foreach (var r in runners)
@@ -331,6 +332,7 @@ namespace _147VR.QA
             {
                 var scenes = EditorBuildSettings.scenes;
                 var enabled = scenes.Where(s => s.enabled).ToList();
+                if (enabled.Count != 1) Fail($"Production requires exactly one enabled scene; found {enabled.Count}");
                 if (enabled.Count == 0) { Fail("Build Settings has no enabled scene"); return; }
                 int idx = Array.FindIndex(scenes, s => s.path == MainScene);
                 if (idx < 0) Fail($"{MainScene} is not in Build Settings scenes");

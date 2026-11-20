@@ -1,11 +1,11 @@
 #if UNITY_EDITOR
 // -----------------------------------------------------------------------------
-// Editor command runner — lets the CSV tools be driven without menu clicking.
+// Editor command runner — queued commands are manual-only and require explicit confirmation.
 //
 // Why: Unity's IMGUI menus are hard to drive reliably from outside (popups lose
 // capture when another window overlaps them), and every attempt costs the user a
 // click. Instead, an external process writes Logs/editor_cmd.txt and the Editor
-// executes those commands on the next domain reload / focus, then archives the
+// executes those commands only after an explicit owner action, then archives the
 // file and writes Logs/editor_cmd_result.txt.
 //
 // Commands (one per line, '#' starts a comment):
@@ -23,6 +23,8 @@
 //   gi-flags          mark static renderers Contribute GI + save scene
 //   lights-baked      flip LightRig lamps to Mixed (TableKey) / Baked (room)
 //   bake              create lighting settings asset + flip lamps + Lightmapping.Bake
+//   bay2-frame        replace Bay2 frame + save WipRoom and capture previews
+//   ceiling-parity    rebind coffer materials + save WipRoom and capture preview
 // -----------------------------------------------------------------------------
 
 using System;
@@ -36,21 +38,12 @@ using UnityEngine.SceneManagement;
 
 namespace VR147.EditorTools
 {
-    [InitializeOnLoad]
     public static class ToolRunner
     {
         const string CmdFile     = "Logs/editor_cmd.txt";
         const string DoneFile    = "Logs/editor_cmd.last.txt";
         const string ResultFile  = "Logs/editor_cmd_result.txt";
         const string PhysicsFile = "Logs/editor_physics.txt";
-
-        static int _waitFrames;
-
-        static ToolRunner()
-        {
-            EditorApplication.delayCall += TryRun;
-        }
-
         /// <summary>Batchmode entry point:
         /// Unity -batchmode -projectPath &lt;proj&gt; -executeMethod VR147.EditorTools.ToolRunner.RunCommands -quit
         /// Runs whatever is queued in Logs/editor_cmd.txt right away (no delayCall waiting).</summary>
@@ -64,7 +57,7 @@ namespace VR147.EditorTools
             }
 
             var scene = SceneManager.GetActiveScene();
-            const string MainScene = "Assets/Scenes/147VR_MainScene.unity";
+            const string MainScene = "Assets/Scenes/147VR_MainScene_WipRoom.unity";
             if (!scene.IsValid() || scene.path != MainScene)
             {
                 UnityEditor.SceneManagement.EditorSceneManager.OpenScene(MainScene,
@@ -74,28 +67,53 @@ namespace VR147.EditorTools
             RunNow();
         }
 
-        static void TryRun()
+        [MenuItem("147VR/Tools/Run Queued Editor Commands (Confirm)")]
+        public static void RunQueuedCommandsFromMenu()
         {
             if (!File.Exists(CmdFile))
-                return;
-
-            // The scene may still be loading after a domain reload; give it a few ticks.
-            var scene = SceneManager.GetActiveScene();
-            if (!scene.IsValid() || scene.rootCount == 0)
             {
-                if (_waitFrames++ > 40)
-                {
-                    Write(new StringBuilder("[ABORT] scene never finished loading; commands not run"));
-                    Archive();
-                    return;
-                }
-                EditorApplication.delayCall += TryRun;
+                EditorUtility.DisplayDialog("ToolRunner", "No queued commands in " + CmdFile, "OK");
                 return;
+            }
+
+            var lines = File.ReadAllLines(CmdFile)
+                .Select(line => line.Trim())
+                .Where(line => line.Length > 0 && !line.StartsWith("#"))
+                .ToList();
+            if (lines.Count == 0)
+            {
+                EditorUtility.DisplayDialog("ToolRunner", "The command queue is empty.", "OK");
+                return;
+            }
+
+            string queue = string.Join("\n", lines.Select(line => "  - " + line));
+            bool confirmed = EditorUtility.DisplayDialog(
+                "Run queued Unity commands?",
+                "Commands:\n" + queue +
+                "\n\nSome commands can modify/save WipRoom, materials, lighting settings, or build assets. " +
+                "Nothing runs on domain reload anymore. Continue only if these exact commands are intended.",
+                "Run Commands", "Cancel");
+            if (!confirmed) return;
+
+            const string productionScene = "Assets/Scenes/147VR_MainScene_WipRoom.unity";
+            var scene = SceneManager.GetActiveScene();
+            if (!scene.IsValid() || !string.Equals(scene.path, productionScene, StringComparison.OrdinalIgnoreCase))
+            {
+                if (scene.IsValid() && scene.isDirty)
+                {
+                    bool save = EditorUtility.DisplayDialog(
+                        "Unsaved scene",
+                        "The active scene has unsaved changes. Save it before switching to WipRoom?",
+                        "Save & Open WipRoom", "Cancel");
+                    if (!save) return;
+                    UnityEditor.SceneManagement.EditorSceneManager.SaveScene(scene);
+                }
+                UnityEditor.SceneManagement.EditorSceneManager.OpenScene(
+                    productionScene, UnityEditor.SceneManagement.OpenSceneMode.Single);
             }
 
             RunNow();
         }
-
         static void RunNow()
         {
             var log = new StringBuilder();
@@ -142,7 +160,9 @@ namespace VR147.EditorTools
                         case "sprint23": _147VR.EditorTools.WipRoomArtRound3.RunSprint23(); break;
                         case "frame-reuv": _147VR.EditorTools.WipRoomArtRound3.RunFrameReUv(); break;
                         case "sprint4": _147VR.EditorTools.WipRoomArtSprint4.Run(); break;
-                        case "neon-import": _147VR.EditorTools.NeonSignImporter.Run(); break;
+                         case "neon-import": _147VR.EditorTools.NeonSignImporter.Run(); break;
+                         case "bay2-frame": _147VR.EditorTools.PlaceBay2FrameClean.RunBatch(); break;
+                         case "ceiling-parity": _147VR.EditorTools.WipRoomCeilingParity.RunBatch(); break;
                         default: log.AppendLine("   [skip] unknown command"); break;
                     }
                 }
@@ -186,16 +206,4 @@ namespace VR147.EditorTools
 }
 #endif
 
-// touched by ToolRunner queue so Unity recompiles and re-runs Logs/editor_cmd.txt
-
-// round 8 step 2 queue: colour-only materials + 12 lamp lights
-
-// round 9 queue
-
-// round 11-11 queue: emission-fix then lamp-audit (touch to force domain reload)
-
-// round 11-11b: re-render after emission parity completed
-
-// sprint4 queue touch - force domain reload (ToolRunner only polls on reload)
-
-// neon-import registration
+// Queue commands are explicit; domain reload is inert.

@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
@@ -9,7 +10,7 @@ namespace VR147.AAA.Editor
 {
     public static class Build147VRQuestCandidate
     {
-        private const string MainScene = "Assets/Scenes/147VR_MainScene.unity";
+        private const string MainScene = "Assets/Scenes/147VR_MainScene_WipRoom.unity";
         private const string OutputPath = "Builds/Quest/147VR-MainScene-Dev.apk";
         private const string PlaceholderApplicationId = "com.UnityTechnologies.com.unity.template.urpblank";
 
@@ -23,6 +24,8 @@ namespace VR147.AAA.Editor
             Debug.Log("[147VR APK] Global build scene count=" + activeScenes.Length);
             foreach (var scene in activeScenes)
                 Debug.Log($"[147VR APK] GLOBAL SCENE enabled={scene.enabled} path={scene.path}");
+            var enabledScenes = activeScenes.Where(scene => scene.enabled).ToArray();
+            LogCheck("WipRoom is the only enabled production scene", enabledScenes.Length == 1 && enabledScenes[0].path == MainScene, ref fail);
 
             string appId = PlayerSettings.GetApplicationIdentifier(BuildTargetGroup.Android);
             bool placeholder = string.IsNullOrWhiteSpace(appId) ||

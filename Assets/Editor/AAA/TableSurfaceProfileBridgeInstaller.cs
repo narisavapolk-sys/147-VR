@@ -7,7 +7,7 @@ namespace VR147.AAA.Editor
 {
     public static class TableSurfaceProfileBridgeInstaller
     {
-        private const string ScenePath = "Assets/Scenes/147VR_MainScene.unity";
+        private const string ScenePath = "Assets/Scenes/147VR_MainScene_WipRoom.unity";
         private const string ProfilePath = "Assets/AAA/PhysicsCalibration/TableSurfaceProfile_RuntimeBaseline.asset";
         private static double smokeDeadline;
         private static bool smokePassed;
