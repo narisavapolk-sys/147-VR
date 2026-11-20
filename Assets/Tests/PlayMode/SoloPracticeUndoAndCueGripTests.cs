@@ -34,7 +34,7 @@ using UnityEngine.TestTools;
 
 public class SoloPracticeUndoAndCueGripTests
 {
-    const string SceneName = "147VR_MainScene";
+    const string SceneName = "147VR_MainScene_WipRoom";
     const float RestTimeoutSec = 45f;
     const float ShotSpeed = 3.0f;
 
@@ -126,6 +126,22 @@ public class SoloPracticeUndoAndCueGripTests
         Assert.That((bool)bt.GetProperty("SoloPractice").GetValue(bridge), Is.True,
             "the bridge did not enter SoloPractice.");
 
+        MonoBehaviour turnManager = null;
+        foreach (MonoBehaviour candidate in UnityEngine.Object.FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+        {
+            if (candidate != null && candidate.GetType().Name == "SnookerTurnManager")
+            {
+                turnManager = candidate;
+                break;
+            }
+        }
+        Assert.That(turnManager, Is.Not.Null, "the shared turn manager is missing.");
+        FieldInfo currentPlayerField = turnManager.GetType().GetField("currentPlayer", BindingFlags.Public | BindingFlags.Instance);
+        MethodInfo setTurnMethod = turnManager.GetType().GetMethod("SetTurn", BindingFlags.Public | BindingFlags.Instance);
+        Assert.That(currentPlayerField, Is.Not.Null, "SnookerTurnManager.currentPlayer field is missing.");
+        Assert.That(setTurnMethod, Is.Not.Null, "SnookerTurnManager.SetTurn method is missing.");
+        currentPlayerField.SetValue(turnManager, 2); // snapshot must store player 2 as save index 1.
+
         Vector3 cueBefore = CueBallPosition(runner);
 
         runner.Shoot(Vector3.forward, ShotSpeed, Vector2.zero, 0f);
@@ -141,7 +157,10 @@ public class SoloPracticeUndoAndCueGripTests
         string topJson = PeekUndoTop(bridge);
         Assert.That(string.IsNullOrEmpty(topJson), Is.False,
             "the undo stack is empty even though UndoAvailable said true.");
-        Assert.That(topJson, Does.Contain("balls"), "the pre-shot snapshot is not a save-model payload.");
+        Assert.That(topJson, Does.Contain("Balls"), "the pre-shot snapshot is not a save-model payload.");
+        Assert.That(topJson, Does.Contain("\"CurrentPlayer\":1"), "player 2 must serialize as save index 1.");
+
+        setTurnMethod.Invoke(turnManager, new object[] { 1 }); // simulate the turn having changed after the shot.
 
         MethodInfo requestUndo = bt.GetMethod("RequestUndo");
         Assert.That(requestUndo, Is.Not.Null, "RequestUndo is missing.");
@@ -153,6 +172,7 @@ public class SoloPracticeUndoAndCueGripTests
         Vector3 cueRestored = CueBallPosition(runner);
         Assert.That(Vector3.Distance(cueRestored, cueBefore), Is.LessThan(0.01f),
             "UNDO did not put the cue ball back where the shot started.");
+        Assert.That((int)currentPlayerField.GetValue(turnManager), Is.EqualTo(2), "UNDO must restore the pre-shot player turn.");
 
         // --- leaving practice must kill the capability, snapshot or not ---
         object match = Enum.Parse(GameModeType, "Match");

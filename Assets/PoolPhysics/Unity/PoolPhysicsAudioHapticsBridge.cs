@@ -48,6 +48,10 @@ namespace PoolPhysics.Unity
         private int _poolIndex = 0;
         private AudioSource _murmurSource;
 
+        public int AudioSourcePoolCount => _sourcePool.Count;
+        public bool HasCoreAudioClips => ballBallClip != null && cushionClip != null &&
+                                         jawClip != null && pocketClip != null && cueHitClip != null;
+
         private void Awake()
         {
             _runner = GetComponent<PoolPhysicsEventRunner>();

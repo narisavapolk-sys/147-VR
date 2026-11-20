@@ -144,9 +144,11 @@ public sealed class SnookerCueController : MonoBehaviour
     private void Update()
     {
         // Ensure physics is ready (scene components may start in any order).
-        if (_physics != null)
+        // Multi-bay WipRoom physics is owned by PoolPhysicsAuthorityDirector/EventRunner.
+        // Keep the legacy PhysX table builder for standalone calibration scenes only.
+        if (_physics != null && PoolPhysicsAuthorityDirector.Instance == null && _eventRunner == null)
             _physics.EnsurePhysics();
-        if (_tracker != null)
+        if (_tracker != null && (_tracker.autoDetectOnStart || _tracker.IsBoundToSimulation))
             _tracker.RefreshIfNeeded();
 
         FindCueBall();
@@ -521,6 +523,8 @@ public sealed class SnookerCueController : MonoBehaviour
                 _tracker = FindFirstObjectByType<SnookerBallTracker>();
         }
         if (_tracker == null)
+            return;
+        if (!_tracker.autoDetectOnStart && !_tracker.IsBoundToSimulation)
             return;
         _tracker.RefreshIfNeeded();
 

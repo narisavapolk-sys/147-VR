@@ -26,6 +26,7 @@ namespace PoolPhysics.Unity
     public sealed class PoolPhysicsEventRunner : MonoBehaviour
     {
         [SerializeField] bool enabled_override = false;
+        [SerializeField] GameVariant gameVariant = GameVariant.Snooker;
         public bool Enabled
         {
             get => enabled_override;
@@ -73,6 +74,7 @@ namespace PoolPhysics.Unity
         /// Used by M5ShotLifecycle to poll sim velocities instead of PhysX.</summary>
         public int BallCount => _sim != null ? _sim.Balls.Count : ballTransforms.Count;
         /// <summary>True while this backend owns motion (balls kinematic, sim stepping).</summary>
+        public GameVariant Variant => gameVariant;
         public bool OwnsPhysics => _owns;
         /// <summary>Current cue-ball index after canonical sorting; parallel Unity arrays share this order.</summary>
         public int CueBallIndex => _sim != null ? _sim.CueBallIndex : 0;

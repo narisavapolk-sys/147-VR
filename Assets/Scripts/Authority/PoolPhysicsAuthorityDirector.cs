@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 using PoolPhysics.Unity;
 
 namespace VR147.Authority
@@ -60,22 +61,46 @@ namespace VR147.Authority
         /// <summary>Fires after a bay has taken ownership (the old one is already released).</summary>
         public event Action<PoolPhysicsEventRunner> ActiveChanged;
 
-        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-        static void Bootstrap()
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        static void RegisterSceneBootstrap()
         {
-            if (Instance != null)
+            // Register before the first scene loads. Test Runner and menu-driven scene changes
+            // can load WipRoom after an initial utility scene, so bootstrap on every scene load.
+            SceneManager.sceneLoaded -= EnsureDirectorForScene;
+            SceneManager.sceneLoaded += EnsureDirectorForScene;
+        }
+
+        static void EnsureDirectorForScene(Scene scene, LoadSceneMode mode)
+        {
+            if (!scene.IsValid() || !scene.isLoaded)
                 return;
 
-            PoolPhysicsAuthorityDirector existing = FindFirstObjectByType<PoolPhysicsAuthorityDirector>();
+            GameObject[] roots = scene.GetRootGameObjects();
+            PoolPhysicsAuthorityDirector existing = null;
+            bool hasRunner = false;
+            for (int i = 0; i < roots.Length; i++)
+            {
+                if (!hasRunner && roots[i].GetComponentInChildren<PoolPhysicsEventRunner>(true) != null)
+                    hasRunner = true;
+                if (existing == null)
+                    existing = roots[i].GetComponentInChildren<PoolPhysicsAuthorityDirector>(true);
+            }
+
+            if (!hasRunner)
+                return;
+
             if (existing != null)
             {
+                existing.enabled = true;
                 existing.Announce();
                 existing.EnsureCompanions();
                 return;
             }
 
             GameObject go = new GameObject("PoolPhysics Authority Director");
+            SceneManager.MoveGameObjectToScene(go, scene);
             go.AddComponent<PoolPhysicsAuthorityDirector>();
+            Debug.Log("[Authority] runtime director bootstrapped for scene " + scene.name + ".");
         }
 
         void Awake()
@@ -88,7 +113,7 @@ namespace VR147.Authority
         {
             // Runtime-created host: add the rules bridge and Quest input producer before Start()
             // so the bridge can subscribe to OnUndoRequested on its first frame.
-            if (FindFirstObjectByType<PoolPhysicsRulesBridge>() == null)
+            if (GetComponent<PoolPhysicsRulesBridge>() == null)
                 gameObject.AddComponent<PoolPhysicsRulesBridge>();
             if (FindFirstObjectByType<global::BhpCueGripController>() == null)
                 gameObject.AddComponent<global::BhpCueGripController>();
@@ -117,10 +142,19 @@ namespace VR147.Authority
         void Collect()
         {
             _bays.Clear();
-            foreach (PoolPhysicsEventRunner r in FindObjectsByType<PoolPhysicsEventRunner>())
-                if (r != null)
+            foreach (PoolPhysicsEventRunner r in FindObjectsByType<PoolPhysicsEventRunner>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+                if (r != null && r.gameObject.scene == gameObject.scene)
                     _bays.Add(r);
             _bays.Sort((a, b) => string.CompareOrdinal(a.BayName, b.BayName));
+
+            // Audio and haptics are part of the active physics event stream. Install the
+            // bridge on each bay once; only the authority-owning runner emits simulation events.
+            for (int i = 0; i < _bays.Count; i++)
+            {
+                PoolPhysicsEventRunner runner = _bays[i];
+                if (runner != null && runner.GetComponent<PoolPhysicsAudioHapticsBridge>() == null)
+                    runner.gameObject.AddComponent<PoolPhysicsAudioHapticsBridge>();
+            }
 
             if (_bays.Count == 0)
             {

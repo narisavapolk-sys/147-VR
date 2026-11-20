@@ -74,8 +74,8 @@ namespace VR147.Authority
         PoolUndoStack _undo;
         int[] _undoNumbers;                       // sim index → unique save number (0 = cue)
         readonly Dictionary<int, int> _undoIndexByNumber = new Dictionary<int, int>();
-        int _undoShotCounter;                     // pre-shot snapshot numbering (restored on undo)
-        bool _undoSnapshotCapturedForShot;        // only advance numbering when a true pre-shot snapshot exists
+        int _shotNumber;                     // completed shots in the current rack (restored on undo)
+        bool _undoSnapshotCapturedForShot;        // true when a valid pre-shot snapshot was captured
         bool _shotStartBound;
         bool _undoInputBound;
         bool _undoUsable;                         // number map validated for this bay
@@ -86,6 +86,8 @@ namespace VR147.Authority
         public int PotsLastShot => _objectPots;
 
         public PoolGameMode CurrentGameMode => gameMode;
+        public PoolGameMode CurrentSessionMode => gameMode;
+        public GameVariant CurrentVariant => _bound != null ? _bound.Variant : GameVariant.Snooker;
         public bool SoloPractice => gameMode == PoolGameMode.SoloPractice;
         public bool UndoInputBound => _undoInputBound;
         public bool ShotStartBound => _bound != null && _shotStartBound;
@@ -127,7 +129,7 @@ namespace VR147.Authority
 
             gameMode = nextMode;
             _undo?.Clear();
-            _undoShotCounter = 0;
+            _shotNumber = 0;
             _undoSnapshotCapturedForShot = false;
             Debug.Log($"[RulesBridge] game mode → {gameMode}; undo history cleared.", this);
             return true;
@@ -191,6 +193,9 @@ namespace VR147.Authority
             Unbind();
             _bound = runner;
 
+            if (_ballTracker != null && runner.TableRootTransform != null)
+                _ballTracker.tableRoot = runner.TableRootTransform;
+
             _pockets.Clear();
             for (int i = 0; i < runner.PocketCount; i++)
                 _pockets.Add(new SnookerBallTracker.PocketInfo
@@ -227,8 +232,8 @@ namespace VR147.Authority
             for (int i = 0; i < _ballList.Count; i++)
                 if (_ballList[i] != null && SnookerBallTracker.PointsForSimName(_ballList[i].name) == 1)
                     reds++;
-            _discipline = _ballList.Count == 0 ? Discipline.None
-                        : (reds >= 10 ? Discipline.Snooker : Discipline.Pool);
+_discipline = _ballList.Count == 0 ? Discipline.None
+                        : (runner.Variant == GameVariant.Snooker ? Discipline.Snooker : Discipline.Pool);
 
             if (_shotTracker != null)
                 _shotTracker.snookerRulesEnabled = _discipline == Discipline.Snooker;
@@ -237,7 +242,7 @@ namespace VR147.Authority
 
             BuildUndoMap();
             _undo = new PoolUndoStack(Mathf.Clamp(undoDepth, 1, 16));
-            _undoShotCounter = 0;
+            _shotNumber = 0;
 
             runner.SimEvent += OnSimEvent;
             runner.ShotStarted += OnShotStarted;
@@ -391,9 +396,10 @@ namespace VR147.Authority
             if (potted == null)
                 return;
 
-            _objectPots++;
             if (isCue)
                 _cuePotted = true;
+            else
+                _objectPots++;
             if (logEvents)
                 Debug.Log($"[RulesBridge] pot {(isCue ? "SCRATCH" : potted.name)} in {(pocket != null ? pocket.name : "?")} " +
                           $"[{runner.BayName}, discipline={_discipline}]");
@@ -411,11 +417,11 @@ namespace VR147.Authority
             if (!_settlePending)
                 return;
             _settlePending = false;
+            bool cuePottedThisShot = _cuePotted;
             _shotOpen = false;
             Reconcile();
-            ApplyPoolTurnRule();
-            if (_undoSnapshotCapturedForShot)
-                _undoShotCounter++;     // only a shot with a valid pre-shot snapshot advances the undo number
+            ApplyPoolTurnRule(cuePottedThisShot);
+            _shotNumber++;        // match shot count advances even when UNDO is disabled
             _undoSnapshotCapturedForShot = false;
         }
 
@@ -474,16 +480,16 @@ namespace VR147.Authority
 
         /// <summary>Pool bays bypass the snooker transaction entirely, so the bridge owns the
         /// turn rule there: pot an object ball → striker keeps the table, otherwise pass it.</summary>
-        void ApplyPoolTurnRule()
+        void ApplyPoolTurnRule(bool cuePottedThisShot)
         {
             if (_discipline != Discipline.Pool || _turnManager == null)
                 return;
 
-            if (_cuePotted || _objectPots == 0)
+            if (!PoolTurnPolicy.ShouldKeepTurnAfterPot(cuePottedThisShot, _objectPots))
             {
                 _turnManager.NextTurn();
                 if (logEvents)
-                    Debug.Log($"[RulesBridge] pool turn passes (objects potted={_objectPots}, scratch={_cuePotted})");
+                    Debug.Log($"[RulesBridge] pool turn passes (objects potted={_objectPots}, scratch={cuePottedThisShot})");
             }
             else
             {
@@ -497,6 +503,8 @@ namespace VR147.Authority
         // Solo-practice UNDO (S2 #2c) — see the class header for the gate contract.
         // -----------------------------------------------------------------------
 
+        static bool TryParsePoolBallNumber(string ballName, int maxNumber, out int number)
+            => PoolBallIdentity.TryParsePoolNumber(ballName, maxNumber, out number);
         /// <summary>Map each sim ball to a UNIQUE save number so PoolUndoStack's canonical
         /// snapshots validate: Pool bays use the printed ball number (NineBall schema 1..9);
         /// Snooker bays use synthetic ids — reds 1..15 in index order, colours 16..21 — because
@@ -519,24 +527,26 @@ namespace VR147.Authority
 
             if (_discipline == Discipline.Pool)
             {
+                int maxNumber = runner.Variant == GameVariant.EightBall ? 15 : 9;
+                int maxBalls = maxNumber + 1;
                 var seen = new HashSet<int>();
                 for (int i = 0; i < n; i++)
                 {
                     string ballName = _ballList[i] != null ? _ballList[i].name : "<null>";
                     int num = i == runner.CueBallIndex
                         ? 0
-                        : SnookerBallTracker.PointsForSimName(ballName);
+                        : TryParsePoolBallNumber(ballName, maxNumber, out int parsed) ? parsed : -1;
                     _undoNumbers[i] = num;
-                    if (i != runner.CueBallIndex && (num < 1 || num > 9 || !seen.Add(num)))
+                    if (i != runner.CueBallIndex && (num < 1 || num > maxNumber || !seen.Add(num)))
                     {
                         ok = false;
-                        mapIssues.Add($"{i}:{ballName}→{num}");
+                        mapIssues.Add($"{i}:{ballName}->{num}");
                     }
                 }
-                if (n > 10)
+                if (n > maxBalls)
                 {
                     ok = false;
-                    mapIssues.Add($"poolBallCount={n}");
+                    mapIssues.Add($"poolBallCount={n}, expectedMax={maxBalls}");
                 }
             }
             else if (_discipline == Discipline.Snooker)
@@ -618,6 +628,9 @@ namespace VR147.Authority
             }
         }
 
+        // SnookerTurnManager uses player ids 1/2; PoolSaveState deliberately stores 0/1.
+        static int ToSavePlayerIndex(int turnManagerPlayer) => turnManagerPlayer == 2 ? 1 : 0;
+        static int ToTurnManagerPlayer(int savePlayerIndex) => savePlayerIndex == 1 ? 2 : 1;
         PoolSaveState CaptureUndoState()
         {
             PoolPhysicsEventRunner runner = _bound;
@@ -631,12 +644,12 @@ namespace VR147.Authority
             }
             return new PoolSaveState
             {
-                RulesMode = _discipline == Discipline.Snooker ? "Snooker" : "NineBall",
-                CurrentPlayer = _turnManager != null ? Mathf.Clamp(_turnManager.currentPlayer, 0, 1) : 0,
+                RulesMode = runner.Variant == GameVariant.Snooker ? "Snooker" : (runner.Variant == GameVariant.EightBall ? "EightBall" : "NineBall"),
+                CurrentPlayer = _turnManager != null ? ToSavePlayerIndex(_turnManager.currentPlayer) : 0,
                 RacksWon = new[] { 0, 0 },          // frame score is rules-layer territory (documented simplification)
-                ShotNumber = _undoShotCounter,
+                ShotNumber = _shotNumber,
                 BallInHand = false,                 // bridge does not track ball-in-hand yet (documented simplification)
-                IsBreakShot = _undoShotCounter == 0,
+                IsBreakShot = _shotNumber == 0,
                 Balls = balls
             };
         }
@@ -660,7 +673,7 @@ namespace VR147.Authority
             }
 
             ApplyUndoState(restored);
-            _undoShotCounter = restored.ShotNumber;    // re-numbering the replayed shot keeps saves honest
+            _shotNumber = restored.ShotNumber;    // re-numbering the replayed shot keeps saves honest
             return true;
         }
 
@@ -690,6 +703,10 @@ namespace VR147.Authority
                     }
                 }
             }
+
+            // Restore the turn transaction as well as the balls; player ids are 1/2 in the manager and 0/1 in the save model.
+            if (_turnManager != null)
+                _turnManager.SetTurn(ToTurnManagerPlayer(st.CurrentPlayer));
 
             // cancel any in-flight bookkeeping so the replayed shot starts from a clean slate
             _shotOpen = false;

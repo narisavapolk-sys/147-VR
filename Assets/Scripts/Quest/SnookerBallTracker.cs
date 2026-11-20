@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using PoolPhysics.Sim;
 
 /// <summary>
 /// "Radar above the table": watches every ball's position and reports when one drops
@@ -58,18 +59,21 @@ public sealed class SnookerBallTracker : MonoBehaviour
         "White_CueBall", "Red", "Yellow", "Green", "Brown", "Blue", "Pink", "Black"
     };
     public bool autoDetectOnStart = true;
+    public bool IsBoundToSimulation => _boundToSimulation;
     public bool logPotEvents = true;
 
     private readonly List<BallInfo> _balls = new List<BallInfo>();
     private readonly List<PocketInfo> _pockets = new List<PocketInfo>();
     private readonly Dictionary<Transform, float> _previousY = new Dictionary<Transform, float>();
     private bool _ready;
+    private bool _boundToSimulation;
 
     private void Start()
-    {
-        if (autoDetectOnStart)
-            Refresh();
-    }
+{
+    // A live physics backend owns ordering after BindToSimulation; do not overwrite it.
+    if (autoDetectOnStart && !_boundToSimulation)
+        Refresh();
+}
 
     private void Update()
     {
@@ -229,32 +233,7 @@ public sealed class SnookerBallTracker : MonoBehaviour
     /// <summary>Snooker value for an imported ball name. Prefers the token after the last
     /// "_Ball_" so room-FBX names (SM_147VR_Bay1_Ball_Red_003) map like plain names.
     /// Returns -1 for non-balls, 0 for the cue and for pool-numbered balls (no snooker value).</summary>
-    public static int PointsForSimName(string name)
-    {
-        int legacy = PointsForName(name);
-        if (legacy >= 0)
-            return legacy;
-        if (string.IsNullOrEmpty(name))
-            return -1;
-
-        int i = name.LastIndexOf("_Ball_", StringComparison.Ordinal);
-        string token = i >= 0 ? name.Substring(i + 6) : name;
-        token = token.Split('_')[0].ToLowerInvariant();
-
-        switch (token)
-        {
-            case "red": return 1;
-            case "yellow": return 2;
-            case "green": return 3;
-            case "brown": return 4;
-            case "blue": return 5;
-            case "pink": return 6;
-            case "black": return 7;
-        }
-        if (token.StartsWith("white") || token.StartsWith("cue"))
-            return 0;
-        return -1;
-    }
+    public static int PointsForSimName(string name) => PoolBallIdentity.SnookerPoints(name);
 
     /// <summary>True when the name looks like a cue ball under either naming scheme.</summary>
     public static bool IsCueBallName(string name)
@@ -271,6 +250,7 @@ public sealed class SnookerBallTracker : MonoBehaviour
     {
         if (simBalls == null || simBalls.Count == 0)
             return false;
+        _boundToSimulation = true;
 
         var previousHomes = new Dictionary<Transform, Vector3>();
         foreach (BallInfo existing in _balls)
@@ -483,26 +463,7 @@ public sealed class SnookerBallTracker : MonoBehaviour
     }
 
     /// <summary>Snooker value for a ball name, or -1 if it is not a ball.</summary>
-    public static int PointsForName(string name)
-    {
-        if (name.StartsWith("White_CueBall", StringComparison.Ordinal) || name.Equals("Cue", StringComparison.Ordinal))
-            return 0;
-        if (name.StartsWith("Red", StringComparison.Ordinal))
-            return 1;
-        if (name.StartsWith("Yellow", StringComparison.Ordinal))
-            return 2;
-        if (name.StartsWith("Green", StringComparison.Ordinal))
-            return 3;
-        if (name.StartsWith("Brown", StringComparison.Ordinal))
-            return 4;
-        if (name.StartsWith("Blue", StringComparison.Ordinal))
-            return 5;
-        if (name.StartsWith("Pink", StringComparison.Ordinal))
-            return 6;
-        if (name.StartsWith("Black", StringComparison.Ordinal))
-            return 7;
-        return -1;
-    }
+    public static int PointsForName(string name) => PoolBallIdentity.SnookerPoints(name);
 
     private void OnDrawGizmosSelected()
     {

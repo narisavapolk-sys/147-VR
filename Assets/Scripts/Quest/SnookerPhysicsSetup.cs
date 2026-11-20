@@ -63,6 +63,10 @@ public sealed class SnookerPhysicsSetup : MonoBehaviour
     /// <summary>Builds the physics table and ball bodies. Idempotent.</summary>
     public void EnsurePhysics()
     {
+        // WipRoom uses PoolPhysicsAuthorityDirector/EventRunner as its sole physics authority.
+        // Never create the legacy PhysX table when the multi-bay authority is active.
+        if (VR147.Authority.PoolPhysicsAuthorityDirector.Instance != null)
+            return;
         if (_setup)
             return;
 

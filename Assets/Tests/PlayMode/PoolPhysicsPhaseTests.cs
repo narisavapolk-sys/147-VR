@@ -26,7 +26,7 @@ using UnityEngine.TestTools;
 
 public class PoolPhysicsPhaseTests
 {
-    const string SceneName      = "147VR_MainScene";
+    const string SceneName      = "147VR_MainScene_WipRoom";
     const float  ShotSpeed      = 3.0f;   // m/s break — same order as the Golden batches
     const float  RestTimeoutSec = 45f;
     const float  MotionSpeed    = 0.05f;

@@ -94,10 +94,33 @@ public sealed class SnookerTurnManager : MonoBehaviour
         _strikerContinues=false;
     }
 
+    private static bool WasPressedThisFrame(KeyCode keyCode)
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return false;
+
+        string keyName = keyCode.ToString();
+        if (keyName.StartsWith("Alpha", StringComparison.Ordinal))
+            keyName = "Digit" + keyName.Substring("Alpha".Length);
+        else if (keyName.StartsWith("Keypad", StringComparison.Ordinal))
+            keyName = "Numpad" + keyName.Substring("Keypad".Length);
+        else if (keyName == "Return")
+            keyName = "Enter";
+        else if (keyName == "KeypadEnter")
+            keyName = "NumpadEnter";
+        else if (keyName == "LeftControl")
+            keyName = "LeftCtrl";
+        else if (keyName == "RightControl")
+            keyName = "RightCtrl";
+
+        if (!Enum.TryParse(keyName, true, out Key inputKey)) return false;
+        return keyboard[inputKey].wasPressedThisFrame;
+    }
+
     private void Update()
     {
         if (_m5Lifecycle != null && (_m5Lifecycle.CurrentState == M5ShotLifecycle.State.Active || _m5Lifecycle.CurrentState == M5ShotLifecycle.State.Settling)) return;
-        if (nextTurnKey != KeyCode.None && Keyboard.current != null && Input.GetKeyDown(nextTurnKey))
+        if (nextTurnKey != KeyCode.None && WasPressedThisFrame(nextTurnKey))
         {
             NextTurn();
             return;

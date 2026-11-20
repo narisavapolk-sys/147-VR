@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.XR;
+using UnityEngine.SceneManagement;
 using XRInputDevice = UnityEngine.XR.InputDevice;
 using System.Collections.Generic;
 
@@ -135,18 +136,36 @@ public sealed class TabletOptionsMenu : MonoBehaviour
     /// component today, so both controls were dormant; this mirrors the authority director's
     /// runtime-bootstrap pattern and is a no-op when a scene already owns one.
     /// </summary>
-    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
-    private static void Bootstrap()
+    [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+    private static void RegisterSceneBootstrap()
     {
-        if (FindFirstObjectByType<TabletOptionsMenu>() != null) return;
+        SceneManager.sceneLoaded -= EnsureTabletForGameplayScene;
+        SceneManager.sceneLoaded += EnsureTabletForGameplayScene;
+    }
+
+    private static void EnsureTabletForGameplayScene(Scene scene, LoadSceneMode mode)
+    {
+        if (!scene.IsValid() || !scene.isLoaded) return;
+        GameObject[] roots = scene.GetRootGameObjects();
+        bool hasPhysicsBay = false, hasTablet = false;
+        foreach (GameObject root in roots)
+        {
+            if (!hasPhysicsBay && root.GetComponentInChildren<PoolPhysics.Unity.PoolPhysicsEventRunner>(true) != null)
+                hasPhysicsBay = true;
+            if (!hasTablet && root.GetComponentInChildren<TabletOptionsMenu>(true) != null)
+                hasTablet = true;
+        }
+        if (!hasPhysicsBay || hasTablet) return;
         GameObject go = new GameObject("Tablet Options Menu");
+        SceneManager.MoveGameObjectToScene(go, scene);
         go.AddComponent<TabletOptionsMenu>();
+        Debug.Log("[TabletOptionsMenu] Runtime bootstrap created tablet for gameplay scene '" + scene.name + "'.");
     }
 
     private void Update()
     {
         // Toggle menu with left controller menu button (Meta primaryButton)
-        if (Input.GetKeyDown(KeyCode.M) || MenuButtonPressed())
+        if ((Keyboard.current != null && Keyboard.current.mKey.wasPressedThisFrame) || MenuButtonPressed())
             ToggleMenu();
 
         if (_isOpen)
@@ -223,13 +242,21 @@ public sealed class TabletOptionsMenu : MonoBehaviour
         scaler.dynamicPixelsPerUnit = 300;
         canvasGO.AddComponent<GraphicRaycaster>();
 
-        // Ensure EventSystem exists
-        if (FindAnyObjectByType<UnityEngine.EventSystems.EventSystem>() == null)
+        EnsureEventSystem();
+    }
+
+    private static void EnsureEventSystem()
+    {
+        var eventSystem = FindFirstObjectByType<UnityEngine.EventSystems.EventSystem>(FindObjectsInactive.Include);
+        if (eventSystem == null)
         {
-            var es = new GameObject("EventSystem");
-            es.AddComponent<UnityEngine.EventSystems.EventSystem>();
-            es.AddComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+            var eventSystemObject = new GameObject("EventSystem");
+            eventSystem = eventSystemObject.AddComponent<UnityEngine.EventSystems.EventSystem>();
         }
+        var legacyModule = eventSystem.GetComponent<UnityEngine.EventSystems.StandaloneInputModule>();
+        if (legacyModule != null) Destroy(legacyModule);
+        if (eventSystem.GetComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>() == null)
+            eventSystem.gameObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
     }
 
     private void BuildPanel()

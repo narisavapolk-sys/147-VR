@@ -47,8 +47,13 @@ public sealed class SnookerShotTracker : MonoBehaviour
         if (shotLifecycle == null) shotLifecycle = FindObjectOfType<M5ShotLifecycle>();
         if (eventContract == null) eventContract = GetComponent<M5ShotEventContract>();
         if (eventContract == null) eventContract = FindObjectOfType<M5ShotEventContract>();
-        if (ballTracker != null) ballTracker.RefreshIfNeeded();
-        RebuildIntegration();
+        // WipRoom binds the shared tracker to the selected bay through PoolPhysicsRulesBridge.
+        // Do not scan the entire multi-bay scene before that authoritative bind exists.
+        if (ballTracker != null && (ballTracker.autoDetectOnStart || ballTracker.IsBoundToSimulation))
+        {
+            ballTracker.RefreshIfNeeded();
+            RebuildIntegration();
+        }
         InitializeBindings();
     }
 
@@ -83,6 +88,8 @@ public sealed class SnookerShotTracker : MonoBehaviour
     {
         if (shotLifecycle == null || scoreManager == null || turnManager == null || ballTracker == null)
             throw new InvalidOperationException("M5 shot dependencies are incomplete.");
+        if (!ballTracker.autoDetectOnStart && !ballTracker.IsBoundToSimulation)
+            throw new InvalidOperationException("M5 tracker must be bound to the active physics bay before a shot.");
         ballTracker.RefreshIfNeeded();
         RebuildIntegration();
         int sequence = shotLifecycle.ShotSequence;
