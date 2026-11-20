@@ -142,9 +142,10 @@ static class GoldenRunner
         var stun=new ShotJson{table={length=100f,width=100f},balls={new BallJson{x=50f,z=50f,r=0.028575f},new BallJson{x=50.2f,z=50f,r=0.028575f}},cue={index=0,dir=new[]{1f,0f},speed=2f,tip=new[]{0f,0f}}};
         var sim=new EventSimulator(BuildTable(stun),p); foreach(var b in BuildBalls(stun)) sim.Balls.Add(b);
         var c0=sim.Balls[0]; c0.Velocity=new Vector3(2,0,0); sim.Balls[0]=c0; sim.RunToRest(0.5f);
-        float mom=p.BallMass*(sim.Balls[0].Velocity.X+sim.Balls[1].Velocity.X);
+        float mom=sim.Balls[0].Mass*sim.Balls[0].Velocity.X+sim.Balls[1].Mass*sim.Balls[1].Velocity.X;
+        float initialMomentum=sim.Balls[0].Mass*2f;
         Check(Math.Abs(sim.Balls[0].Velocity.X)<0.05f && Math.Abs(sim.Balls[1].Velocity.X-2f)<0.05f, $"head-on transfer cue={sim.Balls[0].Velocity.X:F3} obj={sim.Balls[1].Velocity.X:F3}");
-        Check(Math.Abs(mom-0.32)<0.02, $"momentum conserved ({mom:F4}~0.32)");
+        Check(Math.Abs(mom-initialMomentum)<0.02, $"momentum conserved ({mom:F4}~{initialMomentum:F4})");
         var ob=new ShotJson{table={length=100f,width=100f},balls={new BallJson{x=50f,z=50f,r=0.028575f},new BallJson{x=50.25f,z=50.04f,r=0.028575f}},cue={index=0,dir=new[]{1f,0f},speed=2f,tip=new[]{0f,0f}}};
         var s2=new EventSimulator(BuildTable(ob),p); foreach(var b in BuildBalls(ob)) s2.Balls.Add(b);
         var c1=s2.Balls[0]; c1.Velocity=new Vector3(2,0,0); s2.Balls[0]=c1; s2.RunToRest(0.5f);
@@ -555,11 +556,12 @@ static class GoldenRunner
     }
 
     static int Main(string[] args){
-        if(args.Length==0){ Console.WriteLine("usage: gen|check|fit|real|validate|eventval|genreal|touchtest|props [golden] [evals]|nineball [fuzzN]|save [fuzzN]|undo [fuzzN]|jartest|detdbg|napdbg|splitdbg"); return 2; }
+        if(args.Length==0){ Console.WriteLine("usage: gen|check|fit|real|validate|eventval|genreal|touchtest|props [golden] [evals]|nineball [fuzzN]|save [fuzzN]|undo [fuzzN]|policy|jartest|detdbg|napdbg|splitdbg"); return 2; }
         string mode=args[0];
         if(mode=="nineball"){ NineBallTests.RunAll(args.Length>1?int.Parse(args[1]):150); return NineBallTests.Fails>0?1:0; }
         if(mode=="save"){ PoolSaveTests.RunAll(args.Length>1?int.Parse(args[1]):300); return PoolSaveTests.Fails>0?1:0; }
         if(mode=="undo"){ PoolUndoTests.RunAll(args.Length>1?int.Parse(args[1]):200); return PoolUndoTests.Fails>0?1:0; }
+        if(mode=="policy"){ PoolRuntimePolicyTests.RunAll(); return PoolRuntimePolicyTests.Fails>0?1:0; }
         if(mode=="props"){ Props(args.Length>1?int.Parse(args[1]):400); return FAILS>0?1:0; }
         if(mode=="detdbg"){ DetDbg(args.Length>1?int.Parse(args[1]):30); return FAILS>0?1:0; }
         if(mode=="napdbg"){ NapDbg(); return FAILS>0?1:0; }

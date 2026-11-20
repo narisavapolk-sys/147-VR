@@ -1,6 +1,14 @@
 namespace PoolPhysics.Sim
 {
-    /// <summary>Authoritative gameplay mode used by the rules bridge.</summary>
+    /// <summary>Ruleset assigned to a physical bay. This is independent of session mode.</summary>
+    public enum GameVariant
+    {
+        Snooker = 0,
+        EightBall = 1,
+        NineBall = 2
+    }
+
+    /// <summary>Session policy. This is independent of the selected game variant.</summary>
     public enum PoolGameMode
     {
         Match = 0,

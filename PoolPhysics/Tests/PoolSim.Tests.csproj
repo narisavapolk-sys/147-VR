@@ -14,5 +14,6 @@
     <Compile Include="NineBallTests.cs" />
     <Compile Include="PoolSaveTests.cs" />
     <Compile Include="PoolUndoTests.cs" />
+    <Compile Include="PoolRuntimePolicyTests.cs" />
   </ItemGroup>
 </Project>

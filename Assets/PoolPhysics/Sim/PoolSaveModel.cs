@@ -31,7 +31,7 @@ namespace PoolPhysics.Sim
     // ---------------------------------------------------------------------------
     public sealed class PoolSaveBall
     {
-        public int Number;      // 0 == cue ball; NineBall objects 1..9, Snooker 1..21
+        public int Number;      // 0 == cue ball; NineBall objects 1..9, EightBall objects 1..15, Snooker 1..21
         public double X, Z;     // table-plane rest position, playfield coordinates (metres)
         public bool Pocketed;   // true == currently in a pocket (cue: scratch, ball-in-hand next)
     }
@@ -41,7 +41,7 @@ namespace PoolPhysics.Sim
         public const int CurrentSchema = 1;
 
         public int SchemaVersion = CurrentSchema;
-        public string RulesMode = "NineBall"; // "NineBall" | "Snooker"
+        public string RulesMode = "NineBall"; // "NineBall" | "EightBall" | "Snooker"
         public int CurrentPlayer;             // 0 or 1
         public int[] RacksWon = new int[2];   // frames (snooker) / racks (9-ball) per player
         public int ShotNumber;                // 0-based shot counter; break shot == 0
@@ -59,7 +59,7 @@ namespace PoolPhysics.Sim
             if (s == null) return "state is null";
             if (s.SchemaVersion != PoolSaveState.CurrentSchema)
                 return $"SchemaVersion {s.SchemaVersion} not supported (current {PoolSaveState.CurrentSchema})";
-            if (s.RulesMode != "NineBall" && s.RulesMode != "Snooker")
+            if (s.RulesMode != "NineBall" && s.RulesMode != "EightBall" && s.RulesMode != "Snooker")
                 return $"unknown RulesMode '{s.RulesMode ?? "<null>"}'";
             if (s.CurrentPlayer != 0 && s.CurrentPlayer != 1) return $"CurrentPlayer {s.CurrentPlayer} not in [0,1]";
             if (s.RacksWon == null || s.RacksWon.Length != 2) return "RacksWon must contain exactly 2 entries";
@@ -67,7 +67,7 @@ namespace PoolPhysics.Sim
                 return "RacksWon out of range";
             if (s.ShotNumber < 0) return "ShotNumber is negative";
             if (s.Balls == null || s.Balls.Length == 0) return "Balls is empty";
-            int maxBalls = s.RulesMode == "NineBall" ? 10 : 22;
+            int maxBalls = s.RulesMode == "NineBall" ? 10 : (s.RulesMode == "EightBall" ? 16 : 22);
             if (s.Balls.Length > maxBalls)
                 return $"too many balls ({s.Balls.Length}) for {s.RulesMode} (max {maxBalls})";
             int cueCount = 0;
@@ -81,7 +81,7 @@ namespace PoolPhysics.Sim
                 if (Math.Abs(b.X) > PoolSaveCodec.MaxAbsPosition || Math.Abs(b.Z) > PoolSaveCodec.MaxAbsPosition)
                     return $"Balls[{i}] (#{b.Number}) position outside sanity window (+-{PoolSaveCodec.MaxAbsPosition} m)";
                 if (b.Number == 0) { cueCount++; continue; }
-                int maxNumber = s.RulesMode == "NineBall" ? 9 : 21;
+                int maxNumber = s.RulesMode == "NineBall" ? 9 : (s.RulesMode == "EightBall" ? 15 : 21);
                 if (b.Number < 1 || b.Number > maxNumber)
                     return $"Balls[{i}] number {b.Number} out of range for {s.RulesMode} (1..{maxNumber})";
                 if (!seenObjects.Add(b.Number))

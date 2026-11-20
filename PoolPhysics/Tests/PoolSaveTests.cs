@@ -40,6 +40,7 @@ namespace PoolPhysics.Sim
         {
             T1_RackRoundTrip();
             T2_FoulAndSnookerRoundTrip();
+            T2_EightBallRoundTrip();
             T3_RejectMatrix();
             T4_FuzzMalformed(fuzzN);
             T5_SaveShotSaveDeterminism();
@@ -153,6 +154,43 @@ namespace PoolPhysics.Sim
         // Float anchors are taken from the ACTUAL writer output (write "R" emits
         // the real double like 2.175000071526, never the neat 2.175).
         // -----------------------------------------------------------------------
+        // T2b — EightBall persists one cue plus all fifteen object balls.
+        static void T2_EightBallRoundTrip()
+        {
+            var balls = new List<PoolSaveBall>
+            {
+                new PoolSaveBall { Number = 0, X = 2.10, Z = 0.81 }
+            };
+            for (int number = 1; number <= 15; number++)
+                balls.Add(new PoolSaveBall
+                {
+                    Number = number,
+                    X = 0.25 + 0.12 * number,
+                    Z = 0.25 + 0.04 * (number % 5)
+                });
+
+            var state = new PoolSaveState
+            {
+                SchemaVersion = PoolSaveState.CurrentSchema,
+                RulesMode = "EightBall",
+                CurrentPlayer = 0,
+                RacksWon = new[] { 0, 0 },
+                ShotNumber = 0,
+                BallInHand = false,
+                IsBreakShot = true,
+                Balls = balls.ToArray()
+            };
+
+            string json = PoolSaveCodec.ToJson(state);
+            bool loaded = PoolSaveCodec.TryFromJson(json, out var restored, out string error);
+            Check(loaded && error == null && SameState(state, restored),
+                error != null ? "save T2b: EightBall roundtrip rejected: " + error
+                              : "save T2b: cue + 15 object balls roundtrip identical");
+
+            state.Balls[15].Number = 16;
+            Check(PoolSaveValidator.Validate(state) != null,
+                "save T2b: EightBall object number 16 rejected (range is 1..15)");
+        }
         static void T3_RejectMatrix()
         {
             string good = PoolSaveCodec.ToJson(NineBallPristineState());
@@ -161,7 +199,7 @@ namespace PoolPhysics.Sim
             // surgical mutations of the canonical document (integer anchors are exact)
             ExpectReject(good.Replace("\"SchemaVersion\":1", "\"SchemaVersion\":2"), "bad version");
             ExpectReject(good.Replace("\"SchemaVersion\":1", "\"SchemaVersion\":\"1\""), "version as string");
-            ExpectReject(good.Replace("\"RulesMode\":\"NineBall\"", "\"RulesMode\":\"EightBall\""), "bad rules mode");
+            ExpectReject(good.Replace("\"RulesMode\":\"NineBall\"", "\"RulesMode\":\"UnknownVariant\""), "unknown rules mode");
             ExpectReject(good.Replace("\"CurrentPlayer\":0", "\"CurrentPlayer\":7"), "bad player");
             ExpectReject(good.Replace("\"ShotNumber\":0", "\"ShotNumber\":-1"), "negative shot number");
             ExpectReject(good.Replace("\"RacksWon\":[0,0]", "\"RacksWon\":[1]"), "short RacksWon");
