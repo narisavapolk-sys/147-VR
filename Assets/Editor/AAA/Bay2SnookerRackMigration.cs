@@ -45,14 +45,39 @@ namespace VR147.AAA.Editor
             public readonly StringBuilder Report = new StringBuilder(16000);
         }
 
+        [MenuItem("147VR/Production/Dry-run Bay2 22-ball Rack (Read Only)")]
+        public static void DryRunCurrentWipRoom()
+        {
+            if (EditorApplication.isPlaying)
+                throw new InvalidOperationException("Exit Play Mode before the Bay2 rack dry-run.");
+
+            Scene scene = SceneManager.GetSceneByPath(ScenePath);
+            bool loadedByDryRun = !scene.IsValid() || !scene.isLoaded;
+            Scene previousActive = SceneManager.GetActiveScene();
+            if (loadedByDryRun)
+                scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Additive);
+
+            try
+            {
+                var plan = BuildPlan(scene);
+                string state = plan.Target != null && plan.Target.BallCount == 22
+                    ? "DRY RUN - ALREADY MIGRATED 22 BALLS - NO SCENE MODIFICATIONS"
+                    : "DRY RUN - 17 TO 22 BALL MIGRATION PREFLIGHT - NO SCENE MODIFICATIONS";
+                WriteReport(plan, state);
+                if (plan.Errors.Count > 0)
+                    throw new InvalidOperationException("Bay2 rack dry-run failed. See " + ReportPath);
+                Debug.Log("Bay2 rack dry-run passed. State=" + state + ". No scene changes were made. " + ReportPath);
+            }
+            finally
+            {
+                if (loadedByDryRun && previousActive.IsValid() && previousActive.isLoaded)
+                    SceneManager.SetActiveScene(previousActive);
+            }
+        }
+
         public static void DryRunBatch()
         {
-            var scene = EditorSceneManager.OpenScene(ScenePath, OpenSceneMode.Single);
-            var plan = BuildPlan(scene);
-            WriteReport(plan, "DRY RUN - NO SCENE MODIFICATIONS");
-            if (plan.Errors.Count > 0)
-                throw new InvalidOperationException("Bay2 rack dry-run failed. See " + ReportPath);
-            Debug.Log("Bay2 rack dry-run passed. No scene changes were made. " + ReportPath);
+            DryRunCurrentWipRoom();
         }
 
         public static void ApplyBatch()
@@ -62,6 +87,8 @@ namespace VR147.AAA.Editor
             WriteReport(plan, "APPLY REQUESTED - VALIDATING BEFORE MUTATION");
             if (plan.Errors.Count > 0)
                 throw new InvalidOperationException("Bay2 rack migration aborted before mutation. See " + ReportPath);
+            if (plan.Target.BallCount == 22)
+                throw new InvalidOperationException("Bay2 already has a validated 22-ball rack. Refusing to clone or replace it again. Use the read-only Dry-run command instead.");
 
             int undoGroup = Undo.GetCurrentGroup();
             Undo.IncrementCurrentGroup();
@@ -176,8 +203,8 @@ namespace VR147.AAA.Editor
                 plan.Errors.Add("Source or target TableRootTransform is null.");
             if (plan.Source.BallCount != 22)
                 plan.Errors.Add("Bay1 source must contain exactly 22 balls; found " + plan.Source.BallCount + ".");
-            if (plan.Target.BallCount != 17)
-                plan.Errors.Add("Bay2 target must contain exactly 17 balls before migration; found " + plan.Target.BallCount + ".");
+            if (plan.Target.BallCount != 17 && plan.Target.BallCount != 22)
+                plan.Errors.Add("Bay2 target must contain either 17 balls (pre-migration) or 22 balls (already migrated); found " + plan.Target.BallCount + ".");
 
             plan.SourceBalls = ReadBalls(plan.Source);
             plan.TargetBalls = ReadBalls(plan.Target);
@@ -246,7 +273,12 @@ namespace VR147.AAA.Editor
             }
 
             ValidateRackIdentity(plan, plan.SourceBalls, "Bay1 source", 22, 15, 6);
-            ValidateRackIdentity(plan, plan.TargetBalls, "Bay2 current", 17, 15, 1);
+            bool targetAlreadyMigrated = plan.Target != null && plan.Target.BallCount == 22;
+            ValidateRackIdentity(plan, plan.TargetBalls, "Bay2 current",
+                targetAlreadyMigrated ? 22 : 17, 15, targetAlreadyMigrated ? 6 : 1);
+            plan.Report.AppendLine("Migration state: " + (targetAlreadyMigrated
+                ? "ALREADY MIGRATED - READ-ONLY VALIDATION ONLY"
+                : "PRE-MIGRATION - APPLY WOULD REPLACE THE 17 WIRED BALLS"));
 
             if (plan.SourceTable != null && plan.TargetTable != null)
             {

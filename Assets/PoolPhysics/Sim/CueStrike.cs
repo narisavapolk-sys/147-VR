@@ -21,6 +21,11 @@ namespace PoolPhysics.Sim
             dir = Vector3.Normalize(dir);
             if (!float.IsFinite(speed) || speed <= 0f) return; // invalid speed -> no shot (guard)
             cue.Velocity = dir * speed;
+            // A cue strike starts in sliding state (the cue has linear velocity before
+            // rolling spin is established). Update Phase immediately so AllAtRest is
+            // false before the first FixedUpdate; otherwise callers can observe a false
+            // rest boundary and return before the shot has advanced one simulation step.
+            cue.Phase = BallPhase.Sliding;
             cue.Position.Y = cue.Radius;
 
             // english (side spin) about vertical axis

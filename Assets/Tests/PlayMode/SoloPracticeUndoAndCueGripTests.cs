@@ -68,18 +68,63 @@ public class SoloPracticeUndoAndCueGripTests
         }
     }
 
-    static Behaviour EnsureDirector()
+    static Behaviour FindSceneDirector()
     {
-        Assert.That(DirectorType, Is.Not.Null, "PoolPhysicsAuthorityDirector type missing from Assembly-CSharp.");
-        MethodInfo bootstrap = DirectorType.GetMethod("Bootstrap",
-            BindingFlags.Static | BindingFlags.NonPublic);
-        Assert.That(bootstrap, Is.Not.Null, "PoolPhysicsAuthorityDirector.Bootstrap is missing.");
-        bootstrap.Invoke(null, null);
+        if (DirectorType == null)
+            return null;
 
-        Behaviour director = Resources.FindObjectsOfTypeAll(DirectorType)
-            .OfType<Behaviour>().FirstOrDefault(c => c != null && c.gameObject.scene.IsValid());
-        Assert.That(director, Is.Not.Null, "runtime bootstrap did not create or reuse the authority director.");
-        return director;
+        return Resources.FindObjectsOfTypeAll(DirectorType)
+            .OfType<Behaviour>()
+            .FirstOrDefault(c => c != null &&
+                                 c.gameObject.scene.IsValid() &&
+                                 c.gameObject.scene.isLoaded &&
+                                 c.gameObject.scene.name == SceneName);
+    }
+
+    static Behaviour FindSceneGripController()
+    {
+        if (GripType == null)
+            return null;
+
+        return Resources.FindObjectsOfTypeAll(GripType)
+            .OfType<Behaviour>()
+            .FirstOrDefault(c => c != null &&
+                                 c.gameObject.scene.IsValid() &&
+                                 c.gameObject.scene.isLoaded &&
+                                 c.gameObject.scene.name == SceneName);
+    }
+
+    static IEnumerator WaitForRuntimeAuthority()
+    {
+        // Do not invoke a private/legacy bootstrap method from the test. The production
+        // RuntimeInitializeOnLoad + sceneLoaded path must create the director itself.
+        float deadline = Time.realtimeSinceStartup + 10f;
+        while (true)
+        {
+            Assert.That(DirectorType, Is.Not.Null,
+                "PoolPhysicsAuthorityDirector type missing from Assembly-CSharp.");
+
+            Behaviour director = FindSceneDirector();
+            if (director != null &&
+                director.GetComponent(BridgeType) != null &&
+                FindSceneGripController() != null)
+                yield break;
+
+            if (Time.realtimeSinceStartup >= deadline)
+            {
+                int runnerCount = UnityEngine.Object
+                    .FindObjectsByType<PoolPhysicsEventRunner>(FindObjectsInactive.Include)
+                    .Count(r => r != null && r.gameObject.scene.IsValid() &&
+                                r.gameObject.scene.name == SceneName);
+                Assert.Fail("Runtime authority bootstrap did not finish for " + SceneName +
+                            ". Scene loaded=" + SceneManager.GetSceneByName(SceneName).isLoaded +
+                            ", physics runners=" + runnerCount +
+                            ", director found=" + (director != null) +
+                            ". The test intentionally does not call a test-only bootstrap.");
+            }
+
+            yield return null;
+        }
     }
 
     static Vector3 CueBallPosition(PoolPhysicsEventRunner runner)
@@ -96,8 +141,9 @@ public class SoloPracticeUndoAndCueGripTests
     public IEnumerator SoloPracticeUndo_RestoresPreShotCue_AndMatchModeBlocksIt()
     {
         yield return LoadScene();
-        Behaviour director = EnsureDirector();
-        yield return null; // one frame so the bridge can subscribe to ShotStarted + the controller
+        yield return WaitForRuntimeAuthority();
+        Behaviour director = FindSceneDirector();
+        Assert.That(director, Is.Not.Null, "runtime authority director disappeared after bootstrap.");
 
         Behaviour bridge = director.GetComponent(BridgeType) as Behaviour;
         Assert.That(bridge, Is.Not.Null, "the authority bootstrap did not create PoolPhysicsRulesBridge.");
@@ -170,8 +216,14 @@ public class SoloPracticeUndoAndCueGripTests
         yield return new WaitForFixedUpdate();
 
         Vector3 cueRestored = CueBallPosition(runner);
-        Assert.That(Vector3.Distance(cueRestored, cueBefore), Is.LessThan(0.01f),
-            "UNDO did not put the cue ball back where the shot started.");
+        float restoreDistance = Vector3.Distance(cueRestored, cueBefore);
+        runner.TryGetSimBall(runner.CueBallIndex, out Vector3 cueRestoredSim, out _, out _, out _);
+        Assert.That(restoreDistance, Is.LessThan(0.01f),
+            "UNDO did not put the cue ball back where the shot started. beforeWorld=" +
+            cueBefore.ToString("F4") + " afterWorld=" + cueRestored.ToString("F4") +
+            " afterSim=" + cueRestoredSim.ToString("F4") +
+            " distance=" + restoreDistance.ToString("F4") +
+            " cueIndex=" + runner.CueBallIndex);
         Assert.That((int)currentPlayerField.GetValue(turnManager), Is.EqualTo(2), "UNDO must restore the pre-shot player turn.");
 
         // --- leaving practice must kill the capability, snapshot or not ---
@@ -198,10 +250,11 @@ public class SoloPracticeUndoAndCueGripTests
     public IEnumerator CueGripLength_PublishesPersistsAndClamps()
     {
         yield return LoadScene();
-        EnsureDirector();
-        yield return null;
+        yield return WaitForRuntimeAuthority();
 
-        Behaviour grip = Resources.FindObjectsOfTypeAll(GripType).OfType<Behaviour>().FirstOrDefault();
+        Behaviour director = FindSceneDirector();
+        Assert.That(director, Is.Not.Null, "runtime authority director disappeared after bootstrap.");
+        Behaviour grip = FindSceneGripController();
         Assert.That(grip, Is.Not.Null, "the authority bootstrap did not create BhpCueGripController.");
         Type gt = grip.GetType();
 

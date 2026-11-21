@@ -130,7 +130,7 @@ namespace PoolPhysics.Unity
             get
             {
                 Transform cue = BallTransformAt(CueBallIndex);
-                if (cue != null) return cue.position.y - defaultBallRadius;
+                if (cue != null) return cue.position.y - GetSimulationBallRadius(cue);
                 return tableTransform != null ? tableTransform.position.y : 0f;
             }
         }
@@ -142,6 +142,12 @@ namespace PoolPhysics.Unity
         {
             _sim = null;
             if (tableSpec == null || profileSO == null || ballTransforms.Count == 0) return;
+
+            // The table origin is the playfield corner at cloth height, not the floor/table-model pivot.
+            // The imported room scene keeps PhysicsRoot at floor Y while the balls are authored above it.
+            // Align once from the cue ball before converting world positions into table-local metres.
+            AlignTableOriginToPlayfield();
+
             if (tableTransform != null && !Mathf.Approximately(tableTransform.lossyScale.x, 1f))
                 Debug.LogWarning($"[PoolPhysics] tableTransform scale {tableTransform.lossyScale} != 1; sim assumes metres. Fix scale or bake it.");
             var tmp = new EventSimulator(tableSpec.ToData(), profileSO.ToProfile());
@@ -149,9 +155,7 @@ namespace PoolPhysics.Unity
             for (int i = 0; i < ballTransforms.Count; i++)
             {
                 var t = ballTransforms[i]; if (t == null) { Debug.LogError($"[PoolPhysics] ballTransform[{i}] is null (skipped)"); continue; }
-                float r = defaultBallRadius;
-                var sc = t.GetComponent<SphereCollider>();
-                if (sc != null) { float wr = sc.radius * t.lossyScale.x; if (Mathf.Abs(wr - defaultBallRadius) > 0.001f) { Debug.LogWarning($"[PoolPhysics] '{t.name}' collider r {wr:F4} != default {defaultBallRadius:F4}"); r = wr; } else { r = defaultBallRadius; } }
+                float r = GetSimulationBallRadius(t);
                 var p = ToSim(t.position);
                 tmp.Balls.Add(new Ball { Position = p, Radius = r, Mass = defaultBallMass, Active = true, Phase = BallPhase.Rest });
                 prevT.Add(p); currT.Add(p); bodies.Add(t.GetComponent<Rigidbody>()); rts.Add(t);
@@ -373,6 +377,33 @@ namespace PoolPhysics.Unity
                 float spin = b.AngularVelocity.Length();
                 if (spin > 1e-3f) tr.Rotate(ToUnityDir(b.AngularVelocity), spin * Time.deltaTime * Mathf.Rad2Deg, Space.World);
             }
+        }
+
+        float GetSimulationBallRadius(Transform ball)
+        {
+            if (ball == null) return defaultBallRadius;
+            SphereCollider sphere = ball.GetComponent<SphereCollider>();
+            if (sphere == null) return defaultBallRadius;
+            float worldRadius = sphere.radius * ball.lossyScale.x;
+            return Mathf.Abs(worldRadius - defaultBallRadius) > 0.001f ? worldRadius : defaultBallRadius;
+        }
+
+        void AlignTableOriginToPlayfield()
+        {
+            if (tableTransform == null || ballTransforms == null || ballTransforms.Count == 0) return;
+
+            // Build() runs before the simulator's cue-ball permutation, so authored index 0 is the cue ball.
+            Transform cueBall = ballTransforms[0];
+            if (cueBall == null || !cueBall.gameObject.activeInHierarchy) return;
+
+            float clothY = cueBall.position.y - GetSimulationBallRadius(cueBall);
+            Vector3 origin = tableTransform.position;
+            float verticalOffset = clothY - origin.y;
+            if (Mathf.Abs(verticalOffset) <= 0.01f) return;
+
+            origin.y = clothY;
+            tableTransform.position = origin;
+            Debug.Log($"[PoolPhysics] aligned '{name}' table-local origin to cloth height (Y={clothY:F4}, offset={verticalOffset:F4}m).");
         }
 
         SimVector3 ToSim(Vector3 w)  { var v = tableTransform ? tableTransform.InverseTransformPoint(w) : w; return new SimVector3(v.x, v.y, v.z); }
